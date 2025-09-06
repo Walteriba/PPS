@@ -1,0 +1,35 @@
+# Entorno virtual
+venv/
+ENV/
+env/
+.venv/
+
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Configuración
+*.env
+instance/
+config.py
+
+# Bases de datos locales
+*.db
+*.sqlite3
+
+# Archivos de logs
+*.log
+
+# Compilados y caches
+*.egg-info/
+*.egg
+dist/
+build/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
