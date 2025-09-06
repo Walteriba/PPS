@@ -5,14 +5,15 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <h1>Bienvenidos a {{ materia }} 👋</h1>
-  <h2>Integrantes:</h2>
-  <ul>
-    {% for item in lista %}
-      <li>{{ item }}</li>
-    {% endfor %}
-  </ul>
-  <a href="/formulario">IR AL FORMULARIO</a>
+  <h1>Bienvenidos a {{ veterinaria.nombre }} 👋</h1>
+  <h2>Mascotas:</h2>
+<ul>
+  {% for mascota in mascotas %}
+    <li>
+      {{ mascota.nombre }} - {{ mascota.especie }}
+      <a href="/mascota/{{ mascota.id }}">Ver detalle</a>
+    </li>
+  {% endfor %}
+</ul>
 </body>
 </html>
- 
