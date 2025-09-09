@@ -1,14 +1,14 @@
 from flask import Blueprint, render_template
 from models.veterinaria import Veterinaria
-from models.mascota import Mascota
+from models.paciente import Paciente
 
 # Datos de ejemplo (MOCK) - Deberían venir de una base de datos
 veterinaria = Veterinaria("Veterinaria PPS")
 
 mascotas = [
-    Mascota(1, "Firulais", "Perro", 1),
-    Mascota(2, "Michi", "Gato", 2),
-    Mascota(3, "Nemo", "Pez", 1)
+    Paciente(1, "Firulais", "Perro", 1),
+    Paciente(2, "Michi", "Gato", 2),
+    Paciente(3, "Nemo", "Pez", 1)
 ]
 
 home_bp = Blueprint("home_bp", __name__)
