@@ -6,9 +6,9 @@ from models.paciente import Paciente
 veterinaria = Veterinaria("Veterinaria PPS")
 
 mascotas = [
-    Paciente(1, "Firulais", "Perro", 1),
-    Paciente(2, "Michi", "Gato", 2),
-    Paciente(3, "Nemo", "Pez", 1)
+    Paciente(1, "Firulais", "Perro", "Labrador", "Macho", "Marrón", "2020-05-10", True, False, True, 1),
+    Paciente(2, "Michi", "Gato", "Siamés", "Hembra", "Blanco", "2021-03-15", True, False, False, 2),
+    Paciente(3, "Nemo", "Pez", "Goldfish", "Macho", "Naranja", "2022-01-01", True, False, False, 1)
 ]
 
 home_bp = Blueprint("home_bp", __name__)
