@@ -40,15 +40,13 @@
 
 3. Accede a la aplicación en [http://localhost:5000](http://localhost:5000)
 
-## Estructura básica
+## Base de datos
+Ejecutá el script de carga de datos de prueba (parado en la raíz del proyecto):
+    ```bash
+    python -m utils._db
 
-```
-├── app.py
-├── requirements.txt
-├── templates/
-└── static/
-```
-
+    ```
+     
 ## Notas
 
 - Agrega tus dependencias a `requirements.txt`. => pip freeze > requirements.txt

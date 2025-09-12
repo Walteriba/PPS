@@ -1,7 +1,9 @@
 from flask import Blueprint, render_template
 from models.veterinaria import Veterinaria
+from models.tutor import Tutor
 from models.paciente import Paciente
 
+<<<<<<< HEAD
 # Datos de ejemplo (MOCK) - Deberían venir de una base de datos
 veterinaria = Veterinaria("VetLog")
 
@@ -11,17 +13,30 @@ mascotas = [
     Paciente(3, "Nemo", "Pez", "Goldfish", "Macho", "Naranja", "2022-01-01", True, False, False, 1)
 ]
 
+=======
+# Definición del Blueprint
+>>>>>>> d6b0761 (- Se agrega SQL alchemy con SQL lite)
 home_bp = Blueprint("home_bp", __name__)
 
-# Home (maestro-detalle)
+# Home
 @home_bp.route("/", methods=["GET"])
 def home():
+    veterinaria = Veterinaria("Veterinaria PPS") # TODO: Implementar modelo
+    mascotas = Paciente.query.all()
     return render_template("index.html", veterinaria=veterinaria, mascotas=mascotas)
 
 # Detalle de mascota
 @home_bp.route("/mascota/<int:id>", methods=["GET"])
 def detalle_mascota(id):
+<<<<<<< HEAD
     mascota = next((m for m in mascotas if m.id == id), None)
     if mascota:
         return render_template("detalle_mascota.html", mascota=mascota, veterinaria=veterinaria)
     return "Mascota no encontrada", 404
+=======
+    mascota = Paciente.query.get(id)
+    if mascota is not None:
+        tutor = Tutor.query.get(mascota.tutor_id)
+        return f"Aquí va el detalle de la mascota: {mascota.nombre} y el dueño es {tutor.nombre} {tutor.apellido}"
+    return "Mascota no encontrada", 404
+>>>>>>> d6b0761 (- Se agrega SQL alchemy con SQL lite)
