@@ -11,7 +11,7 @@ class Paciente(db.Model):
     sexo = db.Column(db.String(10), nullable=False)
     color = db.Column(db.String(50), nullable=False)
     fecha_nacimiento = db.Column(db.Date, default=date.today)
-    foto = db.Column(db.String(), nullable=True)
+    ##foto = db.Column(db.String(), nullable=True) #TODO: Implementar
     activo = db.Column(db.Boolean, default=True)
     reproductor = db.Column(db.Boolean, default=False)
     castrado = db.Column(db.Boolean, default=False)
