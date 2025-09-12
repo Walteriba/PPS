@@ -1,18 +1,18 @@
 <div class="row">
-      {% for mascota in mascotas %}
+      {% for paciente in pacientes %}
       <div class="col-md-3 mb-4">
         <div class="card h-100">
           <img src="{{ url_for('static', filename='imgs/default-avatar.jpg') }}" 
      class="card-img-top" 
-     alt="Foto mascota">
+     alt="Foto paciente">
 
           <div class="card-body">
-            <h5 class="card-title">{{ mascota.nombre }}</h5>
+            <h5 class="card-title">{{ paciente.nombre }}</h5>
             <p class="card-text">
-              <strong>Especie:</strong> {{ mascota.especie }} <br>
-              <strong>Raza:</strong> {{ mascota.raza }}
+              <strong>Especie:</strong> {{ paciente.especie }} <br>
+              <strong>Raza:</strong> {{ paciente.raza }}
             </p>
-            <a href="/mascota/{{ mascota.id }}" class="btn btn-success">Ver Detalle</a>
+            <a href="/paciente/{{ paciente.id }}" class="btn btn-success">Ver Detalle</a>
           </div>
         </div>
       </div>
