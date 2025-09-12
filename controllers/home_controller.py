@@ -22,12 +22,13 @@ home_bp = Blueprint("home_bp", __name__)
 @home_bp.route("/", methods=["GET"])
 def home():
     veterinaria = Veterinaria("Veterinaria PPS") # TODO: Implementar modelo
-    mascotas = Paciente.query.all()
-    return render_template("index.html", veterinaria=veterinaria, mascotas=mascotas)
+    pacientes = Paciente.query.all()
+    return render_template("index.html", veterinaria=veterinaria, mascotas=pacientes)
 
 # Detalle de mascota
-@home_bp.route("/mascota/<int:id>", methods=["GET"])
+@home_bp.route("/paciente/<int:id>", methods=["GET"])
 def detalle_mascota(id):
+<<<<<<< HEAD
 <<<<<<< HEAD
     mascota = next((m for m in mascotas if m.id == id), None)
     if mascota:
@@ -40,3 +41,10 @@ def detalle_mascota(id):
         return f"Aquí va el detalle de la mascota: {mascota.nombre} y el dueño es {tutor.nombre} {tutor.apellido}"
     return "Mascota no encontrada", 404
 >>>>>>> d6b0761 (- Se agrega SQL alchemy con SQL lite)
+=======
+    paciente = Paciente.query.get(id)
+    if paciente is not None:
+        tutor = Tutor.query.get(paciente.tutor_id)
+        return f"Aquí va el detalle de la mascota: {paciente.nombre} y el dueño es {tutor.nombre} {tutor.apellido}"
+    return "Mascota no encontrada", 404
+>>>>>>> e279ca9 (Fix de nombre de variables)
