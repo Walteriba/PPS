@@ -27,6 +27,7 @@ def home():
 
 # Detalle de mascota
 @home_bp.route("/paciente/<int:id>", methods=["GET"])
+<<<<<<< HEAD
 def detalle_mascota(id):
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -42,6 +43,9 @@ def detalle_mascota(id):
     return "Mascota no encontrada", 404
 >>>>>>> d6b0761 (- Se agrega SQL alchemy con SQL lite)
 =======
+=======
+def detalle_paciente(id):
+>>>>>>> 6d90a71 (fix)
     paciente = Paciente.query.get(id)
     if paciente is not None:
         tutor = Tutor.query.get(paciente.tutor_id)
