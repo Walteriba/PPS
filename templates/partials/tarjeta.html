@@ -1,0 +1,20 @@
+<div class="row">
+      {% for paciente in pacientes %}
+      <div class="col-md-3 mb-4">
+        <div class="card h-100">
+          <img src="{{ url_for('static', filename='imgs/default-avatar.jpg') }}" 
+     class="card-img-top" 
+     alt="Foto paciente">
+
+          <div class="card-body">
+            <h5 class="card-title">{{ paciente.nombre }}</h5>
+            <p class="card-text">
+              <strong>Especie:</strong> {{ paciente.especie }} <br>
+              <strong>Raza:</strong> {{ paciente.raza }}
+            </p>
+            <a href="/paciente/{{ paciente.id }}" class="btn btn-success">Ver Detalle</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
