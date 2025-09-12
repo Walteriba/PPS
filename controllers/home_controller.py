@@ -1,27 +1,24 @@
 from flask import Blueprint, render_template
 from models.veterinaria import Veterinaria
+from models.tutor import Tutor
 from models.paciente import Paciente
 
-# Datos de ejemplo (MOCK) - Deberían venir de una base de datos
-veterinaria = Veterinaria("VetLog")
+veterinaria = Veterinaria("Veterinaria PPS") # TODO: Implementar modelo
 
-mascotas = [
-    Paciente(1, "Firulais", "Perro", "Labrador", "Macho", "Marrón", "2020-05-10", True, False, True, 1),
-    Paciente(2, "Michi", "Gato", "Siamés", "Hembra", "Blanco", "2021-03-15", True, False, False, 2),
-    Paciente(3, "Nemo", "Pez", "Goldfish", "Macho", "Naranja", "2022-01-01", True, False, False, 1)
-]
-
+# Definición del Blueprint
 home_bp = Blueprint("home_bp", __name__)
 
-# Home (maestro-detalle)
+# Home
 @home_bp.route("/", methods=["GET"])
 def home():
-    return render_template("index.html", veterinaria=veterinaria, mascotas=mascotas)
+    pacientes = Paciente.query.all()
+    return render_template("index.html", veterinaria=veterinaria, pacientes=pacientes)
 
 # Detalle de mascota
-@home_bp.route("/mascota/<int:id>", methods=["GET"])
-def detalle_mascota(id):
-    mascota = next((m for m in mascotas if m.id == id), None)
-    if mascota:
-        return render_template("detalle_mascota.html", mascota=mascota, veterinaria=veterinaria)
+@home_bp.route("/paciente/<int:id>", methods=["GET"])
+def detalle_paciente(id):
+    paciente = Paciente.query.get(id)   
+    if paciente is not None:
+        tutor = Tutor.query.get(paciente.tutor_id)
+        return render_template("detalle_mascota.html", paciente=paciente, tutor=tutor, veterinaria=veterinaria)
     return "Mascota no encontrada", 404
