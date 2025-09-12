@@ -18,7 +18,7 @@ with app.app_context():
     p3 = Paciente(nombre="Nemo", especie="Pez", raza="Goldfish", sexo="Macho", color="Naranja",
                   fecha_nacimiento=date(2025, 1, 1), activo=True, reproductor=False, castrado=False, tutor=t1)
 
-    db.session.add_all([t1, t2, p1, p2])
+    db.session.add_all([t1, t2, p1, p2, p3])
     db.session.commit()
 
     print("Datos cargados correctamente")
