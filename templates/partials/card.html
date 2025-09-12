@@ -1,0 +1,23 @@
+  <div class="container">
+    <div class="card mb-4">
+      <div class="row g-0">
+        <!-- Imagen -->
+        <div class="col-md-4">
+          <img src="{{ url_for('static', filename='imgs/default-avatar.jpg') }}" 
+               class="img-fluid rounded-start" alt="Foto mascota">
+        </div>
+        <!-- Detalles -->
+        <div class="col-md-8">
+          <div class="card-body">
+            <h2 class="card-title">{{ mascota.nombre }}</h2>
+            <p class="card-text"><strong>Especie:</strong> {{ mascota.especie }}</p>
+            <p class="card-text"><strong>Raza:</strong> {{ mascota.raza }}</p>
+            <p class="card-text"><strong>Sexo:</strong> {{ mascota.sexo }}</p>
+            <p class="card-text"><strong>Color:</strong> {{ mascota.color }}</p>
+            <p class="card-text"><strong>Fecha nacimiento:</strong> {{ mascota.fecha_nacimiento }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <a href="/" class="btn btn-success"> Volver</a>
+  </div>

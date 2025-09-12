@@ -1,0 +1,20 @@
+<div class="row">
+      {% for mascota in mascotas %}
+      <div class="col-md-3 mb-4">
+        <div class="card h-100">
+          <img src="{{ url_for('static', filename='imgs/default-avatar.jpg') }}" 
+     class="card-img-top" 
+     alt="Foto mascota">
+
+          <div class="card-body">
+            <h5 class="card-title">{{ mascota.nombre }}</h5>
+            <p class="card-text">
+              <strong>Especie:</strong> {{ mascota.especie }} <br>
+              <strong>Raza:</strong> {{ mascota.raza }}
+            </p>
+            <a href="/mascota/{{ mascota.id }}" class="btn btn-success">Ver Detalle</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>

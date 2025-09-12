@@ -3,7 +3,7 @@ from models.veterinaria import Veterinaria
 from models.paciente import Paciente
 
 # Datos de ejemplo (MOCK) - Deberían venir de una base de datos
-veterinaria = Veterinaria("Veterinaria PPS")
+veterinaria = Veterinaria("VetLog")
 
 mascotas = [
     Paciente(1, "Firulais", "Perro", "Labrador", "Macho", "Marrón", "2020-05-10", True, False, True, 1),
@@ -21,7 +21,7 @@ def home():
 # Detalle de mascota
 @home_bp.route("/mascota/<int:id>", methods=["GET"])
 def detalle_mascota(id):
-    mascota = next((m for m in mascotas if m.id == id), None) # Método que busca la mascota por ID
+    mascota = next((m for m in mascotas if m.id == id), None)
     if mascota:
-        return f"Aquí va el detalle de la mascota: {mascota.nombre}"
+        return render_template("detalle_mascota.html", mascota=mascota, veterinaria=veterinaria)
     return "Mascota no encontrada", 404
