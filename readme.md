@@ -41,10 +41,10 @@
 3. Accede a la aplicación en [http://localhost:5000](http://localhost:5000)
 
 ## Base de datos
-Ejecutá el script de carga de datos de prueba (parado en la raíz del proyecto):
-    ```bash
-    python -m utils._db
 
+1. Ejecuta el script de carga de datos de prueba (parado en la raíz del proyecto):
+    ```bash
+    python -m utils.db
     ```
      
 ## Notas
