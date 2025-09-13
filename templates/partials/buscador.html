@@ -1,4 +1,9 @@
-<form class="d-flex mb-4" role="search">
-    <input class="form-control me-2" type="search" placeholder="Buscar paciente..." aria-label="Buscar">
+<form class="d-flex mb-4" role="search" action="/buscar" method="GET">
+    <input class="form-control me-2" 
+           type="search" 
+           name="q" 
+           value="{{ search or '' }}" 
+           placeholder="Buscar paciente..." 
+           aria-label="Buscar">
     <button class="btn btn-outline-success" type="submit">Buscar</button>
 </form>
