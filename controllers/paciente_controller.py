@@ -27,7 +27,7 @@ def crear_paciente():
 
         # Crear nuevo paciente con asignacion 
         nuevo_paciente = Paciente(
-             nombre=request.form["nombre"],
+            nombre=request.form["nombre"],
             especie=request.form["especie"],
             raza=request.form["raza"],
             sexo=request.form["sexo"],
@@ -43,12 +43,12 @@ def crear_paciente():
         db.session.commit()
 
         return jsonify({"mensaje": "Paciente creado con éxito", "id": nuevo_paciente.id}), 201
-    except KeyError as e:
+    except Exception as e: #captura los posibles errores tanto de la falta de campo como de formato 
         db.session.rollback()
-        return jsonify({"error": f"falta el campo: {e.args[0]}"}),400 
-    except ValueError as e:
-        db.session.rollback()
-        return jsonify({"error": "Formato inválido: " + str(e)}), 400  
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"error": str(e)}), 500
+        mensaje = str(e)
+        if isinstance(e, KeyError):
+            mensaje = f"Falta el campo: {e.args[0]}"
+        elif isinstance(e, ValueError):
+            mensaje = f"Formato inválido: {str(e)}"
+        return jsonify({"error": mensaje}), 400
+
