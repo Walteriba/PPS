@@ -43,12 +43,5 @@ def crear_paciente():
         db.session.commit()
 
         return jsonify({"mensaje": "Paciente creado con éxito", "id": nuevo_paciente.id}), 201
-    except Exception as e: #captura los posibles errores tanto de la falta de campo como de formato 
-        db.session.rollback()
-        mensaje = str(e)
-        if isinstance(e, KeyError):
-            mensaje = f"Falta el campo: {e.args[0]}"
-        elif isinstance(e, ValueError):
-            mensaje = f"Formato inválido: {str(e)}"
-        return jsonify({"error": mensaje}), 400
+    
 
