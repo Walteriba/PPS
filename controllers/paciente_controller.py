@@ -52,3 +52,68 @@ def crear_paciente():
             mensaje = f"Formato inválido: {str(e)}"
         return jsonify({"error": mensaje}), 400
 
+# Endpoint para actualizar un paciente
+@paciente_bp.route("/paciente/<int:id>", methods=["PUT"])
+def actualizar_paciente(id):
+    try:
+        # Buscar el paciente por ID
+        paciente = Paciente.query.get(id)
+        if not paciente:
+            return jsonify({"error": "Paciente no encontrado"}), 404
+
+        # Actualizar campos si vienen en el request.form
+        # Usamos get con valor por defecto para no romper si falta el campo
+        paciente.nombre = request.form.get("nombre", paciente.nombre)
+        paciente.especie = request.form.get("especie", paciente.especie)
+        paciente.raza = request.form.get("raza", paciente.raza)
+        paciente.sexo = request.form.get("sexo", paciente.sexo)
+        paciente.color = request.form.get("color", paciente.color)
+
+        # Fecha de nacimiento (convertir solo si se envía)
+        fecha_nac = request.form.get("fecha_nacimiento")
+        if fecha_nac:
+            paciente.fecha_nacimiento = datetime.strptime(fecha_nac, "%Y-%m-%d")
+
+        # Campos booleanos (checkboxes)
+        paciente.activo = "activo" in request.form
+        paciente.reproductor = "reproductor" in request.form
+        paciente.castrado = "castrado" in request.form
+
+        # Actualizar tutor si se envía tutor_id
+        tutor_id = request.form.get("tutor_id")
+        if tutor_id:
+            tutor = Tutor.query.get(int(tutor_id))
+            if not tutor:
+                return jsonify({"error": "Tutor no encontrado"}), 400
+            paciente.tutor = tutor
+
+        # Guardar cambios
+        db.session.commit()
+
+        return jsonify({"mensaje": "Paciente actualizado con éxito", "id": paciente.id}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 400
+
+
+# Endpoint para eliminar un paciente
+@paciente_bp.route("/paciente/<int:id>", methods=["DELETE"])
+def eliminar_paciente(id):
+    try:
+        # Buscar paciente por ID
+        paciente = Paciente.query.get(id)
+        if not paciente:
+            return jsonify({"error": "Paciente no encontrado"}), 404
+
+        # Eliminar de la base de datos
+        db.session.delete(paciente)
+        db.session.commit()
+
+        return jsonify({"mensaje": "Paciente eliminado con éxito", "id": id}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 400
+ 
+
