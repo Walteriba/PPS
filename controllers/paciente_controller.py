@@ -43,8 +43,8 @@ def crear_paciente():
         db.session.commit()
 
         return jsonify({"mensaje": "Paciente creado con éxito", "id": nuevo_paciente.id}), 201
-    
-
+    finally:
+        db.session.close()
 # Endpoint para actualizar un paciente
 @paciente_bp.route("/paciente/<int:id>", methods=["PUT"])
 def actualizar_paciente(id):
@@ -84,10 +84,9 @@ def actualizar_paciente(id):
         db.session.commit()
 
         return jsonify({"mensaje": "Paciente actualizado con éxito", "id": paciente.id}), 200
-
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"error": str(e)}), 400
+    finally:
+        db.session.close()
+    
 
 
 # Endpoint para eliminar un paciente
@@ -104,9 +103,8 @@ def eliminar_paciente(id):
         db.session.commit()
 
         return jsonify({"mensaje": "Paciente eliminado con éxito", "id": id}), 200
-
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"error": str(e)}), 400
+    finally:
+        db.session.close()
+    
  
 
