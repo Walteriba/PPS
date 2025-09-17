@@ -9,6 +9,7 @@ paciente_bp = Blueprint("paciente_bp", __name__)
 
 # Endpoint para crear paciente (insert)
 @paciente_bp.route("/paciente/nuevo", methods=["POST"])
+
 def crear_paciente():
     try:
         #valida tutor_id primero 
@@ -45,8 +46,11 @@ def crear_paciente():
         return jsonify({"mensaje": "Paciente creado con éxito", "id": nuevo_paciente.id}), 201
     finally:
         db.session.close()
+        
+        
 # Endpoint para actualizar un paciente
 @paciente_bp.route("/paciente/<int:id>", methods=["PUT"])
+
 def actualizar_paciente(id):
     try:
         # Buscar el paciente por ID
@@ -91,6 +95,7 @@ def actualizar_paciente(id):
 
 # Endpoint para eliminar un paciente
 @paciente_bp.route("/paciente/<int:id>", methods=["DELETE"])
+
 def eliminar_paciente(id):
     try:
         # Buscar paciente por ID
