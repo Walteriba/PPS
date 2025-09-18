@@ -10,7 +10,21 @@
     {% include 'partials/header.html' %}
 
   <!-- Card -->
-    {% include 'partials/card.html' %}
+   <div class="container-fluid mt-2">
+    <div class="row justify-content-center">
+     <div class="col-md-10">
+      <div class="d-flex flex-column flex-md-row shadow-lg rounded-4 overflow-hidden">
+
+      <!-- tutor: izquierda: -->
+      <div class="col-md-3 bg-light p-3">
+        {% include 'partials/tutor.html' %}
+      </div>
+
+      <!-- derecha: paciente -->
+      <div class="col-md-9 p-4 bg-white">
+        {% include 'partials/card.html' %}
+      </div>
+    </div>
 
   <!-- Footer -->
     {% include 'partials/footer.html' %}
