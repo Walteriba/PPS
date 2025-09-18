@@ -10,14 +10,23 @@
         <div class="col-md-8">
           <div class="card-body">
             <h2 class="card-title">{{ paciente.nombre }}</h2>
-            <p class="card-text"><strong>Especie:</strong> {{ paciente.especie }}</p>
-            <p class="card-text"><strong>Raza:</strong> {{ paciente.raza }}</p>
-            <p class="card-text"><strong>Sexo:</strong> {{ paciente.sexo }}</p>
-            <p class="card-text"><strong>Color:</strong> {{ paciente.color }}</p>
-            <p class="card-text"><strong>Fecha nacimiento:</strong> {{ paciente.fecha_nacimiento }}</p>
+            <div class="row">
+            <!-- Columna izquierda -->
+            <div class="col-sm-6">
+             <p class="card-text"><strong>Especies:</strong> {{ paciente.especie }}</p>
+             <p class="card-text"><strong>Raza:</strong> {{ paciente.raza }}</p>
+             <p class="card-text"><strong>Sexo:</strong> {{ paciente.sexo }}</p>
+             <p class="card-text"><strong>Color:</strong> {{ paciente.color }}</p>
+            </div>
+            <div class="col-sm-6">
+             <p class="card-text"><strong>Fecha de nacimiento:</strong> {{ paciente.fecha_nacimiento }}</p>
+             <p class="card-text"><strong>Castrado:</strong> {{ paciente.castrado }}</p>
+             <p class="card-text"><strong>Reproductor:</strong> {{ paciente.reproductor }}</p>
+             <p class="card-text"><strong>Activo:</strong> {{ paciente.activo }}</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <a href="/" class="btn btn-success"> Volver</a>
+   <a href="/" class="btn btn-success"> Volver</a>
   </div>
