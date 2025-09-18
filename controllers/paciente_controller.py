@@ -10,7 +10,7 @@ paciente_bp = Blueprint("paciente_bp", __name__)
 # Endpoint para crear paciente (insert)
 @paciente_bp.route("/paciente/nuevo", methods=["POST"])
 def crear_paciente():
-        # TODO: Cosa a hacer
+        # TODO: agregar validaciones faltantes
         #valida tutor_id primero 
         tutor_id = request.form.get("tutor_id")
         if not tutor_id: 
