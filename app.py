@@ -14,7 +14,7 @@ with app.app_context():
 
 # Registrar los Blueprint de los controladores
 app.register_blueprint(home_bp)
-app.register_blueprint(paciente_bp)
+# TODO: agregar validaciones para entradas y modelos (pendiente)
 
 if __name__ == "__main__":
     app.run(debug=True)
