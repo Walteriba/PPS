@@ -3,11 +3,14 @@ from models.paciente import Paciente
 from models.tutor import Tutor
 from models import db
 from datetime import datetime
+
 # Definición del Blueprint
 paciente_bp = Blueprint("paciente_bp", __name__)
+
 # Endpoint para crear paciente (insert)
 @paciente_bp.route("/paciente/nuevo", methods=["POST"])
 def crear_paciente():
+        # TODO: Cosa a hacer
         #valida tutor_id primero 
         tutor_id = request.form.get("tutor_id")
         if not tutor_id: 
@@ -33,7 +36,8 @@ def crear_paciente():
         )
         db.session.add(nuevo_paciente)
         db.session.commit()
-        return jsonify({"mensaje": "Paciente creado con éxito", "id": nuevo_paciente.id}), 201                    
+        return jsonify({"mensaje": "Paciente creado con éxito", "id": nuevo_paciente.id}), 201   
+                     
 # Endpoint para actualizar un paciente
 @paciente_bp.route("/paciente/<int:id>", methods=["PUT"])
 def actualizar_paciente(id):
@@ -65,7 +69,8 @@ def actualizar_paciente(id):
             paciente.tutor = tutor
         # Guardar cambios
         db.session.commit()
-        return jsonify({"mensaje": "Paciente actualizado con éxito", "id": paciente.id}), 200        
+        return jsonify({"mensaje": "Paciente actualizado con éxito", "id": paciente.id}), 200  
+          
 # Endpoint para eliminar un paciente
 @paciente_bp.route("/paciente/<int:id>", methods=["DELETE"])
 def eliminar_paciente(id):
@@ -77,7 +82,3 @@ def eliminar_paciente(id):
         db.session.delete(paciente)
         db.session.commit()
         return jsonify({"mensaje": "Paciente eliminado con éxito", "id": id}), 200
-    
-    
- 
-
