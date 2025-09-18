@@ -2,7 +2,6 @@ from flask import Flask
 from models import db
 from controllers.home_controller import home_bp
 from controllers.paciente_controller import paciente_bp
-
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///vetlog.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
