@@ -1,32 +1,69 @@
-  <div class="container">
-    <div class="card mb-4">
-      <div class="row g-0">
-        <!-- Imagen -->
-        <div class="col-md-4">
-          <img src="{{ url_for('static', filename='imgs/default-avatar.jpg') }}" 
-               class="img-fluid rounded-start" alt="Foto paciente">
-        </div>
-        <!-- Detalles -->
-        <div class="col-md-8">
-          <div class="card-body">
-            <h2 class="card-title">{{ paciente.nombre }}</h2>
-            <div class="row">
-            <!-- Columna izquierda -->
+<div class="container">
+  <div class="card mb-4">
+    <div class="row g-0">
+      <!-- Imagen -->
+      <div class="col-md-4">
+        <img src="{{ url_for('static', filename='imgs/default-avatar.jpg') }}" 
+             class="img-fluid rounded-start" alt="Foto paciente">
+      </div>
+
+      <!-- Detalles -->
+      <div class="col-md-8">
+        <div class="card-body">
+          <h2 class="card-title">
+            <span class="view-mode">{{ paciente.nombre }}</span>
+            <input class="edit-mode form-control" type="text" name="nombre" value="{{ paciente.nombre }}" style="display:none;">
+          </h2>
+
+          <div class="row">
             <div class="col-sm-6">
-             <p class="card-text"><strong>Especies:</strong> {{ paciente.especie }}</p>
-             <p class="card-text"><strong>Raza:</strong> {{ paciente.raza }}</p>
-             <p class="card-text"><strong>Sexo:</strong> {{ paciente.sexo }}</p>
-             <p class="card-text"><strong>Color:</strong> {{ paciente.color }}</p>
-            </div>
-            <div class="col-sm-6">
-             <p class="card-text"><strong>Fecha de nacimiento:</strong> {{ paciente.fecha_nacimiento }}</p>
-             <p class="card-text"><strong>Castrado:</strong> {{ paciente.castrado }}</p>
-             <p class="card-text"><strong>Reproductor:</strong> {{ paciente.reproductor }}</p>
-             <p class="card-text"><strong>Activo:</strong> {{ paciente.activo }}</p>
+              <p class="card-text"><strong>Especie:</strong> 
+                <span class="view-mode">{{ paciente.especie }}</span>
+                <input class="edit-mode form-control" type="text" name="especie" value="{{ paciente.especie }}" style="display:none;">
+              </p>
+              <p class="card-text"><strong>Raza:</strong> 
+                <span class="view-mode">{{ paciente.raza }}</span>
+                <input class="edit-mode form-control" type="text" name="raza" value="{{ paciente.raza }}" style="display:none;">
+              </p>
+              <!-- agrega los demás campos de la misma forma -->
             </div>
           </div>
+
+          <!-- Botones -->
+          <button id="editBtn" class="btn btn-primary">Editar</button>
+          <button id="saveBtn" class="btn btn-success" style="display:none;">Guardar</button>
+          <a href="/" class="btn btn-secondary">Volver</a>
         </div>
       </div>
     </div>
-   <a href="/" class="btn btn-success"> Volver</a>
   </div>
+</div>
+
+<script>
+document.getElementById("editBtn").addEventListener("click", function() {
+  document.querySelectorAll(".view-mode").forEach(e => e.style.display = "none");
+  document.querySelectorAll(".edit-mode").forEach(e => e.style.display = "block");
+  document.getElementById("editBtn").style.display = "none";
+  document.getElementById("saveBtn").style.display = "inline-block";
+});
+
+document.getElementById("saveBtn").addEventListener("click", async function() {
+  const data = {};
+  document.querySelectorAll(".edit-mode").forEach(input => {
+    data[input.name] = input.value;
+  });
+
+  const resp = await fetch("/paciente/{{ paciente.id }}", {
+    method: "PUT", 
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams(data) 
+  });
+
+  if (resp.ok) {
+    location.reload(); // recarga la vista para mostar los datos actualizados 
+  } else {
+    alert("Error al guardar");
+  }
+});
+</script>
+
