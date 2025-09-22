@@ -1,13 +1,13 @@
+
 import cloudinary
 import cloudinary.uploader
 import os
 from dotenv import load_dotenv
-from utils.cloudinary_utils import subir_y_obtener_url
 
 
-load_dotenv() #carga el entorno
+load_dotenv()
 
-#configuracion de cloudinary
+# Configuración de Cloudinary
 cloudinary.config(
     cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
     api_key=os.getenv("CLOUDINARY_API_KEY"),
@@ -35,18 +35,3 @@ def subir_y_obtener_url(ruta_archivo_local, nombre_identificador):
     except Exception as e:
         print(f"Ocurrió un error inesperado al subir el archivo: {e}")
         return None
-    
-    
-    
-    @app.route('/subir_estudio', methods=['POST'])
-def subir_estudio():
-    archivo = request.files['archivo']  # 'archivo' es el nombre del input en tu formulario
-    if archivo:
-        ruta_local = f"static/temp/{archivo.filename}"
-        archivo.save(ruta_local)
-        url = subir_y_obtener_url(ruta_local, f"estudio_{archivo.filename}")
-        # Aquí puedes guardar la URL en la base de datos, asociada al paciente
-        # ...
-        return f"Imagen subida correctamente: {url}"
-    else:
-        return "No se recibió ningún archivo"

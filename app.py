@@ -2,11 +2,17 @@ from flask import Flask
 from models import db
 from controllers.home_controller import home_bp
 <<<<<<< HEAD
+<<<<<<< HEAD
 from controllers.paciente_controller import paciente_bp
 from controllers.consulta_controller import consulta_bp
 =======
 from utils.cloudinary_utils import subir_y_obtener_url
 from flask import request
+=======
+from utils.cloudinary_utils import subir_y_obtener_url
+from flask import request, redirect, url_for, render_template, flash
+from controllers.paciente_controller import paciente_bp
+>>>>>>> 9ae4b62 (actualizacion_prueba)
 
 
 >>>>>>> 6914ee3 (cloudinary)
