@@ -2,8 +2,13 @@ from flask import Flask
 from models import db
 from controllers.home_controller import home_bp
 from utils.cloudinary_utils import subir_y_obtener_url
+<<<<<<< HEAD
 from flask import request
 
+=======
+from flask import request, redirect, url_for, render_template, flash
+from controllers.paciente_controller import paciente_bp
+>>>>>>> 265ce1e73fb65105f2082e9f2b0e822ee8831338
 
 
 app = Flask(__name__)
@@ -18,6 +23,7 @@ with app.app_context():
 
 # Registrar los Blueprint de los controladores
 app.register_blueprint(home_bp)
+app.register_blueprint(paciente_bp)
 
 if __name__ == "__main__":
     app.run(debug=True)
