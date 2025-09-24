@@ -1,32 +1,107 @@
-  <div class="container">
-    <div class="card mb-4">
-      <div class="row g-0">
-        <!-- Imagen -->
-        <div class="col-md-4">
-          <img src="{{ url_for('static', filename='imgs/default-avatar.jpg') }}" 
-               class="img-fluid rounded-start" alt="Foto paciente">
-        </div>
-        <!-- Detalles -->
-        <div class="col-md-8">
-          <div class="card-body">
-            <h2 class="card-title">{{ paciente.nombre }}</h2>
-            <div class="row">
-            <!-- Columna izquierda -->
+<div class="container">
+  <div class="card mb-4">
+    <div class="row g-0">
+      <!-- Imagen -->
+      <div class="col-md-4">
+        <img src="{{ url_for('static', filename='imgs/default-avatar.jpg') }}" 
+             class="img-fluid rounded-start" alt="Foto paciente">
+      </div>
+
+      <!-- Detalles -->
+      <div class="col-md-8">
+        <div class="card-body">
+          <h2 class="card-title">
+            <span class="view-mode">{{ paciente.nombre }}</span>
+            <input class="edit-mode form-control" type="text" name="nombre" value="{{ paciente.nombre }}" style="display:none;">
+          </h2>
+
+          <div class="row">
             <div class="col-sm-6">
-             <p class="card-text"><strong>Especies:</strong> {{ paciente.especie }}</p>
-             <p class="card-text"><strong>Raza:</strong> {{ paciente.raza }}</p>
-             <p class="card-text"><strong>Sexo:</strong> {{ paciente.sexo }}</p>
-             <p class="card-text"><strong>Color:</strong> {{ paciente.color }}</p>
+              <p class="card-text"><strong>Especie:</strong> 
+                <span class="view-mode">{{ paciente.especie }}</span>
+                <input class="edit-mode form-control" type="text" name="especie" value="{{ paciente.especie }}" style="display:none;">
+              </p>
+              <p class="card-text"><strong>Raza:</strong> 
+                <span class="view-mode">{{ paciente.raza }}</span>
+                <input class="edit-mode form-control" type="text" name="raza" value="{{ paciente.raza }}" style="display:none;">
+              </p>
+              <p class="card-text"><strong>Sexo:</strong> 
+                <span class="view-mode">{{ paciente.sexo }}</span>
+                <input class="edit-mode form-control" type="text" name="sexo" value="{{ paciente.sexo }}" style="display:none;">
+              </p>
+              <p class="card-text"><strong>Color:</strong> 
+                <span class="view-mode">{{ paciente.color }}</span>
+                <input class="edit-mode form-control" type="text" name="color" value="{{ paciente.color }}" style="display:none;">
+              </p>
             </div>
+
             <div class="col-sm-6">
-             <p class="card-text"><strong>Fecha de nacimiento:</strong> {{ paciente.fecha_nacimiento }}</p>
-             <p class="card-text"><strong>Castrado:</strong> {{ paciente.castrado }}</p>
-             <p class="card-text"><strong>Reproductor:</strong> {{ paciente.reproductor }}</p>
-             <p class="card-text"><strong>Activo:</strong> {{ paciente.activo }}</p>
+              <p class="card-text"><strong>Fecha de nacimiento:</strong> 
+                <span class="view-mode">{{ paciente.fecha_nacimiento }}</span>
+                <input class="edit-mode form-control" type="date" name="fecha_nacimiento" 
+                       value="{{ paciente.fecha_nacimiento.strftime('%Y-%m-%d') if paciente.fecha_nacimiento else '' }}" 
+                       style="display:none;">
+              </p>
+
+              <p class="card-text"><strong>Castrado:</strong> 
+                <span class="view-mode">{{ 'Sí' if paciente.castrado else 'No' }}</span>
+                <input class="edit-mode form-check-input" type="checkbox" name="castrado" 
+                       {% if paciente.castrado %}checked{% endif %} style="display:none;">
+              </p>
+
+              <p class="card-text"><strong>Reproductor:</strong> 
+                <span class="view-mode">{{ 'Sí' if paciente.reproductor else 'No' }}</span>
+                <input class="edit-mode form-check-input" type="checkbox" name="reproductor" 
+                       {% if paciente.reproductor %}checked{% endif %} style="display:none;">
+              </p>
+
+              <p class="card-text"><strong>Activo:</strong> 
+                <span class="view-mode">{{ 'Sí' if paciente.activo else 'No' }}</span>
+                <input class="edit-mode form-check-input" type="checkbox" name="activo" 
+                       {% if paciente.activo %}checked{% endif %} style="display:none;">
+              </p>
             </div>
           </div>
+
+          <!-- Botones -->
+          <button id="editBtn" class="btn btn-primary">Editar</button>
+          <button id="saveBtn" class="btn btn-success" style="display:none;">Guardar</button>
+          <a href="/" class="btn btn-secondary">Volver</a>
         </div>
       </div>
     </div>
-   <a href="/" class="btn btn-success"> Volver</a>
   </div>
+</div>
+
+<script>
+document.getElementById("editBtn").addEventListener("click", function() {
+  document.querySelectorAll(".view-mode").forEach(e => e.style.display = "none");
+  document.querySelectorAll(".edit-mode").forEach(e => e.style.display = "inline-block");
+  document.getElementById("editBtn").style.display = "none";
+  document.getElementById("saveBtn").style.display = "inline-block";
+});
+
+document.getElementById("saveBtn").addEventListener("click", async function() {
+  const data = new FormData();
+  document.querySelectorAll(".edit-mode").forEach(input => {
+    if (input.type === "checkbox") {
+      if (input.checked) {
+        data.append(input.name, "on"); // los checkboxes solo envían si están marcados
+      }
+    } else {
+      data.append(input.name, input.value);
+    }
+  });
+
+  const resp = await fetch("/paciente/{{ paciente.id }}", {
+    method: "PUT", 
+    body: data
+  });
+
+  if (resp.ok) {
+    location.reload();
+  } else {
+    alert("Error al guardar");
+  }
+});
+</script>
