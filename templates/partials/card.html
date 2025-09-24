@@ -25,7 +25,41 @@
                 <span class="view-mode">{{ paciente.raza }}</span>
                 <input class="edit-mode form-control" type="text" name="raza" value="{{ paciente.raza }}" style="display:none;">
               </p>
-              <!-- agrega los demás campos de la misma forma -->
+              <p class="card-text"><strong>Sexo:</strong> 
+                <span class="view-mode">{{ paciente.sexo }}</span>
+                <input class="edit-mode form-control" type="text" name="sexo" value="{{ paciente.sexo }}" style="display:none;">
+              </p>
+              <p class="card-text"><strong>Color:</strong> 
+                <span class="view-mode">{{ paciente.color }}</span>
+                <input class="edit-mode form-control" type="text" name="color" value="{{ paciente.color }}" style="display:none;">
+              </p>
+            </div>
+
+            <div class="col-sm-6">
+              <p class="card-text"><strong>Fecha de nacimiento:</strong> 
+                <span class="view-mode">{{ paciente.fecha_nacimiento }}</span>
+                <input class="edit-mode form-control" type="date" name="fecha_nacimiento" 
+                       value="{{ paciente.fecha_nacimiento.strftime('%Y-%m-%d') if paciente.fecha_nacimiento else '' }}" 
+                       style="display:none;">
+              </p>
+
+              <p class="card-text"><strong>Castrado:</strong> 
+                <span class="view-mode">{{ 'Sí' if paciente.castrado else 'No' }}</span>
+                <input class="edit-mode form-check-input" type="checkbox" name="castrado" 
+                       {% if paciente.castrado %}checked{% endif %} style="display:none;">
+              </p>
+
+              <p class="card-text"><strong>Reproductor:</strong> 
+                <span class="view-mode">{{ 'Sí' if paciente.reproductor else 'No' }}</span>
+                <input class="edit-mode form-check-input" type="checkbox" name="reproductor" 
+                       {% if paciente.reproductor %}checked{% endif %} style="display:none;">
+              </p>
+
+              <p class="card-text"><strong>Activo:</strong> 
+                <span class="view-mode">{{ 'Sí' if paciente.activo else 'No' }}</span>
+                <input class="edit-mode form-check-input" type="checkbox" name="activo" 
+                       {% if paciente.activo %}checked{% endif %} style="display:none;">
+              </p>
             </div>
           </div>
 
@@ -42,28 +76,32 @@
 <script>
 document.getElementById("editBtn").addEventListener("click", function() {
   document.querySelectorAll(".view-mode").forEach(e => e.style.display = "none");
-  document.querySelectorAll(".edit-mode").forEach(e => e.style.display = "block");
+  document.querySelectorAll(".edit-mode").forEach(e => e.style.display = "inline-block");
   document.getElementById("editBtn").style.display = "none";
   document.getElementById("saveBtn").style.display = "inline-block";
 });
 
 document.getElementById("saveBtn").addEventListener("click", async function() {
-  const data = {};
+  const data = new FormData();
   document.querySelectorAll(".edit-mode").forEach(input => {
-    data[input.name] = input.value;
+    if (input.type === "checkbox") {
+      if (input.checked) {
+        data.append(input.name, "on"); // los checkboxes solo envían si están marcados
+      }
+    } else {
+      data.append(input.name, input.value);
+    }
   });
 
   const resp = await fetch("/paciente/{{ paciente.id }}", {
     method: "PUT", 
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams(data) 
+    body: data
   });
 
   if (resp.ok) {
-    location.reload(); // recarga la vista para mostar los datos actualizados 
+    location.reload();
   } else {
     alert("Error al guardar");
   }
 });
 </script>
-
