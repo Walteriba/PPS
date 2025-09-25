@@ -8,6 +8,14 @@ from utils.cloudinary_utils import subir_y_obtener_url
 # Definición del Blueprint
 paciente_bp = Blueprint("paciente_bp", __name__)
 
+# Métodos auxiliares
+def validar_imagen(imagen):
+    if imagen:
+        url = subir_y_obtener_url(imagen, f"{datetime.now().timestamp()}")
+    else:
+        url = "/static/imgs/default-avatar.jpg"
+    return url 
+
 # Endpoint para crear paciente (insert)
 @paciente_bp.route("/paciente/nuevo", methods=["POST"])
 def crear_paciente():
@@ -25,10 +33,7 @@ def crear_paciente():
        
        # Procesar imagen si viene, sino usar default
         imagen = request.files.get("imagen")
-        if imagen:
-            url = subir_y_obtener_url(imagen, f"{tutor_id}_{datetime.now().timestamp()}")
-        else:
-            url = "/static/imgs/default-avatar.jpg"
+        url = validar_imagen(tutor_id, imagen)
         
         # Crear nuevo paciente con asignacion 
         nuevo_paciente = Paciente(
@@ -66,6 +71,7 @@ def actualizar_paciente(id):
         fecha_nac = request.form.get("fecha_nacimiento")
         if fecha_nac:
             paciente.fecha_nacimiento = datetime.strptime(fecha_nac, "%Y-%m-%d")
+        # TODO: Imagen (subir solo si se envía un archivo)
         # Campos booleanos (checkboxes)
         paciente.activo = "activo" in request.form
         paciente.reproductor = "reproductor" in request.form
