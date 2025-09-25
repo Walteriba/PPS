@@ -1,11 +1,20 @@
-from flask import Blueprint, request, redirect, jsonify
+from flask import Blueprint, request, jsonify
 from models.paciente import Paciente
 from models.tutor import Tutor
 from models import db
 from datetime import datetime
+from utils.cloudinary_utils import subir_y_obtener_url
 
 # Definición del Blueprint
 paciente_bp = Blueprint("paciente_bp", __name__)
+
+# Métodos auxiliares
+def validar_imagen(imagen):
+    if imagen:
+        url = subir_y_obtener_url(imagen, f"{datetime.now().timestamp()}")
+    else:
+        url = "/static/imgs/default-avatar.jpg"
+    return url 
 
 # Endpoint para crear paciente (insert)
 @paciente_bp.route("/paciente/nuevo", methods=["POST"])
@@ -21,6 +30,11 @@ def crear_paciente():
             return jsonify({"error": "tutor_id debe ser un numero"}),400
         if not tutor: 
             return jsonify({"error": "Tutor no encontrado"}), 400   
+       
+       # Procesar imagen si viene, sino usar default
+        imagen = request.files.get("imagen")
+        url = validar_imagen(tutor_id, imagen)
+        
         # Crear nuevo paciente con asignacion 
         nuevo_paciente = Paciente(
             nombre=request.form["nombre"],
@@ -29,6 +43,7 @@ def crear_paciente():
             sexo=request.form["sexo"],
             color=request.form["color"],
             fecha_nacimiento=datetime.strptime(request.form["fecha_nacimiento"], "%Y-%m-%d"),
+            url_imagen=url,
             activo=("activo" in request.form),
             reproductor=("reproductor" in request.form),
             castrado=("castrado" in request.form),
@@ -56,6 +71,7 @@ def actualizar_paciente(id):
         fecha_nac = request.form.get("fecha_nacimiento")
         if fecha_nac:
             paciente.fecha_nacimiento = datetime.strptime(fecha_nac, "%Y-%m-%d")
+        # TODO: Imagen (subir solo si se envía un archivo)
         # Campos booleanos (checkboxes)
         paciente.activo = "activo" in request.form
         paciente.reproductor = "reproductor" in request.form
