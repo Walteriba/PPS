@@ -23,7 +23,7 @@ def crear_paciente():
         if not tutor: 
             return jsonify({"error": "Tutor no encontrado"}), 400
         
-        # url = subir_y_obtener_url(request.files.get("archivo"), f"{tutor_id}_{datetime.now().timestamp()}")
+        # TODO: url = subir_y_obtener_url(request.files.get("archivo"), f"{tutor_id}_{datetime.now().timestamp()}")
         
         # Crear nuevo paciente con asignacion 
         nuevo_paciente = Paciente(

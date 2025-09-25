@@ -18,5 +18,4 @@ def subir_y_obtener_url(archivo_o_ruta, nombre_identificador):
         resultado = cloudinary.uploader.upload(archivo_o_ruta, public_id=nombre_identificador)
         return resultado.get("secure_url")
     except Exception as e:
-        print(f"Error al subir archivo a Cloudinary: {e}") # SIN PRINT, QUE LEVANTE EXCEPCIÓN
-        return None
+        raise RuntimeError(f"Falló la subida a Cloudinary: {e}") from e
