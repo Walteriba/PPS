@@ -1,5 +1,4 @@
-import os
-from flask import Blueprint, request, jsonify, render_template
+from flask import Blueprint, request, jsonify
 from models.paciente import Paciente
 from models.tutor import Tutor
 from models import db
@@ -22,7 +21,10 @@ def crear_paciente():
         except ValueError:  
             return jsonify({"error": "tutor_id debe ser un numero"}),400
         if not tutor: 
-            return jsonify({"error": "Tutor no encontrado"}), 400   
+            return jsonify({"error": "Tutor no encontrado"}), 400
+        
+        # url = subir_y_obtener_url(request.files.get("archivo"), f"{tutor_id}_{datetime.now().timestamp()}")
+        
         # Crear nuevo paciente con asignacion 
         nuevo_paciente = Paciente(
             nombre=request.form["nombre"],
@@ -84,21 +86,3 @@ def eliminar_paciente(id):
         db.session.delete(paciente)
         db.session.commit()
         return jsonify({"mensaje": "Paciente eliminado con éxito", "id": id}), 200
-    
-# PRUEBA DE IMAGEN - INTEGRAR Y BORRAR
-@paciente_bp.route("/subir_imagen", methods=["GET"])
-def obtener_formulario():
-    return render_template("subir_estudio.html")
-
-@paciente_bp.route("/subir_imagen", methods=["POST"])
-def subir_imagen_paciente():
-    archivo = request.files.get("archivo")
-
-    if not archivo:
-        return jsonify({"error": "No se envió ningún archivo"}), 400
-
-    try:
-        url = subir_y_obtener_url(archivo, f"subida_{archivo.filename}")
-        return jsonify({"url": url}), 200 # TODO: GUARDAR EN BD
-    except Exception as e:
-        return jsonify({"error": f"Error al subir el archivo: {str(e)}"}), 500
