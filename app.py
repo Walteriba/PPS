@@ -1,8 +1,6 @@
 from flask import Flask
 from models import db
 from controllers.home_controller import home_bp
-from utils.cloudinary_utils import subir_y_obtener_url
-from flask import request, redirect, url_for, render_template, flash
 from controllers.paciente_controller import paciente_bp
 
 app = Flask(__name__)
