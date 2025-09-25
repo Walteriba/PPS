@@ -3,6 +3,7 @@ from models import db
 from controllers.home_controller import home_bp
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 from controllers.paciente_controller import paciente_bp
 from controllers.consulta_controller import consulta_bp
 =======
@@ -11,6 +12,8 @@ from flask import request
 =======
 from utils.cloudinary_utils import subir_y_obtener_url
 from flask import request, redirect, url_for, render_template, flash
+=======
+>>>>>>> 90e2d9e (- Se agrega a model la imagen, en las vistas y en controller)
 from controllers.paciente_controller import paciente_bp
 >>>>>>> 9ae4b62 (actualizacion_prueba)
 
