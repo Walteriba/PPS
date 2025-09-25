@@ -1,8 +1,10 @@
-from flask import Blueprint, request, redirect, jsonify
+import os
+from flask import Blueprint, request, jsonify, render_template
 from models.paciente import Paciente
 from models.tutor import Tutor
 from models import db
 from datetime import datetime
+from utils.cloudinary_utils import subir_y_obtener_url
 
 # Definición del Blueprint
 paciente_bp = Blueprint("paciente_bp", __name__)
@@ -82,3 +84,21 @@ def eliminar_paciente(id):
         db.session.delete(paciente)
         db.session.commit()
         return jsonify({"mensaje": "Paciente eliminado con éxito", "id": id}), 200
+    
+# PRUEBA DE IMAGEN - INTEGRAR Y BORRAR
+@paciente_bp.route("/subir_imagen", methods=["GET"])
+def obtener_formulario():
+    return render_template("subir_estudio.html")
+
+@paciente_bp.route("/subir_imagen", methods=["POST"])
+def subir_imagen_paciente():
+    archivo = request.files.get("archivo")
+
+    if not archivo:
+        return jsonify({"error": "No se envió ningún archivo"}), 400
+
+    try:
+        url = subir_y_obtener_url(archivo, f"subida_{archivo.filename}")
+        return jsonify({"url": url}), 200 # TODO: GUARDAR EN BD
+    except Exception as e:
+        return jsonify({"error": f"Error al subir el archivo: {str(e)}"}), 500

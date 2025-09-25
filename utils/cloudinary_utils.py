@@ -1,9 +1,7 @@
-
 import cloudinary
 import cloudinary.uploader
 import os
 from dotenv import load_dotenv
-
 
 load_dotenv()
 
@@ -15,23 +13,10 @@ cloudinary.config(
     secure=True
 )
 
-def subir_y_obtener_url(ruta_archivo_local, nombre_identificador):
-    """
-    Sube un archivo (imagen, video, etc.) a Cloudinary y devuelve su URL pública.
-
-    Args:
-        ruta_archivo_local (str): La ruta completa al archivo en tu sistema local.
-        nombre_identificador (str): Un nombre único para el archivo en Cloudinary.
-
-    Returns:
-        str: La URL segura de la imagen subida, o None si ocurre un error.
-    """
+def subir_y_obtener_url(archivo_o_ruta, nombre_identificador):
     try:
-        resultado = cloudinary.uploader.upload(ruta_archivo_local, public_id=nombre_identificador)
-        return resultado["secure_url"]
-    except FileNotFoundError:
-        print(f"Error: El archivo '{ruta_archivo_local}' no se encontró.")
-        return None
+        resultado = cloudinary.uploader.upload(archivo_o_ruta, public_id=nombre_identificador)
+        return resultado.get("secure_url")
     except Exception as e:
-        print(f"Ocurrió un error inesperado al subir el archivo: {e}")
+        print(f"Error al subir archivo a Cloudinary: {e}") # SIN PRINT, QUE LEVANTE EXCEPCIÓN
         return None
