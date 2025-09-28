@@ -43,7 +43,7 @@ def crear_paciente():
             sexo=request.form["sexo"],
             color=request.form["color"],
             fecha_nacimiento=datetime.strptime(request.form["fecha_nacimiento"], "%Y-%m-%d"),
-            url_imagen=url,
+            imagen=url,
             activo=("activo" in request.form),
             reproductor=("reproductor" in request.form),
             castrado=("castrado" in request.form),
