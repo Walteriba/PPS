@@ -1,9 +1,99 @@
-<form class="d-flex mb-4" role="search" action="/buscar" method="GET">
-    <input class="form-control me-2" 
-           type="search" 
-           name="q" 
-           value="{{ search or '' }}" 
-           placeholder="Buscar paciente..." 
-           aria-label="Buscar">
+<!-- Barra de busqueda con switch y filtros -->
+<div class="d-flex align-items-center justify-content-between mb-4">
+
+  <!-- Boton opciones avanzadas -->
+  <button class="btn btn-success me-3" 
+          type="button" 
+          data-bs-toggle="collapse" 
+          data-bs-target="#filtrosAvanzados" 
+          aria-expanded="false" 
+          aria-controls="filtrosAvanzados">
+    Opciones avanzadas
+  </button>
+
+  <!-- Barra de busqueda -->
+  <form id="searchForm" class="flex-grow-1 d-flex mx-3" action="/buscar" method="GET">
+    <input id="searchInput"
+           class="form-control me-2"
+           type="search"
+           name="q"
+           value="{{ search or '' }}"
+           placeholder="Buscar...">
     <button class="btn btn-outline-success" type="submit">Buscar</button>
-</form>
+  </form>
+
+  <!-- Switch Paciente / Tutor -->
+  <div class="btn-group" role="group" aria-label="Modo búsqueda">
+    <input type="radio" class="btn-check" name="modo" id="modoPaciente" value="paciente" autocomplete="off" checked>
+    <label class="btn btn-outline-primary" for="modoPaciente">Paciente</label>
+
+    <input type="radio" class="btn-check" name="modo" id="modoTutor" value="tutor" autocomplete="off">
+    <label class="btn btn-outline-primary" for="modoTutor">Tutor</label>
+  </div>
+</div>
+
+<!-- Filtros avanzados -->
+<div class="collapse mb-3" id="filtrosAvanzados">
+  <div class="card card-body">
+    <!-- Filtros Paciente -->
+    <div id="filtrosPaciente">
+      <div class="mb-2">
+        <label class="form-label">Raza</label>
+        <input type="text" class="form-control" name="raza">
+      </div>
+      <div class="mb-2">
+        <label class="form-label">Color</label>
+        <input type="text" class="form-control" name="color">
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="reproductor" value="1">
+        <label class="form-check-label">Reproductor</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="castrado" value="1">
+        <label class="form-check-label">Castrado</label>
+      </div>
+    </div>
+
+    <!-- Filtros Tutor -->
+    <div id="filtrosTutor" style="display:none;">
+      <div class="mb-2">
+        <label class="form-label">Teléfono</label>
+        <input type="text" class="form-control" name="nombre_tutor">
+      </div>
+            <div class="mb-2">
+        <label class="form-label">Dirección</label>
+        <input type="text" class="form-control" name="nombre_tutor">
+      </div>
+            <div class="mb-2">
+        <label class="form-label">Email</label>
+        <input type="text" class="form-control" name="nombre_tutor">
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Mostrar filtros segun el modo elegido
+  document.addEventListener("DOMContentLoaded", function () {
+    const pacienteBtn = document.getElementById("modoPaciente");
+    const tutorBtn = document.getElementById("modoTutor");
+    const filtrosPaciente = document.getElementById("filtrosPaciente");
+    const filtrosTutor = document.getElementById("filtrosTutor");
+
+    function actualizarFiltros() {
+      if (pacienteBtn.checked) {
+        filtrosPaciente.style.display = "block";
+        filtrosTutor.style.display = "none";
+      } else {
+        filtrosPaciente.style.display = "none";
+        filtrosTutor.style.display = "block";
+      }
+    }
+
+    pacienteBtn.addEventListener("change", actualizarFiltros);
+    tutorBtn.addEventListener("change", actualizarFiltros);
+
+    actualizarFiltros(); 
+  });
+</script>
