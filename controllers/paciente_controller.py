@@ -33,7 +33,7 @@ def crear_paciente():
        
        # Procesar imagen si viene, sino usar default
         imagen = request.files.get("imagen")
-        url = validar_imagen(tutor_id, imagen)
+        url = validar_imagen(imagen)
         
         # Crear nuevo paciente con asignacion 
         nuevo_paciente = Paciente(
