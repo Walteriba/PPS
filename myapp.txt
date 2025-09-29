@@ -1,0 +1,10 @@
+from flask import Flask
+from blueprint1 import blueprint1
+
+app = Flask(__name__)
+
+app.register_blueprint(blueprint1, url_prefix='/')
+
+# @app.route('/')
+# def index():
+#    return "Acá deberías ver el index.html del sitio, Hello, World!"

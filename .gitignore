@@ -33,3 +33,11 @@ build/
 .vscode/
 .idea/
 *.swp
+
+# MÁS
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/

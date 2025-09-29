@@ -1,3 +1,8 @@
+# La app se ejecuta con el comando: $ flask --app flaskr run --debug
+
+# Para Inicializar el archivo de la base de datos, ejecutar el comando:
+ ## $ flask --app flaskr init-db    Desde la terminal con venv activado
+
 # Puesta en marcha de un proyecto Flask
 
 ## Requisitos previos

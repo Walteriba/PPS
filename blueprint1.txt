@@ -1,0 +1,7 @@
+from flask import Blueprint
+
+blueprint1 = Blueprint('blueprint1', __name__)
+
+@blueprint1.route('/')
+def index():
+    return "Acá deberías ver el index.html desde blueprint1"
