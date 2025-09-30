@@ -6,11 +6,6 @@ from models.tutor import Tutor
 from models.consulta import Consulta
 from models import db
 
-
-#*******************************************************************#
-# intento de hacer consulta_controller copiando paciente_controller #
-#*******************************************************************#
-
 consulta_bp = Blueprint("consulta_bp", __name__)    # Definición del Blueprint
 
 # Endpoint para crear consulta (insert)
