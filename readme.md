@@ -1,7 +1,17 @@
-# La app se ejecuta con el comando: $ flask --app flaskr run --debug
+### Cargué en la base de datos, 15 registros ficticios para cada tabla creada, tutores, pacientes, y consultas.
+por ende las vistas que tienen el número de id al final, deberían funcionar desde el 1 al 15, ej:
+http://127.0.0.1:5000/paciente/7
+http://127.0.0.1:5000/paciente/8
+http://127.0.0.1:5000/paciente/9
+http://127.0.0.1:5000/paciente/15
+
+http://127.0.0.1:5000/consulta/15
+http://127.0.0.1:5000/consulta/1
+
+# La app se ejecuta con el comando: $ flask run --debug
 
 # Para Inicializar el archivo de la base de datos, ejecutar el comando:
- ## $ flask --app flaskr init-db    Desde la terminal con venv activado
+ ## $ python db.py    Desde la terminal con venv activado
 
 # Puesta en marcha de un proyecto Flask
 
