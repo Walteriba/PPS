@@ -35,7 +35,7 @@
 
 2. Ejecuta el servidor:
     ```bash
-    flask run
+    flask run --debug
     ```
 
 3. Accede a la aplicación en [http://localhost:5000](http://localhost:5000)
@@ -44,7 +44,7 @@
 
 1. Ejecuta el script de carga de datos de prueba (parado en la raíz del proyecto):
     ```bash
-    python -m utils.db
+    python -m utils.cargar_db
     ```
      
 ## Notas
