@@ -6,6 +6,7 @@ env/
 
 # Archivos de Python
 __pycache__/
+*.pyc
 *.py[cod]
 *.pyo
 *.pyd
@@ -34,10 +35,7 @@ build/
 .idea/
 *.swp
 
-# MÁS
-*.pyc
+# Tests
 .pytest_cache/
 .coverage
 htmlcov/
-dist/
-build/
