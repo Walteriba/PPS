@@ -1,3 +1,4 @@
+"""Archivo: app.py"""
 from flask import Flask
 from models import db
 from controllers.home_controller import home_bp
@@ -21,5 +22,5 @@ app.register_blueprint(paciente_bp)
 app.register_blueprint(consulta_bp)
 
 
-#if __name__ == "__main__":
-#    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)

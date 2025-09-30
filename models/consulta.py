@@ -1,8 +1,10 @@
-from models import db
+"""Modelo de datos para la entidad Consulta."""
 from datetime import date
+from models import db
 
 
 class Consulta(db.Model):
+    """Definición de la clase Consulta"""
     __tablename__ = "consultas"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -17,6 +19,5 @@ class Consulta(db.Model):
     tratamiento = db.Column(db.String(400), nullable=True)
 
     # Relaciones uno a muchos
-    paciente_id = db.relationship("Paciente", backref="consultas", lazy=True)
-    tutor_id = db.relationship("Tutor", backref="consultas", lazy=True)
-        
+    paciente = db.relationship("Paciente", backref="consultas", lazy=True)
+    tutor = db.relationship("Tutor", backref="consultas", lazy=True)
