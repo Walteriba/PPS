@@ -71,7 +71,17 @@ def actualizar_paciente(id):
         fecha_nac = request.form.get("fecha_nacimiento")
         if fecha_nac:
             paciente.fecha_nacimiento = datetime.strptime(fecha_nac, "%Y-%m-%d")
+       
         # TODO: Imagen (subir solo si se envía un archivo)
+    imagen = request.files.get("imagen")
+    eliminar_imagen = "eliminar_imagen" in request.form
+
+    if eliminar_imagen:
+    paciente.imagen = "/static/imgs/default-avatar.jpg"
+    elif imagen:
+    paciente.imagen = validar_imagen(imagen)
+# Si no se marca eliminar ni se sube imagen, se conserva la actual
+
         # Campos booleanos (checkboxes)
         paciente.activo = "activo" in request.form
         paciente.reproductor = "reproductor" in request.form
