@@ -5,6 +5,7 @@ from controllers.home_controller import home_bp
 <<<<<<< HEAD
 <<<<<<< HEAD
 from controllers.paciente_controller import paciente_bp
+<<<<<<< HEAD
 from controllers.consulta_controller import consulta_bp
 =======
 from utils.cloudinary_utils import subir_y_obtener_url
@@ -16,6 +17,12 @@ from flask import request, redirect, url_for, render_template, flash
 >>>>>>> 90e2d9e (- Se agrega a model la imagen, en las vistas y en controller)
 from controllers.paciente_controller import paciente_bp
 >>>>>>> 9ae4b62 (actualizacion_prueba)
+=======
+from dotenv import load_dotenv
+import os 
+
+load_dotenv() 
+>>>>>>> 88acec4 (corregi errores de indentacion, importe en el archivo app.py el modulo del archivo .env, para probarlo correctamente hay que cargar las api secret de la cuanta de cloudinary que tengamos)
 
 <<<<<<< HEAD
 
