@@ -58,3 +58,16 @@ def CreatePacienteDto(tutores, pacientes):
             )
         )
     return pacientes_dto
+
+
+# TODO (Backend): Endpoints temporales creados para probar el frontend.
+# GET -> mostrar la vista nuevo_tutor.html
+@home_bp.route("/tutor/nuevo", methods=["GET"])
+def nuevo_tutor():
+    return render_template("nuevo_tutor.html")
+
+# GET -> mostrar la vista nuevo_paciente.html
+@home_bp.route("/paciente/nuevo", methods=["GET"])
+def nuevo_paciente():
+    tutores = Tutor.query.all()
+    return render_template("nuevo_paciente.html", tutores=tutores)
