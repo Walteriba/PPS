@@ -1,11 +1,14 @@
 <div class="container">
   <div class="card mb-4">
     <div class="row g-0">
-      <!-- Imagen -->
-      <div class="col-md-4">
-        <img src="{{ url_for('static', filename='imgs/default-avatar.jpg') }}" 
-             class="img-fluid rounded-start" alt="Foto paciente">
-      </div>
+        <!-- Imagen -->
+        <div class="col-md-4">
+          <img src="{{ paciente.imagen }}"
+                class="img-fluid rounded-start" alt="Foto paciente">
+          <div>
+            <input class="edit-mode form-control mt-3" type="file" name="imagen" accept="image/*" style="display:none;">
+          </div>
+        </div>
 
       <!-- Detalles -->
       <div class="col-md-8">
@@ -86,15 +89,19 @@ document.getElementById("saveBtn").addEventListener("click", async function() {
   document.querySelectorAll(".edit-mode").forEach(input => {
     if (input.type === "checkbox") {
       if (input.checked) {
-        data.append(input.name, "on"); // los checkboxes solo envían si están marcados
+        data.append(input.name, "on");
+      }
+    } else if (input.type === "file") {
+      if (input.files.length > 0) {
+        data.append(input.name, input.files[0]);
       }
     } else {
       data.append(input.name, input.value);
     }
   });
 
-  const resp = await fetch("/paciente/{{ paciente.id }}", {
-    method: "PUT", 
+  const resp = await fetch("/paciente/actualizar/{{ paciente.id }}", {
+    method: "PUT",
     body: data
   });
 

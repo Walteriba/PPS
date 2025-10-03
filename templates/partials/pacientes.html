@@ -3,7 +3,7 @@
     {% for paciente in pacientes %}
     <div class="col-md-3 mb-4">
       <div class="card h-100">
-        <img src="{{ url_for('static', filename='imgs/default-avatar.jpg') }}" 
+          <img src="{{ paciente.imagen }}"
           class="card-img-top" 
           alt="Foto paciente">
         <div class="card-body">

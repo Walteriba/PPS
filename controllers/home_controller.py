@@ -51,6 +51,7 @@ def CreatePacienteDto(tutores, pacientes):
         pacientes_dto.append(
             PacienteDTO(
                 id=paciente.id,
+                imagen=paciente.imagen,
                 nombre=paciente.nombre,
                 especie=paciente.especie,
                 raza=paciente.raza,
