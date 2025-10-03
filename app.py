@@ -6,6 +6,7 @@ from controllers.home_controller import home_bp
 <<<<<<< HEAD
 from controllers.paciente_controller import paciente_bp
 <<<<<<< HEAD
+<<<<<<< HEAD
 from controllers.consulta_controller import consulta_bp
 =======
 from utils.cloudinary_utils import subir_y_obtener_url
@@ -23,6 +24,8 @@ import os
 
 load_dotenv() 
 >>>>>>> 88acec4 (corregi errores de indentacion, importe en el archivo app.py el modulo del archivo .env, para probarlo correctamente hay que cargar las api secret de la cuanta de cloudinary que tengamos)
+=======
+>>>>>>> 21c85e1 (Corrección código, formato)
 
 <<<<<<< HEAD
 
