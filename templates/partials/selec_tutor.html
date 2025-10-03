@@ -1,0 +1,9 @@
+<!-- TODO: Verificar que el controlador de tutores devuelva los datos actualizados al crear uno nuevo-->
+<select id="tutor-select" name="tutor_id" class="form-select form-select-lg border-success" aria-label="Seleccionar tutor" required>
+  <option value="">Seleccionar tutor existente</option>
+  {% for tutor in tutores %}
+    <option value="{{ tutor.id }}" {% if tutor_id == tutor.id %}selected{% endif %}>
+      {{ tutor.nombre }} {{ tutor.apellido }}
+    </option>
+  {% endfor %}
+</select>
