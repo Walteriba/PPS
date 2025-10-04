@@ -31,7 +31,6 @@
   </form>
 
   <!-- Switch Paciente / Tutor -->
-  <!-- VER PARA MANTENER ESTADO SWITCH -->
   <div class="btn-group" role="group" aria-label="Modo búsqueda">
     <input
       type="radio"
@@ -40,7 +39,7 @@
       id="modoPaciente"
       value="paciente"
       autocomplete="off"
-      checked
+      {% if search.modo == "paciente" %}checked{% endif %}
     />
     <label class="btn btn-outline-success" for="modoPaciente">Paciente</label>
 
@@ -51,13 +50,14 @@
       id="modoTutor"
       value="tutor"
       autocomplete="off"
+      {% if search.modo == "tutor" %}checked{% endif %}
     />
     <label class="btn btn-outline-success" for="modoTutor">Tutor</label>
   </div>
 </div>
 
 <!-- Filtros avanzados -->
-<div class="collapse mb-3" id="filtrosAvanzados">
+<div class="collapse mb-3 {% if search.advanced %}show{% endif %}" id="filtrosAvanzados">
   <div class="card card-body">
     <!-- Filtros Paciente -->
     <div id="filtrosPaciente">

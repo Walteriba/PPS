@@ -98,6 +98,20 @@ def buscar():
         "telefono": telefono,
         "direccion": direccion,
         "email": email,
+        # Saber si hay filtros avanzados activos para mantener el desplegable abierto
+        "advanced": any(
+            [
+                especie,
+                raza,
+                color,
+                reproductor,
+                castrado,
+                nombre_tutor,
+                telefono,
+                direccion,
+                email,
+            ]
+        ),
     }
 
     return render_template("index.html", pacientes=pacientes_dto, search=search)
