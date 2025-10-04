@@ -150,29 +150,6 @@
     const tutorBtn = document.getElementById("modoTutor");
     const filtrosPaciente = document.getElementById("filtrosPaciente");
     const filtrosTutor = document.getElementById("filtrosTutor");
-
-    function actualizarFiltros() {
-      if (pacienteBtn.checked) {
-        filtrosPaciente.style.display = "block";
-        filtrosTutor.style.display = "none";
-      } else {
-        filtrosPaciente.style.display = "none";
-        filtrosTutor.style.display = "block";
-      }
-    }
-
-    pacienteBtn.addEventListener("change", actualizarFiltros);
-    tutorBtn.addEventListener("change", actualizarFiltros);
-
-    actualizarFiltros();
-  });
-
-  // Interceptar submit para armar GET con todos los filtros
-  document.addEventListener("DOMContentLoaded", function () {
-    const pacienteBtn = document.getElementById("modoPaciente");
-    const tutorBtn = document.getElementById("modoTutor");
-    const filtrosPaciente = document.getElementById("filtrosPaciente");
-    const filtrosTutor = document.getElementById("filtrosTutor");
     const searchForm = document.getElementById("searchForm");
 
     function actualizarFiltros() {
