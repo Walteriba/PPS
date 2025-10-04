@@ -6,33 +6,46 @@ from dto.paciente_dto import PacienteDTO
 # Definición del Blueprint
 home_bp = Blueprint("home_bp", __name__)
 
+# Métodos Auxiliares
+def CreatePacienteDto(tutores, pacientes):
+    pacientes_dto = []
+    # Recorremos los pacientes y buscamos su tutor correspondiente y creamos el DTO
+    for paciente in pacientes:
+        tutor = next(t for t in tutores if t.id == paciente.tutor_id)
+        pacientes_dto.append(
+            PacienteDTO(
+                id=paciente.id,
+                imagen=paciente.imagen,
+                nombre=paciente.nombre,
+                especie=paciente.especie,
+                raza=paciente.raza,
+                tutor=f"{tutor.nombre} {tutor.apellido}",
+            )
+        )
+    return pacientes_dto
 
 # Home
 @home_bp.route("/", methods=["GET"])
-def home():
-    # Obtener todos los pacientes y sus tutores, crear DTOs
-    pacientes_dto = CreatePacienteDto(Tutor.query.all(), Paciente.query.all())
-    return render_template("index.html", pacientes=pacientes_dto)
-
-
 # Busqueda de pacientes y tutores
 @home_bp.route("/buscar", methods=["GET"])
 def buscar():
-    # Parámetros comunes
+    # Parámetros de búsqueda
     query = request.args.get("q", "").strip()
     modo = request.args.get("modo", "paciente")
+    especie = request.args.get("especie", "").strip()
+    raza = request.args.get("raza", "").strip()
+    color = request.args.get("color", "").strip()
+    reproductor = request.args.get("reproductor") == "1"
+    castrado = request.args.get("castrado") == "1"
+    nombre_tutor = request.args.get("nombre_tutor", "").strip()
+    telefono = request.args.get("telefono", "").strip()
+    direccion = request.args.get("direccion", "").strip()
+    email = request.args.get("email", "").strip()
     # Consultas base
     pacientes_query = Paciente.query
     tutores_query = Tutor.query
 
     if modo == "paciente":
-        # Filtros específicos de pacientes
-        especie = request.args.get("especie", "").strip()
-        raza = request.args.get("raza", "").strip()
-        color = request.args.get("color", "").strip()
-        reproductor = request.args.get("reproductor")
-        castrado = request.args.get("castrado")
-        # Aplicar filtros
         if query:
             pacientes_query = pacientes_query.filter(Paciente.nombre.ilike(f"%{query}%"))
         if especie:
@@ -53,12 +66,6 @@ def buscar():
         tutores = Tutor.query.filter(Tutor.id.in_(tutores_ids)).all()
 
     else:
-        # Filtros específicos de tutores
-        nombre_tutor = request.args.get("nombre_tutor", "").strip()
-        telefono = request.args.get("telefono", "").strip()
-        direccion = request.args.get("direccion", "").strip()
-        email = request.args.get("email", "").strip()
-        # Aplicar filtros
         if query:
             tutores_query = tutores_query.filter(Tutor.nombre.ilike(f"%{query}%"))
         if nombre_tutor:
@@ -77,8 +84,23 @@ def buscar():
 
     # DTO
     pacientes_dto = CreatePacienteDto(tutores, pacientes)
+    
+    # Parámetros de búsqueda para mantener en el formulario
+    search = {
+        "query": query,
+        "modo": modo,
+        "especie": especie,
+        "raza": raza,
+        "color": color,
+        "reproductor": bool(reproductor),
+        "castrado": bool(castrado),
+        "nombre_tutor": nombre_tutor,
+        "telefono": telefono,
+        "direccion": direccion,
+        "email": email,
+    }
 
-    return render_template("index.html", pacientes=pacientes_dto, search=query, modo=modo)
+    return render_template("index.html", pacientes=pacientes_dto, search=search)
 
 
 # Detalle de paciente
@@ -91,25 +113,6 @@ def detalle_paciente(id):
         return render_template("detalle_paciente.html", paciente=paciente, tutor=tutor)
     # Si no se encuentra el paciente, mostrar un mensaje de error
     return "Mascota no encontrada", 404
-
-
-# Métodos Auxiliares
-def CreatePacienteDto(tutores, pacientes):
-    pacientes_dto = []
-    # Recorremos los pacientes y buscamos su tutor correspondiente y creamos el DTO
-    for paciente in pacientes:
-        tutor = next(t for t in tutores if t.id == paciente.tutor_id)
-        pacientes_dto.append(
-            PacienteDTO(
-                id=paciente.id,
-                imagen=paciente.imagen,
-                nombre=paciente.nombre,
-                especie=paciente.especie,
-                raza=paciente.raza,
-                tutor=f"{tutor.nombre} {tutor.apellido}",
-            )
-        )
-    return pacientes_dto
 
 
 # TODO (Backend): Endpoints temporales creados para probar el frontend.

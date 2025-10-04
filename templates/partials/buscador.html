@@ -24,13 +24,14 @@
       class="form-control me-2"
       type="search"
       name="q"
-      value="{{ search or '' }}"
+      value="{{ search.query }}"
       placeholder="Buscar..."
     />
     <button class="btn btn-outline-success" type="submit">Buscar</button>
   </form>
 
   <!-- Switch Paciente / Tutor -->
+  <!-- VER PARA MANTENER ESTADO SWITCH -->
   <div class="btn-group" role="group" aria-label="Modo búsqueda">
     <input
       type="radio"
@@ -62,15 +63,30 @@
     <div id="filtrosPaciente">
       <div class="mb-2">
         <label class="form-label">Especie</label>
-        <input type="text" class="form-control" name="especie" />
+        <input
+          type="text"
+          class="form-control"
+          name="especie"
+          value="{{ search.especie }}"
+        />
       </div>
       <div class="mb-2">
         <label class="form-label">Raza</label>
-        <input type="text" class="form-control" name="raza" />
+        <input
+          type="text"
+          class="form-control"
+          name="raza"
+          value="{{ search.raza }}"
+        />
       </div>
       <div class="mb-2">
         <label class="form-label">Color</label>
-        <input type="text" class="form-control" name="color" />
+        <input
+          type="text"
+          class="form-control"
+          name="color"
+          value="{{ search.color }}"
+        />
       </div>
       <div class="form-check">
         <input
@@ -78,6 +94,7 @@
           type="checkbox"
           name="reproductor"
           value="1"
+          {% if search.reproductor %}checked{% endif %}
         />
         <label class="form-check-label">Reproductor</label>
       </div>
@@ -87,6 +104,7 @@
           type="checkbox"
           name="castrado"
           value="1"
+          {% if search.castrado %}checked{% endif %}
         />
         <label class="form-check-label">Castrado</label>
       </div>
@@ -96,15 +114,30 @@
     <div id="filtrosTutor" style="display: none">
       <div class="mb-2">
         <label class="form-label">Teléfono</label>
-        <input type="number" class="form-control" name="telefono" />
+        <input
+          type="number"
+          class="form-control"
+          name="telefono"
+          value="{{ search.telefono }}"
+        />
       </div>
       <div class="mb-2">
         <label class="form-label">Dirección</label>
-        <input type="text" class="form-control" name="direccion" />
+        <input
+          type="text"
+          class="form-control"
+          name="direccion"
+          value="{{ search.direccion }}"
+        />
       </div>
       <div class="mb-2">
         <label class="form-label">Email</label>
-        <input type="text" class="form-control" name="email" />
+        <input
+          type="text"
+          class="form-control"
+          name="email"
+          value="{{ search.email }}"
+        />
       </div>
     </div>
   </div>
