@@ -6,6 +6,7 @@ from dto.paciente_dto import PacienteDTO
 # Definición del Blueprint
 home_bp = Blueprint("home_bp", __name__)
 
+
 # Home
 @home_bp.route("/", methods=["GET"])
 def home():
@@ -13,34 +14,84 @@ def home():
     pacientes_dto = CreatePacienteDto(Tutor.query.all(), Paciente.query.all())
     return render_template("index.html", pacientes=pacientes_dto)
 
-# Busqueda de mascotas
+
+# Busqueda de pacientes y tutores
 @home_bp.route("/buscar", methods=["GET"])
-def buscar_paciente():
-    # Obtener el parámetro de búsqueda desde la query string
-    query_param = request.args.get("q")  # "q" será el name del input
-    
-    # Si no hay query, traer todos los pacientes, sino filtrar
-    if not query_param:
-        pacientes = Paciente.query.all()
-        tutores = Tutor.query.all()
+def buscar():
+    # Parámetros comunes
+    query = request.args.get("q", "").strip()
+    modo = request.args.get("modo", "paciente")
+    # Consultas base
+    pacientes_query = Paciente.query
+    tutores_query = Tutor.query
+
+    if modo == "paciente":
+        # Filtros específicos de pacientes
+        especie = request.args.get("especie", "").strip()
+        raza = request.args.get("raza", "").strip()
+        color = request.args.get("color", "").strip()
+        reproductor = request.args.get("reproductor")
+        castrado = request.args.get("castrado")
+        # Aplicar filtros
+        if query:
+            pacientes_query = pacientes_query.filter(Paciente.nombre.ilike(f"%{query}%"))
+        if especie:
+            pacientes_query = pacientes_query.filter(Paciente.especie.ilike(f"%{especie}%"))
+        if raza:
+            pacientes_query = pacientes_query.filter(Paciente.raza.ilike(f"%{raza}%"))
+        if color:
+            pacientes_query = pacientes_query.filter(Paciente.color.ilike(f"%{color}%"))
+        if reproductor:
+            pacientes_query = pacientes_query.filter(Paciente.reproductor.is_(True))
+        if castrado:
+            pacientes_query = pacientes_query.filter(Paciente.castrado.is_(True))
+
+        pacientes = pacientes_query.all()
+
+        # Solo traer tutores de los pacientes encontrados
+        tutores_ids = {p.tutor_id for p in pacientes}
+        tutores = Tutor.query.filter(Tutor.id.in_(tutores_ids)).all()
+
     else:
-        pacientes = Paciente.query.filter(Paciente.nombre.ilike(f"%{query_param}%")).all() # TODO: Mejorar búsqueda
-        tutores = Tutor.query.all() # TODO: Traer solo los tutores de los pacientes encontrados
-        
-    # Crear DTOs para los pacientes encontrados
+        # Filtros específicos de tutores
+        nombre_tutor = request.args.get("nombre_tutor", "").strip()
+        telefono = request.args.get("telefono", "").strip()
+        direccion = request.args.get("direccion", "").strip()
+        email = request.args.get("email", "").strip()
+        # Aplicar filtros
+        if query:
+            tutores_query = tutores_query.filter(Tutor.nombre.ilike(f"%{query}%"))
+        if nombre_tutor:
+            tutores_query = tutores_query.filter(Tutor.nombre.ilike(f"%{nombre_tutor}%"))
+        if telefono:
+            tutores_query = tutores_query.filter(Tutor.telefono.ilike(f"%{telefono}%"))
+        if direccion:
+            tutores_query = tutores_query.filter(Tutor.direccion.ilike(f"%{direccion}%"))
+        if email:
+            tutores_query = tutores_query.filter(Tutor.email.ilike(f"%{email}%"))
+
+        tutores = tutores_query.all()
+
+        # Solo traer pacientes de los tutores encontrados
+        pacientes = Paciente.query.filter(Paciente.tutor_id.in_([t.id for t in tutores])).all()
+
+    # DTO
     pacientes_dto = CreatePacienteDto(tutores, pacientes)
-    return render_template("index.html", pacientes=pacientes_dto, search=query_param)
+
+    return render_template("index.html", pacientes=pacientes_dto, search=query, modo=modo)
+
 
 # Detalle de paciente
 @home_bp.route("/paciente/<int:id>", methods=["GET"])
 def detalle_paciente(id):
     # Obtener paciente y su tutor
-    paciente = Paciente.query.get(id)   
+    paciente = Paciente.query.get(id)
     if paciente is not None:
         tutor = Tutor.query.get(paciente.tutor_id)
         return render_template("detalle_paciente.html", paciente=paciente, tutor=tutor)
     # Si no se encuentra el paciente, mostrar un mensaje de error
     return "Mascota no encontrada", 404
+
 
 # Métodos Auxiliares
 def CreatePacienteDto(tutores, pacientes):
@@ -55,7 +106,7 @@ def CreatePacienteDto(tutores, pacientes):
                 nombre=paciente.nombre,
                 especie=paciente.especie,
                 raza=paciente.raza,
-                tutor= f"{tutor.nombre} {tutor.apellido}"
+                tutor=f"{tutor.nombre} {tutor.apellido}",
             )
         )
     return pacientes_dto
@@ -66,6 +117,7 @@ def CreatePacienteDto(tutores, pacientes):
 @home_bp.route("/tutor/nuevo", methods=["GET"])
 def nuevo_tutor():
     return render_template("nuevo_tutor.html")
+
 
 # GET -> mostrar la vista nuevo_paciente.html
 @home_bp.route("/paciente/nuevo", methods=["GET"])
