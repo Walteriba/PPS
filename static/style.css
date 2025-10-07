@@ -23,3 +23,10 @@ footer {
   border-top-left-radius: .5rem;
   border-top-right-radius: .5rem;
 }
+
+.card img {
+  width: 100%;              
+  height: 300px;            
+  object-fit: cover;        
+  object-position: center;  
+}
