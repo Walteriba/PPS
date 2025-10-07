@@ -1,99 +1,144 @@
 <!-- Barra de busqueda con switch y filtros -->
 <div class="d-flex align-items-center justify-content-between mb-4">
-
   <!-- Boton opciones avanzadas -->
-  <button class="btn btn-success me-3" 
-          type="button" 
-          data-bs-toggle="collapse" 
-          data-bs-target="#filtrosAvanzados" 
-          aria-expanded="false" 
-          aria-controls="filtrosAvanzados">
+  <button
+    class="btn btn-success me-3"
+    type="button"
+    data-bs-toggle="collapse"
+    data-bs-target="#filtrosAvanzados"
+    aria-expanded="false"
+    aria-controls="filtrosAvanzados"
+  >
     Opciones avanzadas
   </button>
 
   <!-- Barra de busqueda -->
-  <form id="searchForm" class="flex-grow-1 d-flex mx-3" action="/buscar" method="GET">
-    <input id="searchInput"
-           class="form-control me-2"
-           type="search"
-           name="q"
-           value="{{ search or '' }}"
-           placeholder="Buscar...">
+  <form
+    id="searchForm"
+    class="flex-grow-1 d-flex mx-3"
+    action="/buscar"
+    method="GET"
+  >
+    <input
+      id="searchInput"
+      class="form-control me-2"
+      type="search"
+      name="q"
+      value="{{ search.query }}"
+      placeholder="Buscar..."
+    />
     <button class="btn btn-outline-success" type="submit">Buscar</button>
   </form>
 
   <!-- Switch Paciente / Tutor -->
   <div class="btn-group" role="group" aria-label="Modo búsqueda">
-    <input type="radio" class="btn-check" name="modo" id="modoPaciente" value="paciente" autocomplete="off" checked>
+    <input
+      type="radio"
+      class="btn-check"
+      name="modo"
+      id="modoPaciente"
+      value="paciente"
+      autocomplete="off"
+      {% if search.modo == "paciente" %}checked{% endif %}
+    />
     <label class="btn btn-outline-success" for="modoPaciente">Paciente</label>
 
-    <input type="radio" class="btn-check" name="modo" id="modoTutor" value="tutor" autocomplete="off">
+    <input
+      type="radio"
+      class="btn-check"
+      name="modo"
+      id="modoTutor"
+      value="tutor"
+      autocomplete="off"
+      {% if search.modo == "tutor" %}checked{% endif %}
+    />
     <label class="btn btn-outline-success" for="modoTutor">Tutor</label>
   </div>
 </div>
 
 <!-- Filtros avanzados -->
-<div class="collapse mb-3" id="filtrosAvanzados">
+<div class="collapse mb-3 {% if search.advanced %}show{% endif %}" id="filtrosAvanzados">
   <div class="card card-body">
     <!-- Filtros Paciente -->
     <div id="filtrosPaciente">
       <div class="mb-2">
+        <label class="form-label">Especie</label>
+        <input
+          type="text"
+          class="form-control"
+          name="especie"
+          value="{{ search.especie }}"
+        />
+      </div>
+      <div class="mb-2">
         <label class="form-label">Raza</label>
-        <input type="text" class="form-control" name="raza">
+        <input
+          type="text"
+          class="form-control"
+          name="raza"
+          value="{{ search.raza }}"
+        />
       </div>
       <div class="mb-2">
         <label class="form-label">Color</label>
-        <input type="text" class="form-control" name="color">
+        <input
+          type="text"
+          class="form-control"
+          name="color"
+          value="{{ search.color }}"
+        />
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" name="reproductor" value="1">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          name="reproductor"
+          value="1"
+          {% if search.reproductor %}checked{% endif %}
+        />
         <label class="form-check-label">Reproductor</label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" name="castrado" value="1">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          name="castrado"
+          value="1"
+          {% if search.castrado %}checked{% endif %}
+        />
         <label class="form-check-label">Castrado</label>
       </div>
     </div>
 
     <!-- Filtros Tutor -->
-    <div id="filtrosTutor" style="display:none;">
+    <div id="filtrosTutor" style="display: none">
       <div class="mb-2">
         <label class="form-label">Teléfono</label>
-        <input type="number" class="form-control" name="nombre_tutor">
+        <input
+          type="number"
+          class="form-control"
+          name="telefono"
+          value="{{ search.telefono }}"
+        />
       </div>
-            <div class="mb-2">
+      <div class="mb-2">
         <label class="form-label">Dirección</label>
-        <input type="text" class="form-control" name="nombre_tutor">
+        <input
+          type="text"
+          class="form-control"
+          name="direccion"
+          value="{{ search.direccion }}"
+        />
       </div>
-            <div class="mb-2">
+      <div class="mb-2">
         <label class="form-label">Email</label>
-        <input type="text" class="form-control" name="nombre_tutor">
+        <input
+          type="text"
+          class="form-control"
+          name="email"
+          value="{{ search.email }}"
+        />
       </div>
     </div>
   </div>
 </div>
-
-<script>
-  // Mostrar filtros segun el modo elegido
-  document.addEventListener("DOMContentLoaded", function () {
-    const pacienteBtn = document.getElementById("modoPaciente");
-    const tutorBtn = document.getElementById("modoTutor");
-    const filtrosPaciente = document.getElementById("filtrosPaciente");
-    const filtrosTutor = document.getElementById("filtrosTutor");
-
-    function actualizarFiltros() {
-      if (pacienteBtn.checked) {
-        filtrosPaciente.style.display = "block";
-        filtrosTutor.style.display = "none";
-      } else {
-        filtrosPaciente.style.display = "none";
-        filtrosTutor.style.display = "block";
-      }
-    }
-
-    pacienteBtn.addEventListener("change", actualizarFiltros);
-    tutorBtn.addEventListener("change", actualizarFiltros);
-
-    actualizarFiltros(); 
-  });
-</script>
