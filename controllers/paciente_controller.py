@@ -88,7 +88,7 @@ def crear_paciente():
         url = subir_y_obtener_url(imagen)
     else:
         url = "/static/imgs/default-avatar.jpg"
-           
+
     # Crear nuevo paciente con asignacion 
 >>>>>>> ec869bb (Refactor: separar lógica de imágenes adicionales y limpiar actualización de paciente)
     nuevo_paciente = Paciente(
@@ -210,14 +210,3 @@ def actualizar_paciente(id):
     db.session.commit()
     return jsonify({"mensaje": "Paciente actualizado con éxito", "id": paciente.id}), 200  
           
-# Endpoint para eliminar un paciente
-@paciente_bp.route("/paciente/<int:id>", methods=["DELETE"])
-def eliminar_paciente(id):
-    # Buscar paciente por ID
-    paciente = Paciente.query.get(id)
-    if not paciente:
-        return jsonify({"error": "Paciente no encontrado"}), 404
-    # Eliminar de la base de datos
-    db.session.delete(paciente)
-    db.session.commit()
-    return jsonify({"mensaje": "Paciente eliminado con éxito", "id": id}), 200
