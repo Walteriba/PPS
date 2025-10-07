@@ -62,7 +62,11 @@ def crear_paciente():
     # Procesar imagen si viene, sino usar default
     imagen = request.files.get("imagen")
     url = validar_imagen(imagen)
-    
+    if imagen:
+        url = subir_y_obtener_url(imagen)
+    else:
+        url = "/static/imgs/default-avatar.jpg"
+           
     # Crear nuevo paciente con asignacion 
     nuevo_paciente = Paciente(
         nombre=request.form["nombre"],
