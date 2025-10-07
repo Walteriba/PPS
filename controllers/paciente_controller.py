@@ -88,7 +88,7 @@ def crear_paciente():
         url = subir_y_obtener_url(imagen)
     else:
         url = "/static/imgs/default-avatar.jpg"
-
+           
     # Crear nuevo paciente con asignacion 
 >>>>>>> ec869bb (Refactor: separar lógica de imágenes adicionales y limpiar actualización de paciente)
     nuevo_paciente = Paciente(
@@ -209,4 +209,3 @@ def actualizar_paciente(id):
     # Guardar cambios
     db.session.commit()
     return jsonify({"mensaje": "Paciente actualizado con éxito", "id": paciente.id}), 200  
-          
