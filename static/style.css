@@ -16,17 +16,17 @@ footer {
   margin-top: auto;
 }
 
-.card-img-fixed {
-  height: 250px;
+.img-cover {
   width: 100%;
   object-fit: cover;
-  border-top-left-radius: .5rem;
-  border-top-right-radius: .5rem;
+  object-position: center;
 }
 
-.card img {
-  width: 100%;              
-  height: 300px;            
-  object-fit: cover;        
-  object-position: center;  
+/* Para el home */
+.card-img-fixed {
+  height: 350px;
+}
+/* Para el detalle paciente */
+.img-detalle-fixed {
+  height: 350px;
 }
