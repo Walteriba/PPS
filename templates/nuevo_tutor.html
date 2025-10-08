@@ -12,41 +12,26 @@
     <!-- Navbar -->
     {% include 'partials/header.html' %}
 
-    <!-- TODO (backend): Formulario de nuevo tutor temporal, actualmente no funciona,  -->
-    <form>
-      <div class="container mt-4">
-        <h2>Registrar nuevo tutor</h2>
-        <div class="mb-2">
-          <label>Nombre</label>
-          <input type="text" name="nombre" class="form-control" />
+    <!-- Formulario nuevo tutor -->
+    <div class= "container">
+      <h2>Registrar nuevo tutor</h2>
+        <form id="form-tutor" action="{{ url_for('tutor_bp.crear_tutor') }}" method="POST">
+          {% include 'partials/form_tutor.html'%}
+         <div class="row">
+          <div class="col-auto">
+           <button type="submit" class="btn btn-success mt-2">Crear Tutor</button>
+          </div>
+         <div class="col-auto">
+           <a href="{{ url_for('home_bp.nuevo_paciente') }}" class="btn btn-success mt-2">Volver</a>
+         </div>
         </div>
-        <div class="mb-2">
-          <label>Apellido</label>
-          <input type="text" name="apellido" class="form-control" />
-        </div>
-        <div class="mb-2">
-          <label>Teléfono</label>
-          <input type="num" name="telefono" class="form-control" />
-        </div>
-        <div class="mb-2">
-          <label>Email</label>
-          <input type="email" name="email" class="form-control" />
-        </div>
-        <div class="mb-2">
-          <label>Dirección</label>
-          <input type="text" name="direccion" class="form-control" />
-        </div>
-        <button type="submit" class="btn btn-success">Crear Tutor</button>
-      </div>
-    </form>
-
-    <!-- Opcional o hasta que funcione "Crear Tutor" -->
-    <a href="{{ url_for('home_bp.nuevo_paciente') }}" class="btn m-4 btn-success">Volver</a>
-
+      </form>
+    </div>
+    
     <!-- Footer -->
     {% include 'partials/footer.html' %}
-
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ url_for('static', filename='js/paciente.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/altas.js') }}"></script>
   </body>
 </html>

@@ -1,57 +1,83 @@
-<form method="POST" action="{{ url_for('paciente_bp.crear_paciente') }}">
-  <h3 class="mb-4">Datos del paciente</h3>
-  <input type="hidden" name="tutor_id" id="tutor-id">
+<form
+  id="form-paciente"
+  method="POST"
+  action="{{ url_for('paciente_bp.crear_paciente') }}"
+  enctype="multipart/form-data"
+>
+  <h2 class="mb-2">Datos del paciente</h2>
+  <input type="hidden" name="tutor_id" id="tutor-id" />
   <div class="row g-2">
     <div class="col-md-6">
-      <div class="mb-3">
+      <div class="mb-2">
         <label class="form-label">Nombre</label>
-        <input type="text" name="nombre" class="form-control" required>
+        <input type="text" name="nombre" class="form-control" required />
       </div>
-      <div class="mb-3">
+      <div class="mb-2">
         <label class="form-label">Raza</label>
-        <input type="text" name="raza" class="form-control" required>
+        <input type="text" name="raza" class="form-control" required />
       </div>
-      <div class="mb-3">
+      <div class="mb-2">
         <label class="form-label">Sexo</label>
         <select name="sexo" class="form-select">
           <option value="Macho">Macho</option>
           <option value="Hembra">Hembra</option>
         </select>
       </div>
+      <div class="mb-2">
+        <label class="form-label">Imagen del paciente</label>
+        <input
+          type="file"
+          name="imagen"
+          class="form-control"
+          accept="image/*"
+        />
+      </div>
     </div>
     <div class="col-md-6">
-      <div class="mb-3">
+      <div class="mb-2">
         <label class="form-label">Especie</label>
-        <input type="text" name="especie" class="form-control">
+        <input type="text" name="especie" class="form-control" />
       </div>
-      <div class="mb-3">
+      <div class="mb-2">
         <label class="form-label">Color</label>
-        <input type="text" name="color" class="form-control">
+        <input type="text" name="color" class="form-control" />
       </div>
-      <div class="mb-3">
-        <label class="form-label">Fecha Nacimiento</label>
-        <input type="date" name="fecha_nacimiento" class="form-control">
+      <div class="mb-2">
+        <label class="form-label">Fecha de Nacimiento</label>
+        <input type="date" name="fecha_nacimiento" class="form-control" />
       </div>
-      <div class="mb-3">
-       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" name="activo" id="activo">
-        <label class="form-check-label" for="activo">Activo</label>
-       </div>
-       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" name="reproductor" id="reproductor">
-        <label class="form-check-label" for="reproductor">Reproductor</label>
-       </div>
-       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" name="castrado" id="castrado">
-        <label class="form-check-label" for="castrado">Castrado</label>
-       </div>
+      <div class="mt-5">
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            name="activo"
+            id="activo"
+          />
+          <label class="form-check-label" for="activo">Activo</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            name="reproductor"
+            id="reproductor"
+          />
+          <label class="form-check-label" for="reproductor">Reproductor</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            name="castrado"
+            id="castrado"
+          />
+          <label class="form-check-label" for="castrado">Castrado</label>
+        </div>
       </div>
     </div>
   </div>
   <div class="mt-4">
-  
-    <!-- TODO: El endpoint 'crear_paciente' actualmente devuelve JSON. 
-     Revisar para que redirija o renderice plantilla después de guardar el paciente -->  
-    <button type="submit" class="btn btn-success w-100">Guardar</button> 
+    <button type="submit" class="btn btn-success w-100">Guardar</button>
   </div>
 </form>
