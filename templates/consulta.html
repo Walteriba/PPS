@@ -10,49 +10,70 @@
     
     <div class="container mt-4">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h3>Consulta del {{ consulta.fecha.strftime('%d/%m/%Y') }}</h3>
+                <button id="btnEditar" class="btn btn-primary btn-sm">Editar</button>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h5>Datos básicos</h5>
-                        <p><strong>Peso:</strong> {{ consulta.peso }} kg</p>
-                        <p><strong>Temperatura:</strong> {{ consulta.temperatura }}°C</p>
+                <form id="formConsulta">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Datos básicos</h5>
+                            <p><strong>Fecha:</strong> 
+                                <span class="view-mode">{{ consulta.fecha.strftime('%Y-%m-%d') }}</span>
+                            </p>
+                            <input type="date" name="fecha" class="form-control edit-mode d-none" 
+                                   value="{{ consulta.fecha.strftime('%Y-%m-%d') }}">
+                            <p><strong>Peso:</strong> 
+                                <span class="view-mode">{{ consulta.peso }} kg</span>
+                            </p>
+                            <input type="number" step="0.1" name="peso" class="form-control edit-mode d-none" 
+                                   value="{{ consulta.peso }}">
+                        </div>
+
+                        <div class="col-md-6">
+                            <h5>Paciente</h5>
+                            <p><strong>Nombre:</strong> {{ paciente.nombre }}</p>
+                            <p><strong>Tutor:</strong> {{ tutor.nombre }} {{ tutor.apellido }}</p>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <h5>Paciente</h5>
-                        <p><strong>Nombre:</strong> {{ paciente.nombre }}</p>
-                        <p><strong>Tutor:</strong> {{ tutor.nombre }} {{ tutor.apellido }}</p>
+
+                    <hr>
+
+                    <!-- El resto de la consulta -->
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <h5>Anamnesis</h5>
+                            <p>{{ consulta.anamnesis or 'Sin datos' }}</p>
+                        </div>
                     </div>
-                </div>
-                <hr>
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <h5>Anamnesis</h5>
-                        <p>{{ consulta.anamnesis or 'Sin datos' }}</p>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <h5>Examen Físico</h5>
+                            <p>{{ consulta.examen_fisico or 'Sin datos' }}</p>
+                        </div>
                     </div>
-                </div>
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <h5>Examen Físico</h5>
-                        <p>{{ consulta.examen_fisico or 'Sin datos' }}</p>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <h5>Diagnóstico</h5>
+                            <p>{{ consulta.diagnostico or 'Sin datos' }}</p>
+                        </div>
                     </div>
-                </div>
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <h5>Diagnóstico</h5>
-                        <p>{{ consulta.diagnostico or 'Sin datos' }}</p>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <h5>Tratamiento</h5>
+                            <p>{{ consulta.tratamiento or 'Sin datos' }}</p>
+                        </div>
                     </div>
-                </div>
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <h5>Tratamiento</h5>
-                        <p>{{ consulta.tratamiento or 'Sin datos' }}</p>
+
+                    <div class="mt-3 d-none edit-mode">
+                        <button type="submit" class="btn btn-success">Guardar</button>
+                        <button type="button" id="btnCancelar" class="btn btn-secondary">Cancelar</button>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
+
         <div class="mt-3">
             <a href="/paciente/{{ paciente.id }}" class="btn btn-primary">Volver al Paciente</a>
         </div>
@@ -60,5 +81,49 @@
 
     {% include 'partials/footer.html' %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const btnEditar = document.getElementById("btnEditar");
+        const btnCancelar = document.getElementById("btnCancelar");
+        const viewMode = document.querySelectorAll(".view-mode");
+        const editMode = document.querySelectorAll(".edit-mode");
+        const form = document.getElementById("formConsulta");
+
+
+        btnEditar.addEventListener("click", () => {
+            viewMode.forEach(el => el.classList.add("d-none"));
+            editMode.forEach(el => el.classList.remove("d-none"));
+            btnEditar.classList.add("d-none");
+        });
+        btnCancelar.addEventListener("click", () => {
+            viewMode.forEach(el => el.classList.remove("d-none"));
+            editMode.forEach(el => el.classList.add("d-none"));
+            btnEditar.classList.remove("d-none");
+        });
+
+        // Enviar datos como FormData (para request.form)
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+
+            try {
+                const res = await fetch("/consulta/{{ consulta.id }}", {
+                    method: "PUT",
+                    body: formData
+                });
+
+                if (res.ok) {
+                    // Redirigir después de presionar guardar
+                    window.location.href = `http://127.0.0.1:5000/consulta/{{ consulta.id }}`;
+                } else {
+                    const err = await res.json();
+                    alert("Error: " + (err.error || "No se pudo actualizar"));
+                }
+            } catch (error) {
+                alert("Error de conexión: " + error.message);
+            }
+        });
+    </script>
 </body>
 </html>
