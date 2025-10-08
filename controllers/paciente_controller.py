@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from models.paciente import Paciente
 from models.tutor import Tutor
-from models.imagen import Imagen
+from models.archivo import Archivo
 from models import db
 from datetime import datetime
 from utils.cloudinary_utils import subir_y_obtener_url
@@ -9,32 +9,32 @@ from utils.cloudinary_utils import subir_y_obtener_url
 # Definición del Blueprint
 paciente_bp = Blueprint("paciente_bp", __name__)
 
-# Endpoint para agregar imágenes adicionales a un paciente
-@paciente_bp.route("/paciente/<int:id>/imagen", methods=["POST"])
-def agregar_imagen_paciente(id):
+# Endpoint para agregar archivos adicionales a un paciente
+@paciente_bp.route("/paciente/<int:id>/archivo", methods=["POST"])
+def agregar_archivo_paciente(id):
     paciente = Paciente.query.get(id)
     if not paciente:
         return jsonify({"error": "Paciente no encontrado"}), 404
-    archivos = request.files.getlist("imagen")
-    urls_nuevas = []
+    archivos = request.files.getlist("archivo")
+    urls_nuevos = []
     for archivo in archivos:
         if archivo and archivo.filename != "":
             url = subir_y_obtener_url(archivo)
-            nueva_imagen = Imagen(url=url, paciente_id=paciente.id)
-            db.session.add(nueva_imagen)
-            urls_nuevas.append(url)
+            nuevo_archivo = Archivo(url=url, paciente_id=paciente.id)
+            db.session.add(nuevo_archivo)
+            urls_nuevos.append(url)
     db.session.commit()
-    return jsonify({"mensaje": "Imágenes agregadas", "urls": urls_nuevas}), 201
+    return jsonify({"mensaje": "Archivos agregados", "urls": urls_nuevos}), 201
 
-# Endpoint para consultar todas las imágenes de un paciente
-@paciente_bp.route("/paciente/<int:id>/imagenes", methods=["GET"])
-def obtener_imagenes_paciente(id):
+ # Endpoint para consultar todos los archivos de un paciente
+@paciente_bp.route("/paciente/<int:id>/archivos", methods=["GET"])
+def obtener_archivos_paciente(id):
     paciente = Paciente.query.get(id)
     if not paciente:
         return jsonify({"error": "Paciente no encontrado"}), 404
-    imagenes = Imagen.query.filter_by(paciente_id=id).all()
-    urls = [img.url for img in imagenes]
-    return jsonify({"imagenes": urls}), 200
+    archivos = Archivo.query.filter_by(paciente_id=id).all()
+    urls = [archivo.url for archivo in archivos]
+    return jsonify({"archivos": urls}), 200
 
 # Métodos auxiliares
 def validar_imagen(imagen):
@@ -61,8 +61,7 @@ def crear_paciente():
     
     # Procesar imagen si viene, sino usar default
     imagen = request.files.get("imagen")
-    url = validar_imagen(imagen)
-    if imagen:
+    if imagen and imagen.filename != "":
         url = subir_y_obtener_url(imagen)
     else:
         url = "/static/imgs/default-avatar.jpg"
