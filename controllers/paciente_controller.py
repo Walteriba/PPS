@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from models.paciente import Paciente
 from models.tutor import Tutor
-from models.imagen import Imagen
+from models.archivos import Archivo
 from models import db
 from datetime import datetime
 from utils.cloudinary_utils import subir_y_obtener_url
