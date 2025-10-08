@@ -9,20 +9,29 @@ from utils.cloudinary_utils import subir_y_obtener_url
 # Definición del Blueprint
 paciente_bp = Blueprint("paciente_bp", __name__)
 
-# Endpoint para agregar archivos adicionales a un paciente
 @paciente_bp.route("/paciente/<int:id>/archivo", methods=["POST"])
 def agregar_archivo_paciente(id):
     paciente = Paciente.query.get(id)
     if not paciente:
         return jsonify({"error": "Paciente no encontrado"}), 404
+    
+    # Obtener id_consulta del formulario o JSON
+    id_consulta = request.form.get('id_consulta')  # Desde form-data
+    
     archivos = request.files.getlist("archivo")
     urls_nuevos = []
+    
     for archivo in archivos:
         if archivo and archivo.filename != "":
             url = subir_y_obtener_url(archivo)
-            nuevo_archivo = Archivo(url=url, paciente_id=paciente.id)
+            nuevo_archivo = Archivo(
+                url=url, 
+                paciente_id=paciente.id, 
+                id_consulta=id_consulta  # Puede ser None
+            )
             db.session.add(nuevo_archivo)
             urls_nuevos.append(url)
+    
     db.session.commit()
     return jsonify({"mensaje": "Archivos agregados", "urls": urls_nuevos}), 201
 
