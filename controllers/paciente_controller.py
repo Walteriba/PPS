@@ -9,7 +9,7 @@ from utils.cloudinary_utils import subir_y_obtener_url
 # Definición del Blueprint
 paciente_bp = Blueprint("paciente_bp", __name__)
 
-# Endpoint para agregar imágenes adicionales a un paciente
+# Endpoint para agregar imágenes adicionales a un paciente # no se lo vincula a ningun id_consulta, el endpoint anda  
 @paciente_bp.route("/paciente/<int:id>/imagen", methods=["POST"])
 def agregar_imagen_paciente(id):
     paciente = Paciente.query.get(id)
@@ -36,7 +36,7 @@ def obtener_imagenes_paciente(id):
     urls = [img.url for img in imagenes]
     return jsonify({"imagenes": urls}), 200
 
-# Métodos auxiliares
+# Métodos auxiliares 
 def validar_imagen(imagen):
     if imagen:
         url = subir_y_obtener_url(imagen)
@@ -81,10 +81,10 @@ def crear_paciente():
     if not tutor: 
         return jsonify({"error": "Tutor no encontrado"}), 400   
     
-    # Procesar imagen si viene, sino usar default
+    # Procesar imagen si viene, sino usar default # se esta repitiendo la logica de la funcion validar_imagen
     imagen = request.files.get("imagen")
-    url = validar_imagen(imagen)
-    if imagen:
+    #url = validar_imagen(imagen) #llama dos veces a la funcion subir_y_obtener_url rompe el codigo
+    if imagen: #aca ya aplicamos la logica para que si no viene una imagen subir el avatar
         url = subir_y_obtener_url(imagen)
     else:
         url = "/static/imgs/default-avatar.jpg"
