@@ -30,7 +30,7 @@
     <button class="btn btn-outline-success" type="submit">Buscar</button>
   </form>
 
-  <!-- Switch Paciente / Tutor -->
+  <!-- Switch Paciente / Tutor / Consulta -->
   <div class="btn-group" role="group" aria-label="Modo búsqueda">
     <input
       type="radio"
@@ -53,6 +53,17 @@
       {% if search.modo == "tutor" %}checked{% endif %}
     />
     <label class="btn btn-outline-success" for="modoTutor">Tutor</label>
+
+    <input 
+    type="radio"
+    class="btn-check"
+    name="modo"
+    id="modoConsulta"
+    value="consulta"
+    autocomplete="off"
+    {% if search.modo == "consulta" %}checked{% endif %}
+    />
+    <label class="btn btn-outline-success" for="modoConsulta">Consulta</label>
   </div>
 </div>
 
@@ -140,5 +151,34 @@
         />
       </div>
     </div>
+
+    <!-- Filtros Consulta -->
+    <div id="filtrosConsulta" style="display: none">
+      <div class="mb-2">
+        <label class="form-label">Anamnesis</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          name="anamnesis" 
+          value="{{ search.anamnesis }}"/>
+      </div>
+      <div class="mb-2">
+        <label class="form-label">Diagnóstico</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          name="diagnostico" 
+          value="{{ search.diagnostico }}"/>
+      </div>
+      <div class="mb-2">
+        <label class="form-label">Tratamiento</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          name="tratamiento" 
+          value="{{ search.tratamiento }}"/>
+      </div>
+    </div>
+    
   </div>
 </div>
