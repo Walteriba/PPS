@@ -20,7 +20,7 @@ def agregar_imagen_paciente(id):
     for archivo in archivos:
         if archivo and archivo.filename != "":
             url = subir_y_obtener_url(archivo)
-            nueva_imagen = Imagen(url=url, paciente_id=paciente.id)
+            nueva_imagen = Archivo(url=url, paciente_id=paciente.id)
             db.session.add(nueva_imagen)
             urls_nuevas.append(url)
     db.session.commit()
@@ -32,7 +32,7 @@ def obtener_imagenes_paciente(id):
     paciente = Paciente.query.get(id)
     if not paciente:
         return jsonify({"error": "Paciente no encontrado"}), 404
-    imagenes = Imagen.query.filter_by(paciente_id=id).all()
+    imagenes = Archivo.query.filter_by(paciente_id=id).all()
     urls = [img.url for img in imagenes]
     return jsonify({"imagenes": urls}), 200
 
