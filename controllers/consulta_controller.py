@@ -5,12 +5,16 @@ from models.paciente import Paciente
 from models.tutor import Tutor
 from models.consulta import Consulta
 from models import db
+from utils.cloudinary_utils import subir_y_obtener_url
+from models.archivos import Archivo
 
 consulta_bp = Blueprint("consulta_bp", __name__)    # Definición del Blueprint
 
 # Endpoint para crear consulta (insert)
 @consulta_bp.route("/consulta/nuevo", methods=["GET", "POST"])
 def crear_consulta():
+    data = request.form
+    archivos = request.files.getlist("archivos")
     """Crear una nueva consulta médica."""
     nueva_consulta = Consulta(
         # La fecha aunque se puede modificar para cargar una consulta de días anteriores
@@ -28,6 +32,18 @@ def crear_consulta():
     )
     db.session.add(nueva_consulta)
     db.session.commit()
+    
+    archivos = request.files.getlist("archivos")
+    for archivo in archivos:
+        url = subir_y_obtener_url(archivo)
+        nuevo_archivo = Archivo(
+            url=url,
+            paciente_id=nueva_consulta.paciente_id,
+            consulta_id=nueva_consulta.id,
+        )
+        db.session.add(nuevo_archivo)
+    db.session.commit()
+
     return jsonify({"mensaje": "Consulta creada con éxito", "id": nueva_consulta.id}), 201
 
 # Endpoint para actualizar una consulta
@@ -83,7 +99,8 @@ def obtener_consultas():
             "diagnostico": consulta.diagnostico,
             "tratamiento": consulta.tratamiento,
             "tutor_id": consulta.tutor_id,
-            "paciente_id": consulta.paciente_id
+            "paciente_id": consulta.paciente_id,
+            "archivos": [archivo.url for archivo in consulta.archivos]
         })
     return jsonify(resultado), 200
 
@@ -105,7 +122,8 @@ def obtener_consultas_por_paciente(paciente_id):
             "diagnostico": consulta.diagnostico,
             "tratamiento": consulta.tratamiento,
             "tutor_id": consulta.tutor_id,
-            "paciente_id": consulta.paciente_id
+            "paciente_id": consulta.paciente_id,
+            "archivos": [archivo.url for archivo in consulta.archivos]
         })
     return jsonify(resultado), 200
 
@@ -127,7 +145,8 @@ def obtener_consultas_por_anamnesis(anamnesis):
             "diagnostico": consulta.diagnostico,
             "tratamiento": consulta.tratamiento,
             "tutor_id": consulta.tutor_id,
-            "paciente_id": consulta.paciente_id
+            "paciente_id": consulta.paciente_id,
+            "archivos": [archivo.url for archivo in consulta.archivos]
         })
     return jsonify(resultado), 200
 

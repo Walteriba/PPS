@@ -6,4 +6,4 @@ db = SQLAlchemy()
 from models.tutor import Tutor
 from models.paciente import Paciente
 from models.consulta import Consulta
-from models.imagen import Imagen
+from models.archivos import Archivo
