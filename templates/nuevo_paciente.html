@@ -12,21 +12,27 @@
     <!-- Navbar -->
     {% include 'partials/header.html' %}
 
-    <div class="container mt-4">
+    <!-- Seleccionar tutor o crearlo -->
+    <div class="container">
       <h2>Registrar nuevo paciente</h2>
-
-      <!-- Seleccionar tutor o crearlo -->
-      <div class="row g-3 align-items-center mb-4">
-        <div class="col-md-8">{% include 'partials/selec_tutor.html' %}</div>
-        <div class="col-md-4 text-end">
-          <a href="{{ url_for('home_bp.nuevo_tutor') }}" class="btn btn-outline-success w-100">
-            Crear nuevo tutor </a>
+      <div class="row g-1 align-items-start">
+        {% include 'partials/selec_tutor.html' %}
+      </div>
+      <div class="row">
+        <div class="col-auto">
+          <a href="{{ url_for('home_bp.nuevo_tutor') }}" class="btn btn-success mt-2">
+            Crear nuevo tutor
+          </a>
+        </div>
+        <div class="col-auto">
+          <a href="/" class="btn btn-success mt-2">Volver</a>
         </div>
       </div>
-
-      <!-- Formulario de paciente -->
-      <div id="form-paciente" class="d-none">
-        {% include 'partials/form_paciente.html' %}
+      <div class="mt-4">
+        <!-- Formulario nuevo paciente -->
+        <div id="form-paciente" class="d-none">
+          {% include 'partials/form_paciente.html' %}
+        </div>
       </div>
     </div>
 
@@ -34,6 +40,6 @@
     {% include 'partials/footer.html' %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ url_for('static', filename='js/paciente.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/altas.js') }}"></script>
   </body>
 </html>

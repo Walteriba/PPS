@@ -140,4 +140,5 @@ def nuevo_tutor():
 @home_bp.route("/paciente/nuevo", methods=["GET"])
 def nuevo_paciente():
     tutores = Tutor.query.all()
-    return render_template("nuevo_paciente.html", tutores=tutores)
+    tutor_id = request.args.get('tutor_id', type=int)
+    return render_template("nuevo_paciente.html", tutores=tutores, tutor_id=tutor_id)
