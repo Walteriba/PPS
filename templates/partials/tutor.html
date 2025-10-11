@@ -2,9 +2,10 @@
   <div class="card-body">
     <h4 class="card-title">Tutor: {{ tutor.nombre }} {{ tutor.apellido }}</h4>
     <p class="card-text"> <br>
-      <strong>Tel:</strong> {{ tutor.telefono }} <br>
-      <strong>Dirección:</strong> {{ tutor.direccion }} <br>
+      <strong>Tel:</strong> {{ tutor.telefono }} <br />
+      <strong>Dirección:</strong> {{ tutor.direccion }} <br />
       <strong>Email:</strong> {{ tutor.email }}
     </p>
+    <a href="{{ url_for('home_bp.editar_tutor', id=tutor.id) }}" class="btn btn-success">Editar</a>
   </div>
 </div>

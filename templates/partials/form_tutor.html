@@ -1,20 +1,20 @@
 <div class="mb-2">
   <label>Nombre</label>
-  <input type="text" name="nombre" class="form-control" />
+  <input type="text" name="nombre" class="form-control" value="{{ tutor.nombre if tutor else ''  }}" required/>
 </div>
 <div class="mb-2">
   <label>Apellido</label>
-  <input type="text" name="apellido" class="form-control" />
+  <input type="text" name="apellido" class="form-control" value="{{ tutor.apellido if tutor else '' }}" required/>
 </div>
 <div class="mb-2">
   <label>Teléfono</label>
-  <input type="number" name="telefono" class="form-control" />
+  <input type="number" name="telefono" class="form-control" value="{{ tutor.telefono if tutor else '' }}" required />
 </div>
 <div class="mb-2">
   <label>Email</label>
-  <input type="email" name="email" class="form-control" />
+  <input type="email" name="email" class="form-control" value="{{ tutor.email if tutor else '' }}" required/>
 </div>
 <div class="mb-2">
   <label>Dirección</label>
-  <input type="text" name="direccion" class="form-control" />
+  <input type="text" name="direccion" class="form-control" value="{{ tutor.direccion if tutor else '' }}" required />
 </div>
