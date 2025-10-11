@@ -142,3 +142,10 @@ def nuevo_paciente():
     tutores = Tutor.query.all()
     tutor_id = request.args.get('tutor_id', type=int)
     return render_template("nuevo_paciente.html", tutores=tutores, tutor_id=tutor_id)
+
+# GET -> mostrar la vista editar_tutor.html
+@home_bp.route("/tutor/<int:id>/editar", methods=["GET"])
+def editar_tutor(id):
+    tutor = Tutor.query.get_or_404(id)
+    paciente = Paciente.query.filter_by(tutor_id=tutor.id).first()
+    return render_template("editar_tutor.html", tutor=tutor, paciente=paciente)
