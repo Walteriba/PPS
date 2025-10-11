@@ -15,15 +15,18 @@ def agregar_imagen_paciente(id):
     paciente = Paciente.query.get(id)
     if not paciente:
         return jsonify({"error": "Paciente no encontrado"}), 404
+    consulta_id = request.form.get("consulta_id")
     archivos = request.files.getlist("imagen")
     urls_nuevas = []
+    print("Archivos recibidos:", archivos)
     for archivo in archivos:
         if archivo and archivo.filename != "":
+            print("Procesando archivo:", archivo.filename)
             url = subir_y_obtener_url(archivo)
-            nueva_imagen = Archivo(url=url, paciente_id=paciente.id)
+            nueva_imagen = Archivo(url=url, paciente_id=paciente.id, consulta_id=consulta_id)
             db.session.add(nueva_imagen)
-            urls_nuevas.append(url)
-    db.session.commit()
+            urls_nuevas.append(url) 
+    db.session.commit()      
     return jsonify({"mensaje": "Imágenes agregadas", "urls": urls_nuevas}), 201
 
 # Endpoint para consultar todas las imágenes de un paciente
@@ -81,10 +84,8 @@ def crear_paciente():
     if not tutor: 
         return jsonify({"error": "Tutor no encontrado"}), 400   
     
-    # Procesar imagen si viene, sino usar default # se esta repitiendo la logica de la funcion validar_imagen
     imagen = request.files.get("imagen")
-    #url = validar_imagen(imagen) #llama dos veces a la funcion subir_y_obtener_url rompe el codigo
-    if imagen: #aca ya aplicamos la logica para que si no viene una imagen subir el avatar
+    if imagen: 
         url = subir_y_obtener_url(imagen)
     else:
         url = "/static/imgs/default-avatar.jpg"
