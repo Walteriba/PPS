@@ -43,6 +43,17 @@
     />
     <label class="btn btn-outline-success" for="modoPaciente">Paciente</label>
 
+    <input 
+      type="radio"
+      class="btn-check"
+      name="modo"
+      id="modoConsulta"
+      value="consulta"
+      autocomplete="off"
+      {% if search.modo == "consulta" %}checked{% endif %}
+    />
+    <label class="btn btn-outline-success" for="modoConsulta">Consulta</label>
+
     <input
       type="radio"
       class="btn-check"
@@ -53,17 +64,7 @@
       {% if search.modo == "tutor" %}checked{% endif %}
     />
     <label class="btn btn-outline-success" for="modoTutor">Tutor</label>
-
-    <input 
-    type="radio"
-    class="btn-check"
-    name="modo"
-    id="modoConsulta"
-    value="consulta"
-    autocomplete="off"
-    {% if search.modo == "consulta" %}checked{% endif %}
-    />
-    <label class="btn btn-outline-success" for="modoConsulta">Consulta</label>
+    
   </div>
 </div>
 
@@ -121,6 +122,34 @@
       </div>
     </div>
 
+    <!-- Filtros Consulta -->
+    <div id="filtrosConsulta" style="display: none">
+      <div class="mb-2">
+        <label class="form-label">Anamnesis</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          name="anamnesis" 
+          value="{{ search.anamnesis }}"/>
+      </div>
+      <div class="mb-2">
+        <label class="form-label">Diagnóstico</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          name="diagnostico" 
+          value="{{ search.diagnostico }}"/>
+      </div>
+      <div class="mb-2">
+        <label class="form-label">Tratamiento</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          name="tratamiento" 
+          value="{{ search.tratamiento }}"/>
+      </div>
+    </div>
+
     <!-- Filtros Tutor -->
     <div id="filtrosTutor" style="display: none">
       <div class="mb-2">
@@ -149,34 +178,6 @@
           name="email"
           value="{{ search.email }}"
         />
-      </div>
-    </div>
-
-    <!-- Filtros Consulta -->
-    <div id="filtrosConsulta" style="display: none">
-      <div class="mb-2">
-        <label class="form-label">Anamnesis</label>
-        <input 
-          type="text" 
-          class="form-control" 
-          name="anamnesis" 
-          value="{{ search.anamnesis }}"/>
-      </div>
-      <div class="mb-2">
-        <label class="form-label">Diagnóstico</label>
-        <input 
-          type="text" 
-          class="form-control" 
-          name="diagnostico" 
-          value="{{ search.diagnostico }}"/>
-      </div>
-      <div class="mb-2">
-        <label class="form-label">Tratamiento</label>
-        <input 
-          type="text" 
-          class="form-control" 
-          name="tratamiento" 
-          value="{{ search.tratamiento }}"/>
       </div>
     </div>
     

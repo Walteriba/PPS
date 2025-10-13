@@ -1,10 +1,13 @@
 from flask import Blueprint, render_template, request
+from sqlalchemy.orm import joinedload
 from models.tutor import Tutor
 from models.paciente import Paciente
+from models.consulta import Consulta
 from dto.paciente_dto import PacienteDTO
 
 # Definición del Blueprint
 home_bp = Blueprint("home_bp", __name__)
+
 
 # Métodos Auxiliares
 def CreatePacienteDto(tutores, pacientes):
@@ -24,6 +27,7 @@ def CreatePacienteDto(tutores, pacientes):
         )
     return pacientes_dto
 
+
 # Home
 @home_bp.route("/", methods=["GET"])
 # Busqueda de pacientes y tutores
@@ -37,15 +41,19 @@ def buscar():
     color = request.args.get("color", "").strip()
     reproductor = request.args.get("reproductor") == "1"
     castrado = request.args.get("castrado") == "1"
+    anamnesis = request.args.get("anamnesis", "").strip()
+    diagnostico = request.args.get("diagnostico", "").strip()
+    tratamiento = request.args.get("tratamiento", "").strip()
     nombre_tutor = request.args.get("nombre_tutor", "").strip()
     telefono = request.args.get("telefono", "").strip()
     direccion = request.args.get("direccion", "").strip()
     email = request.args.get("email", "").strip()
-    # Consultas base
-    pacientes_query = Paciente.query
-    tutores_query = Tutor.query
+
+    # Consulta base
+    base_query = Paciente.query
 
     if modo == "paciente":
+        pacientes_query = base_query.join(Tutor)
         if query:
             pacientes_query = pacientes_query.filter(Paciente.nombre.ilike(f"%{query}%"))
         if especie:
@@ -59,28 +67,32 @@ def buscar():
         if castrado:
             pacientes_query = pacientes_query.filter(Paciente.castrado.is_(True))
 
-        pacientes = pacientes_query.all()
-
-        # Solo traer tutores de los pacientes encontrados
-        tutores_ids = {p.tutor_id for p in pacientes}
-        tutores = Tutor.query.filter(Tutor.id.in_(tutores_ids)).all()
-
-    else:
+    elif modo == "consulta":
+        pacientes_query = base_query.join(Consulta).join(Tutor)
         if query:
-            tutores_query = tutores_query.filter(Tutor.nombre.ilike(f"%{query}%"))
+            pacientes_query = pacientes_query.filter(Paciente.nombre.ilike(f"%{query}%"))
+        if anamnesis:
+            pacientes_query = pacientes_query.filter(Consulta.anamnesis.ilike(f"%{anamnesis}%"))
+        if diagnostico:
+            pacientes_query = pacientes_query.filter(Consulta.diagnostico.ilike(f"%{diagnostico}%"))
+        if tratamiento:
+            pacientes_query = pacientes_query.filter(Consulta.tratamiento.ilike(f"%{tratamiento}%"))
+
+    elif modo == "tutor":
+        pacientes_query = base_query.join(Tutor)
+        if query:
+            pacientes_query = pacientes_query.filter(Tutor.nombre.ilike(f"%{query}%"))
         if nombre_tutor:
-            tutores_query = tutores_query.filter(Tutor.nombre.ilike(f"%{nombre_tutor}%"))
+            pacientes_query = pacientes_query.filter(Tutor.nombre.ilike(f"%{nombre_tutor}%"))
         if telefono:
-            tutores_query = tutores_query.filter(Tutor.telefono.ilike(f"%{telefono}%"))
+            pacientes_query = pacientes_query.filter(Tutor.telefono.ilike(f"%{telefono}%"))
         if direccion:
-            tutores_query = tutores_query.filter(Tutor.direccion.ilike(f"%{direccion}%"))
+            pacientes_query = pacientes_query.filter(Tutor.direccion.ilike(f"%{direccion}%"))
         if email:
-            tutores_query = tutores_query.filter(Tutor.email.ilike(f"%{email}%"))
+            pacientes_query = pacientes_query.filter(Tutor.email.ilike(f"%{email}%"))
 
-        tutores = tutores_query.all()
-
-        # Solo traer pacientes de los tutores encontrados
-        pacientes = Paciente.query.filter(Paciente.tutor_id.in_([t.id for t in tutores])).all()
+    pacientes = pacientes_query.options(joinedload(Paciente.tutor)).all()
+    tutores = list({p.tutor for p in pacientes if p.tutor})
 
     # DTO
     pacientes_dto = CreatePacienteDto(tutores, pacientes)
@@ -94,6 +106,9 @@ def buscar():
         "color": color,
         "reproductor": bool(reproductor),
         "castrado": bool(castrado),
+        "anamnesis": anamnesis,
+        "diagnostico": diagnostico,
+        "tratamiento": tratamiento,
         "nombre_tutor": nombre_tutor,
         "telefono": telefono,
         "direccion": direccion,
@@ -106,6 +121,9 @@ def buscar():
                 color,
                 reproductor,
                 castrado,
+                anamnesis,
+                diagnostico,
+                tratamiento,
                 nombre_tutor,
                 telefono,
                 direccion,
@@ -140,5 +158,5 @@ def nuevo_tutor():
 @home_bp.route("/paciente/nuevo", methods=["GET"])
 def nuevo_paciente():
     tutores = Tutor.query.all()
-    tutor_id = request.args.get('tutor_id', type=int)
+    tutor_id = request.args.get("tutor_id", type=int)
     return render_template("nuevo_paciente.html", tutores=tutores, tutor_id=tutor_id)
