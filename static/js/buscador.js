@@ -59,4 +59,38 @@ document.addEventListener("DOMContentLoaded", function () {
     // Redirigir a /buscar con los parámetros
     window.location.href = "/buscar?" + params.toString();
   });
+
+  // Boton para limpiar filtros
+  const clearBtn = document.getElementById("clearFilters");
+  if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
+      // Guardar el modo seleccionado
+      let modoActual = "paciente";
+      if (tutorBtn.checked) modoActual = "tutor";
+      else if (consultaBtn.checked) modoActual = "consulta";
+
+      // Selecciona todos los inputs a limpiar
+      const allInputs = document.querySelectorAll(
+        "#searchForm input, #filtrosAvanzados input"
+      );
+
+      allInputs.forEach((input) => {
+        if (input.name === "modo") return;
+
+        if (input.type === "checkbox") {
+          input.checked = false;
+        } else if (input.type === "file") {
+          input.value = "";
+        } else {
+          input.value = "";
+        }
+      });
+
+      if (modoActual === "paciente") pacienteBtn.checked = true;
+      if (modoActual === "tutor") tutorBtn.checked = true;
+      if (modoActual === "consulta") consultaBtn.checked = true;
+      
+      actualizarFiltros();
+    });
+  }
 });
