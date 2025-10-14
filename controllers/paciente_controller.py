@@ -41,7 +41,6 @@ def crear_paciente():
             request.form["fecha_nacimiento"], "%Y-%m-%d"
         ),
         imagen=url,
-        activo=("activo" in request.form),
         reproductor=("reproductor" in request.form),
         castrado=("castrado" in request.form),
         tutor=tutor,
