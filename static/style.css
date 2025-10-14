@@ -30,3 +30,8 @@ footer {
 .img-detalle-fixed {
   height: 350px;
 }
+
+/* Para validacion de input pacientes */
+.is-invalid {
+  border-color: #dc3545 !important; 
+}
