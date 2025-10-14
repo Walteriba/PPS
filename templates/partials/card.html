@@ -73,7 +73,13 @@
           <!-- Botones -->
           <button id="editBtn" class="btn btn-primary">Editar</button>
           <button id="saveBtn" class="btn btn-success" style="display:none;">Guardar</button>
-          <a href="/" class="btn btn-secondary">Volver</a>
+          <div class="col-auto">
+         {% if paciente and paciente.id %}
+               <a href="/paciente/{{ paciente.id }}" class="btn btn-secondary mt-2">Cancelar</a>
+         {% else %}
+              <a href="{{ url_for('home_bp.index') }}" class="btn btn-secondary mt-2">Cancelar</a>
+        {% endif %}
+          </div>
         </div>
       </div>
     </div>
