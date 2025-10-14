@@ -28,6 +28,12 @@
             <div class="col-md-9 p-4 bg-white">
               {% include 'partials/card.html' %}
 
+          <a href="/consulta/nuevo?paciente_id={{ paciente.id }}&tutor_id={{ paciente.tutor_id }}" 
+           class="btn btn-success">
+          ➕ Nueva Consulta
+          </a>
+
+
               <!-- historial de consultas (TODO: Revisar) -->
               <div class="mt-4">
                 <h4>Historial de Consultas</h4>

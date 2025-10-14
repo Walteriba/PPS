@@ -1,6 +1,6 @@
 """Controlador para gestionar las consultas médicas."""
 from datetime import datetime
-from flask import Blueprint, request, jsonify, render_template
+from flask import Blueprint, request, jsonify, render_template, redirect
 from models.paciente import Paciente
 from models.tutor import Tutor
 from models.consulta import Consulta
@@ -12,23 +12,35 @@ consulta_bp = Blueprint("consulta_bp", __name__)    # Definición del Blueprint
 @consulta_bp.route("/consulta/nuevo", methods=["GET", "POST"])
 def crear_consulta():
     """Crear una nueva consulta médica."""
-    nueva_consulta = Consulta(
-        # La fecha aunque se puede modificar para cargar una consulta de días anteriores
-        # por defecto toma la fecha actual
-        fecha_actual=datetime.strptime(request.form["fecha"], "%Y-%m-%d"),
-        peso=float(request.form["peso"]), # Validar, no puede ser más de 100kg
-        temperatura=float(request.form["temperatura"]), # Validar, no puede ser más de 50 grados
-        anamnesis=request.form.get("anamnesis"),
-        examen_fisico=request.form.get("examen_fisico"),
-        diagnostico=request.form.get("diagnostico"),
-        tratamiento=request.form.get("tratamiento"),
-        # Validar que el paciente y tutor existan
-        tutor_id=int(request.form["tutor_id"]),
-        paciente_id=int(request.form["paciente_id"])
-    )
-    db.session.add(nueva_consulta)
-    db.session.commit()
-    return jsonify({"mensaje": "Consulta creada con éxito", "id": nueva_consulta.id}), 201
+    
+    if request.method == "GET":
+        # Renderiza el formulario vacío
+        return render_template("crear_consulta.html")
+
+    # Si es POST, crea la consulta
+    try:
+        nueva_consulta = Consulta(
+            fecha=datetime.strptime(request.form["fecha"], "%Y-%m-%d"),
+            peso=float(request.form["peso"]),
+            temperatura=float(request.form["temperatura"]),
+            anamnesis=request.form.get("anamnesis"),
+            examen_fisico=request.form.get("examen_fisico"),
+            diagnostico=request.form.get("diagnostico"),
+            tratamiento=request.form.get("tratamiento"),
+            tutor_id=int(request.form["tutor_id"]),
+            paciente_id=int(request.form["paciente_id"])
+        )
+        db.session.add(nueva_consulta)
+        db.session.commit()
+
+        # Devuelve JSON para que el front redirija con fetch
+        return jsonify({"id": nueva_consulta.id}), 201
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 400
+
+
 
 # Endpoint para actualizar una consulta
 @consulta_bp.route("/consulta/<int:id_consulta>", methods=["PUT"])
