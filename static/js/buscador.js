@@ -91,6 +91,8 @@ document.addEventListener("DOMContentLoaded", function () {
       if (modoActual === "consulta") consultaBtn.checked = true;
       
       actualizarFiltros();
+
+      //  window.location.href = window.location.pathname + "?modo=" + modoActual;
     });
   }
 });

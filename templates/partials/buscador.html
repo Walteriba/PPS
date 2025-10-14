@@ -12,15 +12,6 @@
     Opciones avanzadas
   </button>
 
-  <!-- Boton limpiar filtros -->
-  <button
-    id="clearFilters"
-    class="btn btn-outline-success me-3"
-    type="button"
-  >
-    Borrar filtros
-  </button>
-
   <!-- Barra de busqueda -->
   <form
     id="searchForm"
@@ -188,7 +179,13 @@
           value="{{ search.email }}"
         />
       </div>
+    </div>    
+    <!-- Boton para borrar filtros -->
+    <div class="text-end mt-3">
+      <button id="clearFilters" class="btn btn-outline-success" type="button">
+        Borrar filtros
+      </button>
     </div>
-    
+
   </div>
 </div>
