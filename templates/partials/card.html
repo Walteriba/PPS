@@ -29,8 +29,12 @@
                 <input class="edit-mode form-control" type="text" name="raza" value="{{ paciente.raza }}" style="display:none;">
               </p>
               <p class="card-text"><strong>Sexo:</strong> 
-                <span class="view-mode">{{ paciente.sexo }}</span>
-                <input class="edit-mode form-control" type="text" name="sexo" value="{{ paciente.sexo }}" style="display:none;">
+              <span class="view-mode">{{ paciente.sexo }}</span>
+  
+                <select class="edit-mode form-select" name="sexo" style="display:none;">
+                  <option value="Macho" {% if paciente.sexo == 'Macho' %}selected{% endif %}>Macho</option>
+                  <option value="Hembra" {% if paciente.sexo == 'Hembra' %}selected{% endif %}>Hembra</option>
+                </select>
               </p>
               <p class="card-text"><strong>Color:</strong> 
                 <span class="view-mode">{{ paciente.color }}</span>
@@ -69,7 +73,13 @@
           <!-- Botones -->
           <button id="editBtn" class="btn btn-primary">Editar</button>
           <button id="saveBtn" class="btn btn-success" style="display:none;">Guardar</button>
-          <a href="/" class="btn btn-secondary">Volver</a>
+          <div class="col-auto">
+         {% if paciente and paciente.id %}
+               <a href="/paciente/{{ paciente.id }}" class="btn btn-secondary mt-2">Cancelar</a>
+         {% else %}
+              <a href="{{ url_for('home_bp.index') }}" class="btn btn-secondary mt-2">Cancelar</a>
+        {% endif %}
+          </div>
         </div>
       </div>
     </div>
@@ -85,9 +95,43 @@ document.getElementById("editBtn").addEventListener("click", function() {
 });
 
 document.getElementById("saveBtn").addEventListener("click", async function() {
+  // --- INICIO DE LA VALIDACIÓN ---
+  
+  const camposObligatorios = [
+    'nombre', 'especie', 'raza', 'color', 'fecha_nacimiento'
+  ];
+  let esValido = true;
+
+  // Primero, limpiamos errores de validaciones anteriores
+  document.querySelectorAll(".edit-mode.is-invalid").forEach(el => {
+    el.classList.remove('is-invalid');
+  });
+
+  // Validamos cada campo obligatorio
+  camposObligatorios.forEach(nombreCampo => {
+    const input = document.querySelector(`.edit-mode[name="${nombreCampo}"]`);
+    // Usamos trim() para eliminar espacios en blanco al inicio y al final
+    if (!input.value || input.value.trim() === '') {
+      input.classList.add('is-invalid'); // Añade el borde rojo
+      esValido = false;
+    }
+  });
+
+  if (!esValido) {
+    alert("Por favor, complete todos los campos obligatorios marcados en rojo.");
+    return; // Detiene la ejecución si hay errores
+  }
+
+  // --- FIN DE LA VALIDACIÓN ---
+
+  // Si la validación pasa, continuamos con el envío de datos
   const data = new FormData();
+
   document.querySelectorAll(".edit-mode").forEach(input => {
     if (input.type === "checkbox") {
+      // Para checkboxes, el valor es 'on' si está marcado, de lo contrario no se envía.
+      // Flask/Jinja lo interpretará como True. Si no está marcado, no se incluye en FormData
+      // y el backend lo interpretará como False.
       if (input.checked) {
         data.append(input.name, "on");
       }
@@ -108,7 +152,7 @@ document.getElementById("saveBtn").addEventListener("click", async function() {
   if (resp.ok) {
     location.reload();
   } else {
-    alert("Error al guardar");
+    alert("Error al guardar los cambios");
   }
 });
 </script>
