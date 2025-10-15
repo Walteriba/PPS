@@ -6,7 +6,7 @@ from models.tutor import Tutor
 from models.consulta import Consulta
 from models import db
 from utils.cloudinary_utils import subir_y_obtener_url
-from models.archivos import Archivo
+from models.archivo import Archivo
 
 consulta_bp = Blueprint("consulta_bp", __name__)    # Definición del Blueprint
 
@@ -14,9 +14,10 @@ consulta_bp = Blueprint("consulta_bp", __name__)    # Definición del Blueprint
 @consulta_bp.route("/consulta/nuevo", methods=["GET", "POST"])
 def crear_consulta():
     data = request.form
-    archivos = request.files.getlist("archivos")
+    archivo = request.files.getlist("archivo")
     """Crear una nueva consulta médica."""
-    nueva_consulta = Consulta(
+    try:
+        nueva_consulta = Consulta(
         # La fecha aunque se puede modificar para cargar una consulta de días anteriores
         # por defecto toma la fecha actual
         fecha_actual=datetime.strptime(request.form["fecha"], "%Y-%m-%d"),
@@ -30,17 +31,17 @@ def crear_consulta():
         tutor_id=int(request.form["tutor_id"]),
         paciente_id=int(request.form["paciente_id"])
     )
-    db.session.add(nueva_consulta)
-    db.session.commit()
     
-    archivos = request.files.getlist("archivos")
-    for archivo in archivos:
+    archivo_subido = request.files.getlist("archivo")
+    for archivo in archivo_subido:
         url = subir_y_obtener_url(archivo)
         nuevo_archivo = Archivo(
             url=url,
             paciente_id=nueva_consulta.paciente_id,
             consulta_id=nueva_consulta.id,
         )
+            nueva_consulta.archivos.append(nuevo_archivo)
+
         db.session.add(nuevo_archivo)
     db.session.commit()
 
@@ -49,10 +50,10 @@ def crear_consulta():
 # Endpoint para actualizar una consulta
 @consulta_bp.route("/consulta/<int:id_consulta>", methods=["PUT"])
 def actualizar_consulta(id_consulta):
-    # Buscar la consulta por ID
-    consulta = Consulta.query.get(id_consulta)
-    if not consulta:
-        return jsonify({"error": "Consulta no encontrada"}), 404
+    try:
+        consulta = Consulta.query.get(id_consulta)
+        if not consulta:
+            return jsonify({"error": "Consulta no encontrada"}), 404
 
     # Actualizar campos si vienen en el request.form
     fecha = request.form.get("fecha")
@@ -62,7 +63,31 @@ def actualizar_consulta(id_consulta):
     peso = request.form.get("peso")
     if peso:
         consulta.peso = float(peso)
+     # Lógica para ELIMINAR archivos existentes
+        ids_a_eliminar = request.form.getlist("archivos_a_eliminar")
+        if ids_a_eliminar:
+            # Filtramos los archivos que pertenecen a la consulta y cuyo ID está en la lista a eliminar
+            archivos_para_borrar = [archivo for archivo in consulta.archivos if str(archivo.id) in ids_a_eliminar]
+            for archivo in archivos_para_borrar:
+                # Simplemente lo removemos de la sesión y el 'delete-orphan' se encarga del resto
+                db.session.delete(archivo)
 
+        # Lógica para AGREGAR nuevos archivos
+        archivos_nuevos = request.files.getlist("archivos_nuevos")
+        for archivo in archivos_nuevos:
+            if archivo.filename:
+                url = subir_y_obtener_url(archivo)
+                nuevo_archivo = Archivo(
+                    url=url,
+                    paciente_id=consulta.paciente_id,
+                    consulta_id=consulta.id
+                )
+                db.session.add(nuevo_archivo)
+        
+        return jsonify({
+            "mensaje": "Consulta actualizada exitosamente",
+            "consulta_id": id_consulta
+        })
     # Guardar cambios en la base de datos
     db.session.commit()
 
@@ -100,7 +125,7 @@ def obtener_consultas():
             "tratamiento": consulta.tratamiento,
             "tutor_id": consulta.tutor_id,
             "paciente_id": consulta.paciente_id,
-            "archivos": [archivo.url for archivo in consulta.archivos]
+            "archivo": [archivo.url for archivo in consulta.archivos]
         })
     return jsonify(resultado), 200
 
@@ -123,7 +148,7 @@ def obtener_consultas_por_paciente(paciente_id):
             "tratamiento": consulta.tratamiento,
             "tutor_id": consulta.tutor_id,
             "paciente_id": consulta.paciente_id,
-            "archivos": [archivo.url for archivo in consulta.archivos]
+            "archivo": [archivo.url for archivo in consulta.archivos]
         })
     return jsonify(resultado), 200
 
@@ -146,7 +171,7 @@ def obtener_consultas_por_anamnesis(anamnesis):
             "tratamiento": consulta.tratamiento,
             "tutor_id": consulta.tutor_id,
             "paciente_id": consulta.paciente_id,
-            "archivos": [archivo.url for archivo in consulta.archivos]
+            "archivo": [archivo.url for archivo in consulta.archivos]
         })
     return jsonify(resultado), 200
 

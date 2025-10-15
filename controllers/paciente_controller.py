@@ -9,36 +9,6 @@ from utils.cloudinary_utils import subir_y_obtener_url
 # Definición del Blueprint
 paciente_bp = Blueprint("paciente_bp", __name__)
 
-# Endpoint para agregar imágenes adicionales a un paciente # no se lo vincula a ningun id_consulta, el endpoint anda  
-@paciente_bp.route("/paciente/<int:id>/imagen", methods=["POST"])
-def agregar_imagen_paciente(id):
-    paciente = Paciente.query.get(id)
-    if not paciente:
-        return jsonify({"error": "Paciente no encontrado"}), 404
-    consulta_id = request.form.get("consulta_id")
-    archivos = request.files.getlist("imagen")
-    urls_nuevas = []
-    print("Archivos recibidos:", archivos)
-    for archivo in archivos:
-        if archivo and archivo.filename != "":
-            print("Procesando archivo:", archivo.filename)
-            url = subir_y_obtener_url(archivo)
-            nueva_imagen = Archivo(url=url, paciente_id=paciente.id, consulta_id=consulta_id)
-            db.session.add(nueva_imagen)
-            urls_nuevas.append(url) 
-    db.session.commit()      
-    return jsonify({"mensaje": "Imágenes agregadas", "urls": urls_nuevas}), 201
-
-# Endpoint para consultar todas las imágenes de un paciente
-@paciente_bp.route("/paciente/<int:id>/imagenes", methods=["GET"])
-def obtener_imagenes_paciente(id):
-    paciente = Paciente.query.get(id)
-    if not paciente:
-        return jsonify({"error": "Paciente no encontrado"}), 404
-    imagenes = Archivo.query.filter_by(paciente_id=id).all()
-    urls = [img.url for img in imagenes]
-    return jsonify({"imagenes": urls}), 200
-
 # Métodos auxiliares 
 def validar_imagen(imagen):
     if imagen:
@@ -182,23 +152,10 @@ def actualizar_paciente(id):
     if fecha_nac:
         paciente.fecha_nacimiento = datetime.strptime(fecha_nac, "%Y-%m-%d")
 
-    # TODO: Imagen (subir solo si se envía un archivo)
-    imagen = request.files.get("imagen")
-    eliminar_imagen = "eliminar_imagen" in request.form
-
-    if eliminar_imagen:
-        paciente.imagen = "/static/imgs/default-avatar.jpg"
-    elif imagen:
-        paciente.imagen = validar_imagen(imagen)
-    # Si no se marca eliminar ni se sube imagen, se conserva la actual
-
     # Campos booleanos (checkboxes)
     paciente.activo = "activo" in request.form
     paciente.reproductor = "reproductor" in request.form
     paciente.castrado = "castrado" in request.form
-
-    # Guardar todo
-    db.session.commit()
 
     # Actualizar tutor si se envía tutor_id
     tutor_id = request.form.get("tutor_id")
