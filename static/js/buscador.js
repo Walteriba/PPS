@@ -23,9 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
   actualizarFiltros();
 
   // Interceptar submit para armar GET con todos los filtros
-  searchForm.addEventListener("submit", function (e) {
-    e.preventDefault(); // evitar submit normal
-
+  function ejecutarBusqueda() {
     const params = new URLSearchParams();
 
     // Determinar el modo
@@ -58,7 +56,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Redirigir a /buscar con los parámetros
     window.location.href = "/buscar?" + params.toString();
+  }
+
+  // Interceptar submit para armar GET con todos los filtros
+  searchForm.addEventListener("submit", function (e) {
+    e.preventDefault(); // evitar submit normal
+    ejecutarBusqueda();
   });
+
+  // Detectar el enter
+  document
+    .querySelectorAll("#filtrosAvanzados input")
+    .forEach((input) => {
+      input.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          ejecutarBusqueda();
+        }
+      });
+    });
 
   // Boton para limpiar filtros
   const clearBtn = document.getElementById("clearFilters");
@@ -92,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function () {
       
       actualizarFiltros();
 
-      //  window.location.href = window.location.pathname + "?modo=" + modoActual;
+      // window.location.href = window.location.pathname + "?modo=" + modoActual;
     });
   }
 });
