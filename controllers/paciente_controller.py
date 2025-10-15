@@ -8,13 +8,6 @@ from utils.cloudinary_utils import subir_y_obtener_url
 # Definición del Blueprint
 paciente_bp = Blueprint("paciente_bp", __name__)
 
-# Métodos auxiliares 
-def validar_imagen(imagen):
-    if imagen:
-        url = subir_y_obtener_url(imagen)
-    else:
-        url = "/static/imgs/default-avatar.jpg"
-    return url 
 
 # Endpoint para crear paciente (insert)
 @paciente_bp.route("/paciente/nuevo", methods=["POST"])
@@ -42,31 +35,37 @@ def crear_paciente():
     # Crear nuevo paciente con asignacion
 =======
     # TODO: agregar validaciones faltantes
-    # valida tutor_id primero 
+    # valida tutor_id primero
     tutor_id = request.form.get("tutor_id")
-    if not tutor_id: 
+    if not tutor_id:
         return jsonify({"error": "tutor_id es requerido"}), 400
-    try: 
+    try:
         tutor = Tutor.query.get(int(tutor_id))
-    except ValueError:  
-        return jsonify({"error": "tutor_id debe ser un numero"}),400
-    if not tutor: 
-        return jsonify({"error": "Tutor no encontrado"}), 400   
-    
+    except ValueError:
+        return jsonify({"error": "tutor_id debe ser un numero"}), 400
+    if not tutor:
+        return jsonify({"error": "Tutor no encontrado"}), 400
+
+    # Procesar imagen si viene, sino usar default
     imagen = request.files.get("imagen")
-    if imagen: 
+    if imagen:
         url = subir_y_obtener_url(imagen)
     else:
         url = "/static/imgs/default-avatar.jpg"
+<<<<<<< HEAD
            
     # Crear nuevo paciente con asignacion 
 >>>>>>> ec869bb (Refactor: separar lógica de imágenes adicionales y limpiar actualización de paciente)
+=======
+    # Crear nuevo paciente con asignacion
+>>>>>>> acb68fb (Revert paciente)
     nuevo_paciente = Paciente(
         nombre=request.form["nombre"],
         especie=request.form["especie"],
         raza=request.form["raza"],
         sexo=request.form["sexo"],
         color=request.form["color"],
+<<<<<<< HEAD
 <<<<<<< HEAD
         fecha_nacimiento=datetime.strptime(
             request.form["fecha_nacimiento"], "%Y-%m-%d"
@@ -120,20 +119,33 @@ def crear_paciente():
         return jsonify({"mensaje": "Paciente creado con éxito", "id": nuevo_paciente.id}), 201   
 =======
         fecha_nacimiento=datetime.strptime(request.form["fecha_nacimiento"], "%Y-%m-%d"),
+=======
+        fecha_nacimiento=datetime.strptime(
+            request.form["fecha_nacimiento"], "%Y-%m-%d"
+        ),
+>>>>>>> acb68fb (Revert paciente)
         imagen=url,
-        activo=("activo" in request.form),
         reproductor=("reproductor" in request.form),
         castrado=("castrado" in request.form),
-        tutor=tutor
+        tutor=tutor,
     )
     db.session.add(nuevo_paciente)
     db.session.commit()
+<<<<<<< HEAD
     return jsonify({"mensaje": "Paciente creado con éxito", "id": nuevo_paciente.id}), 201   
 >>>>>>> ec869bb (Refactor: separar lógica de imágenes adicionales y limpiar actualización de paciente)
                      
 >>>>>>> e9c74f2 (logica paciente)
+=======
+    return (
+        jsonify({"mensaje": "Paciente creado con éxito", "id": nuevo_paciente.id}),
+        201,
+    )
+
+
+>>>>>>> acb68fb (Revert paciente)
 # Endpoint para actualizar un paciente
-@paciente_bp.route("/paciente/<int:id>", methods=["PUT"])
+@paciente_bp.route("/paciente/actualizar/<int:id>", methods=["PUT"])
 def actualizar_paciente(id):
     # Buscar el paciente por ID
     paciente = Paciente.query.get(id)
@@ -150,12 +162,14 @@ def actualizar_paciente(id):
     fecha_nac = request.form.get("fecha_nacimiento")
     if fecha_nac:
         paciente.fecha_nacimiento = datetime.strptime(fecha_nac, "%Y-%m-%d")
-
+    # Subir solo si se envía un archivo
+    imagen = request.files.get("imagen")
+    if imagen:
+        paciente.imagen = subir_y_obtener_url(imagen)
     # Campos booleanos (checkboxes)
     paciente.activo = "activo" in request.form
     paciente.reproductor = "reproductor" in request.form
     paciente.castrado = "castrado" in request.form
-
     # Actualizar tutor si se envía tutor_id
     tutor_id = request.form.get("tutor_id")
     if tutor_id:
@@ -165,4 +179,7 @@ def actualizar_paciente(id):
         paciente.tutor = tutor
     # Guardar cambios
     db.session.commit()
-    return jsonify({"mensaje": "Paciente actualizado con éxito", "id": paciente.id}), 200  
+    return (
+        jsonify({"mensaje": "Paciente actualizado con éxito", "id": paciente.id}),
+        200,
+    )
