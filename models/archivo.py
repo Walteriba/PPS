@@ -6,6 +6,3 @@ class Archivo(db.Model):
     consulta_id = db.Column(db.Integer, db.ForeignKey('consultas.id'), nullable=True)
     
     consulta = db.relationship('Consulta', backref=db.backref('archivos', lazy=True))
-
-    def __repr__(self):
-        return f'<Archivo {self.id} - {self.url}>'
