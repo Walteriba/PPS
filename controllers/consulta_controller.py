@@ -61,20 +61,11 @@ def actualizar_consulta(id_consulta):
     # Lógica para AGREGAR nuevos archivos
     archivos_nuevos = request.files.getlist("archivos_nuevos")
     for archivo in archivos_nuevos:
-     if archivo.filename:
-       url = subir_y_obtener_url(archivo)
-       nuevo_archivo = Archivo(
-       url=url,
-       paciente_id=consulta.paciente_id,
-       consulta_id=consulta.id
-    )
-    db.session.add(nuevo_archivo)
-        
-    return jsonify({
-      "mensaje": "Consulta actualizada exitosamente",
-      "consulta_id": id_consulta
-        })
-    # Guardar cambios en la base de datos
+       if archivo.filename:
+          url = subir_y_obtener_url(archivo)
+          nuevo_archivo = Archivo(url=url)
+          consulta.archivos.append(nuevo_archivo)
+    
     db.session.commit()
 
     return jsonify({
