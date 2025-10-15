@@ -16,20 +16,19 @@ def crear_consulta():
     data = request.form
     archivo = request.files.getlist("archivo")
     """Crear una nueva consulta médica."""
-    try:
-        nueva_consulta = Consulta(
+    nueva_consulta = Consulta(
         # La fecha aunque se puede modificar para cargar una consulta de días anteriores
         # por defecto toma la fecha actual
-        fecha_actual=datetime.strptime(request.form["fecha"], "%Y-%m-%d"),
-        peso=float(request.form["peso"]), # Validar, no puede ser más de 100kg
-        temperatura=float(request.form["temperatura"]), # Validar, no puede ser más de 50 grados
-        anamnesis=request.form.get("anamnesis"),
-        examen_fisico=request.form.get("examen_fisico"),
-        diagnostico=request.form.get("diagnostico"),
-        tratamiento=request.form.get("tratamiento"),
+    fecha_actual=datetime.strptime(request.form["fecha"], "%Y-%m-%d"),
+    peso=float(request.form["peso"]), # Validar, no puede ser más de 100kg
+    temperatura=float(request.form["temperatura"]), # Validar, no puede ser más de 50 grados
+    anamnesis=request.form.get("anamnesis"),
+    examen_fisico=request.form.get("examen_fisico"),
+    diagnostico=request.form.get("diagnostico"),
+    tratamiento=request.form.get("tratamiento"),
         # Validar que el paciente y tutor existan
-        tutor_id=int(request.form["tutor_id"]),
-        paciente_id=int(request.form["paciente_id"])
+    tutor_id=int(request.form["tutor_id"]),
+    paciente_id=int(request.form["paciente_id"])
     )
     
     archivo_subido = request.files.getlist("archivo")
@@ -40,7 +39,7 @@ def crear_consulta():
             paciente_id=nueva_consulta.paciente_id,
             consulta_id=nueva_consulta.id,
         )
-            nueva_consulta.archivos.append(nuevo_archivo)
+        nueva_consulta.archivos.append(nuevo_archivo)
 
         db.session.add(nuevo_archivo)
     db.session.commit()
@@ -50,10 +49,9 @@ def crear_consulta():
 # Endpoint para actualizar una consulta
 @consulta_bp.route("/consulta/<int:id_consulta>", methods=["PUT"])
 def actualizar_consulta(id_consulta):
-    try:
-        consulta = Consulta.query.get(id_consulta)
-        if not consulta:
-            return jsonify({"error": "Consulta no encontrada"}), 404
+    consulta = Consulta.query.get(id_consulta)
+    if not consulta:
+        return jsonify({"error": "Consulta no encontrada"}), 404
 
     # Actualizar campos si vienen en el request.form
     fecha = request.form.get("fecha")
