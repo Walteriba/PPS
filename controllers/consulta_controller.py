@@ -6,31 +6,59 @@ from models.tutor import Tutor
 from models.consulta import Consulta
 from models import db
 
-consulta_bp = Blueprint("consulta_bp", __name__)    # Definición del Blueprint
+consulta_bp = Blueprint("consulta_bp", __name__)     # Definición del Blueprint
 
 # Endpoint para crear consulta (insert)
 @consulta_bp.route("/consulta/nuevo", methods=["GET", "POST"])
 def crear_consulta():
     """Crear una nueva consulta médica."""
+    
+    # NOTA: En este endpoint, estás usando request.form["campo"] que lanzará
+    # una excepción si el campo obligatorio no existe. Es una forma de validar.
+    
+    try:
+        # Validaciones de datos y conversiones
+        fecha_consulta = datetime.strptime(request.form["fecha"], "%Y-%m-%d")
+        peso_consulta = float(request.form["peso"])
+        temperatura_consulta = float(request.form["temperatura"])
+        tutor_id_consulta = int(request.form["tutor_id"])
+        paciente_id_consulta = int(request.form["paciente_id"])
+
+        # Validación del límite de peso (ejemplo)
+        if peso_consulta > 100:
+            return jsonify({"error": "El peso no puede ser mayor a 100 kg"}), 400
+            
+        # Validación del límite de temperatura (ejemplo)
+        if temperatura_consulta > 50:
+            return jsonify({"error": "La temperatura no puede ser mayor a 50 grados"}), 400
+            
+    except ValueError as e:
+        # Manejo de errores de conversión (float, int, datetime)
+        return jsonify({"error": f"Error en el formato de datos: {e}"}), 400
+    except KeyError as e:
+        # Manejo de campos obligatorios faltantes
+        return jsonify({"error": f"Campo obligatorio faltante: {e}"}), 400
+
     nueva_consulta = Consulta(
         # La fecha aunque se puede modificar para cargar una consulta de días anteriores
         # por defecto toma la fecha actual
-        fecha_actual=datetime.strptime(request.form["fecha"], "%Y-%m-%d"),
-        peso=float(request.form["peso"]), # Validar, no puede ser más de 100kg
-        temperatura=float(request.form["temperatura"]), # Validar, no puede ser más de 50 grados
+        fecha=fecha_consulta,
+        peso=peso_consulta, 
+        temperatura=temperatura_consulta, 
         anamnesis=request.form.get("anamnesis"),
         examen_fisico=request.form.get("examen_fisico"),
         diagnostico=request.form.get("diagnostico"),
         tratamiento=request.form.get("tratamiento"),
-        # Validar que el paciente y tutor existan
-        tutor_id=int(request.form["tutor_id"]),
-        paciente_id=int(request.form["paciente_id"])
+        # Validar que el paciente y tutor existan (esto no está aquí, pero es buena práctica)
+        tutor_id=tutor_id_consulta,
+        paciente_id=paciente_id_consulta
     )
+    
     db.session.add(nueva_consulta)
     db.session.commit()
     return jsonify({"mensaje": "Consulta creada con éxito", "id": nueva_consulta.id}), 201
 
-# Endpoint para actualizar una consulta
+# Endpoint para actualizar una consulta (MODIFICADO)
 @consulta_bp.route("/consulta/<int:id_consulta>", methods=["PUT"])
 def actualizar_consulta(id_consulta):
     # Buscar la consulta por ID
@@ -38,15 +66,58 @@ def actualizar_consulta(id_consulta):
     if not consulta:
         return jsonify({"error": "Consulta no encontrada"}), 404
 
-    # Actualizar campos si vienen en el request.form
+    # --- Lógica de Actualización de Campos ---
+    
+    # 1. Fecha (Requiere conversión de string a datetime)
     fecha = request.form.get("fecha")
-    if fecha:
-        consulta.fecha = datetime.strptime(fecha, "%Y-%m-%d")
+    if fecha is not None:
+        try:
+            consulta.fecha = datetime.strptime(fecha, "%Y-%m-%d")
+        except ValueError:
+            return jsonify({"error": "Formato de fecha inválido. Use AAAA-MM-DD"}), 400
 
+    # 2. Peso (Requiere conversión a float)
     peso = request.form.get("peso")
-    if peso:
-        consulta.peso = float(peso)
+    if peso is not None:
+        try:
+            peso_float = float(peso)
+            # if peso_float > 100:
+            #     return jsonify({"error": "El peso no puede exceder los 100kg"}), 400
+            consulta.peso = peso_float
+        except ValueError:
+            return jsonify({"error": "Peso debe ser un número válido"}), 400
 
+    # 3. Temperatura (Requiere conversión a float)
+    temperatura = request.form.get("temperatura")
+    if temperatura is not None:
+        try:
+            temperatura_float = float(temperatura)
+            # if temperatura_float > 50:
+            #     return jsonify({"error": "La temperatura no puede exceder los 50 grados"}), 400
+            consulta.temperatura = temperatura_float
+        except ValueError:
+            return jsonify({"error": "Temperatura debe ser un número válido"}), 400
+            
+    # 4. Anamnesis (Texto plano)
+    anamnesis = request.form.get("anamnesis")
+    if anamnesis is not None:
+        consulta.anamnesis = anamnesis
+
+    # 5. Examen Físico (Texto plano)
+    examen_fisico = request.form.get("examen_fisico")
+    if examen_fisico is not None:
+        consulta.examen_fisico = examen_fisico
+
+    # 6. Diagnóstico (Texto plano)
+    diagnostico = request.form.get("diagnostico")
+    if diagnostico is not None:
+        consulta.diagnostico = diagnostico
+
+    # 7. Tratamiento (Texto plano)
+    tratamiento = request.form.get("tratamiento")
+    if tratamiento is not None:
+        consulta.tratamiento = tratamiento
+        
     # Guardar cambios en la base de datos
     db.session.commit()
 
@@ -56,8 +127,8 @@ def actualizar_consulta(id_consulta):
     })
 
 # Endpoint para eliminar una consulta
-@consulta_bp.route("/consulta/<int:id>", methods=["DELETE"])
-def eliminar_consulta(id_consulta):
+@consulta_bp.route("/consulta/<int:id_consulta>", methods=["DELETE"])
+def eliminar_consulta(id_consulta): # Corregida la variable a id_consulta para coincidir con la URL
     # Buscar consulta por ID
     consulta = Consulta.query.get(id_consulta)
     if not consulta:
@@ -131,16 +202,20 @@ def obtener_consultas_por_anamnesis(anamnesis):
         })
     return jsonify(resultado), 200
 
-# Endpoint para ver una consulta específica
+# Endpoint para ver una consulta específica (asume que consulta.html existe)
 @consulta_bp.route("/consulta/<int:consulta_id>", methods=["GET"])
 def ver_consulta(consulta_id):
     consulta = Consulta.query.get_or_404(consulta_id)
     paciente = Paciente.query.get(consulta.paciente_id)
     tutor = Tutor.query.get(consulta.tutor_id)
-    
+    # esta es una prueba de comentario
+    # Esto es más para el frontend, pero es un endpoint válido que ya tenías
     return render_template(
         "consulta.html",
         consulta=consulta,
         paciente=paciente,
         tutor=tutor
     )
+
+# esta es una prueba de comentario
+
