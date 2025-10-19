@@ -1,9 +1,12 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_file
 from models.paciente import Paciente
 from models.tutor import Tutor
 from models import db
 from datetime import datetime
 from utils.cloudinary_utils import subir_y_obtener_url
+from io import BytesIO
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
 
 # Definición del Blueprint
 paciente_bp = Blueprint("paciente_bp", __name__)
@@ -92,3 +95,78 @@ def actualizar_paciente(id):
         jsonify({"mensaje": "Paciente actualizado con éxito", "id": paciente.id}),
         200,
     )
+
+# --- Endpoint para Generar Reporte ---
+@paciente_bp.route("/paciente/<int:paciente_id>/reporte", methods=["POST"])
+def generar_reporte_paciente(paciente_id):
+    """
+    Genera un reporte en PDF con la historia clínica de un paciente,
+    filtrado por un rango de fechas.
+    """
+    # 1. Validar que el paciente exista.
+    paciente = Paciente.query.get_or_404(paciente_id)
+    
+    # 2. Obtener y validar las fechas del JSON.
+    datos = request.get_json()
+    if not datos or "fecha_inicio" not in datos or "fecha_fin" not in datos:
+        return jsonify({"error": "Se requiere 'fecha_inicio' y 'fecha_fin' en formato YYYY-MM-DD."}), 400
+
+    try:
+        fecha_inicio = datetime.strptime(datos["fecha_inicio"], "%Y-%m-%d").date()
+        fecha_fin = datetime.strptime(datos["fecha_fin"], "%Y-%m-%d").date()
+    except ValueError:
+        return jsonify({"error": "Formato de fecha inválido. Utiliza YYYY-MM-DD."}), 400
+ # 3. Filtrar las consultas en la base de datos.
+    consultas = Consulta.query.filter(
+        Consulta.paciente_id == paciente_id,
+        Consulta.fecha.between(fecha_inicio, fecha_fin)
+    ).order_by(Consulta.fecha.asc()).all()
+
+    if not consultas:
+        return jsonify({"mensaje": "No se encontraron consultas en el rango de fechas especificado."}), 404
+
+    # 4. Crear el PDF en memoria.
+    buffer = BytesIO()
+    p = canvas.Canvas(buffer, pagesize=letter)
+    width, height = letter
+    y = height - 70  # Posición Y inicial.
+
+    # Cabecera del PDF
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(50, y, f"Historia Clínica: {paciente.nombre}")
+    y -= 30
+    p.setFont("Helvetica", 11)
+    p.drawString(50, y, f"Periodo: {fecha_inicio.strftime('%d/%m/%Y')} - {fecha_fin.strftime('%d/%m/%Y')}")
+    y -= 25
+    p.line(50, y, width - 50, y)
+    y -= 20
+
+     # Contenido de cada consulta
+    for consulta in consultas:
+        if y < 120:  # Si queda poco espacio, crea una nueva página.
+            p.showPage()
+            y = height - 70
+
+        p.setFont("Helvetica-Bold", 12)
+        p.drawString(60, y, f"Fecha: {consulta.fecha.strftime('%d/%m/%Y')}")
+        y -= 20
+        
+        p.setFont("Helvetica", 10)
+        p.drawString(70, y, f"Anamnesis: {consulta.anamnesis or 'N/A'}")
+        y -= 15
+        p.drawString(70, y, f"Diagnóstico: {consulta.diagnostico or 'N/A'}")
+        y -= 15
+        p.drawString(70, y, f"Tratamiento: {consulta.tratamiento or 'N/A'}")
+        y -= 25 # Espacio extra para la siguiente consulta.
+
+    # 5. Guardar y devolver el archivo PDF.
+    p.save()
+    buffer.seek(0)
+
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name=f"reporte_{paciente.nombre.replace(' ', '_')}.pdf",
+        mimetype="application/pdf"
+    )
+    
