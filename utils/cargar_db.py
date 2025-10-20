@@ -45,9 +45,9 @@ nombres_mascotas = [
 ]
 
 especies = {
-    "Perro": ["Labrador", "Bulldog", "Pastor Alemán", "Golden", "Mestizo"],
-    "Gato": ["Siamés", "Persa", "Angora", "Mestizo", "Maine Coon"],
-    "Conejo": ["Holandés", "Rex", "Angora", "Californiano"],
+    "Canino": ["Labrador", "Bulldog", "Pastor Alemán", "Golden", "Mestizo"],
+    "Felino": ["Siamés", "Persa", "Angora", "Mestizo", "Maine Coon"],
+    "Roedor": ["Holandés", "Rex", "Angora", "Californiano"],
     "Ave": ["Canario", "Periquito", "Agapornis", "Cacatúa"],
 }
 

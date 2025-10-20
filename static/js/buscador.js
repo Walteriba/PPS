@@ -56,6 +56,14 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
+    // Agregar especie (select) si tiene valor distinto a vacío
+    const especieSelect = filtrosActivos.querySelector(
+      "select[name='especie']"
+    );
+    if (especieSelect && especieSelect.value) {
+      params.set(especieSelect.name, especieSelect.value);
+    }
+
     // Redirigir a /buscar con los parámetros
     window.location.href = "/buscar?" + params.toString();
   });
@@ -85,6 +93,10 @@ document.addEventListener("DOMContentLoaded", function () {
           input.value = "";
         }
       });
+       
+      // Limpiar el select
+      const especieSelect = filtrosPaciente.querySelector("select[name='especie']");
+      if (especieSelect) especieSelect.selectedIndex = 0;
 
       if (modoActual === "paciente") pacienteBtn.checked = true;
       if (modoActual === "tutor") tutorBtn.checked = true;
