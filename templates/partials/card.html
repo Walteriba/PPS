@@ -70,89 +70,120 @@
             </div>
           </div>
 
-          <!-- Botones -->
-          <button id="editBtn" class="btn btn-primary">Editar</button>
-          <button id="saveBtn" class="btn btn-success" style="display:none;">Guardar</button>
-          <div class="col-auto">
-         {% if paciente and paciente.id %}
-               <a href="/paciente/{{ paciente.id }}" class="btn btn-secondary mt-2">Cancelar</a>
-         {% else %}
-              <a href="{{ url_for('home_bp.index') }}" class="btn btn-secondary mt-2">Cancelar</a>
-        {% endif %}
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+              <button id="editBtn" class="btn btn-primary">Editar</button>
+              <button id="saveBtn" class="btn btn-success" style="display:none;">Guardar</button>
+                  <div class="col-auto">
+                      {% if paciente and paciente.id %}
+                          <a id="cancelBtn" href="/paciente/{{ paciente.id }}" class="btn btn-secondary mt-2">Cancelar</a>
+                      {% else %}
+                          <a id="cancelBtn" href="{{ url_for('home_bp.buscar') }}" class="btn btn-secondary mt-2">Cancelar</a>
+                      {% endif %}
+                  </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
 <script>
+const cancelBtn = document.getElementById("cancelBtn");
+const homeUrl = "{{ url_for('home_bp.buscar') }}";
+
+// --- LÓGICA DE COMPORTAMIENTO INICIAL ---
+// Si estamos en la página de un paciente existente: 
+// En modo VISTA, Cancelar debe ir al Home.
+{% if paciente and paciente.id %}
+    if (cancelBtn) {
+        // Al cargar la página (Modo Vista), el botón Cancelar apunta al Home.
+        cancelBtn.href = homeUrl;
+    }
+{% endif %}
+// ----------------------------------------
+
 document.getElementById("editBtn").addEventListener("click", function() {
-  document.querySelectorAll(".view-mode").forEach(e => e.style.display = "none");
-  document.querySelectorAll(".edit-mode").forEach(e => e.style.display = "inline-block");
-  document.getElementById("editBtn").style.display = "none";
-  document.getElementById("saveBtn").style.display = "inline-block";
+    // Mostrar/ocultar inputs
+    document.querySelectorAll(".view-mode").forEach(e => e.style.display = "none");
+    document.querySelectorAll(".edit-mode").forEach(e => e.style.display = "inline-block");
+    document.getElementById("editBtn").style.display = "none";
+    document.getElementById("saveBtn").style.display = "inline-block";
+
+    // ----------------------------------------------------
+    // Lógica para el botón Cancelar en Modo EDICIÓN
+    // ----------------------------------------------------
+    if (cancelBtn) {
+        // 1. Guardar el enlace original (Home) en un atributo de datos
+        const originalHref = cancelBtn.getAttribute('href'); 
+        cancelBtn.setAttribute('data-original-href', originalHref); 
+        // 2. Cambiar el href para que Cancelar recargue la página actual (descarta cambios)
+        cancelBtn.href = window.location.href; 
+    }
 });
 
 document.getElementById("saveBtn").addEventListener("click", async function() {
-  // --- INICIO DE LA VALIDACIÓN ---
-  
-  const camposObligatorios = [
-    'nombre', 'especie', 'raza', 'color', 'fecha_nacimiento'
-  ];
-  let esValido = true;
+    // --- INICIO DE LA VALIDACIÓN ---
+    
+    const camposObligatorios = [
+        'nombre', 'especie', 'raza', 'color', 'fecha_nacimiento'
+    ];
+    let esValido = true;
 
-  // Primero, limpiamos errores de validaciones anteriores
-  document.querySelectorAll(".edit-mode.is-invalid").forEach(el => {
-    el.classList.remove('is-invalid');
-  });
+    // Primero, limpiamos errores de validaciones anteriores
+    document.querySelectorAll(".edit-mode.is-invalid").forEach(el => {
+        el.classList.remove('is-invalid');
+    });
 
-  // Validamos cada campo obligatorio
-  camposObligatorios.forEach(nombreCampo => {
-    const input = document.querySelector(`.edit-mode[name="${nombreCampo}"]`);
-    // Usamos trim() para eliminar espacios en blanco al inicio y al final
-    if (!input.value || input.value.trim() === '') {
-      input.classList.add('is-invalid'); // Añade el borde rojo
-      esValido = false;
-    }
-  });
+    // Validamos cada campo obligatorio
+    camposObligatorios.forEach(nombreCampo => {
+        const input = document.querySelector(`.edit-mode[name="${nombreCampo}"]`);
+        // Usamos trim() para eliminar espacios en blanco al inicio y al final
+        if (!input.value || input.value.trim() === '') {
+            input.classList.add('is-invalid'); // Añade el borde rojo
+            esValido = false;
+        }
+    });
 
-  if (!esValido) {
-    alert("Por favor, complete todos los campos obligatorios marcados en rojo.");
+    if (!esValido) {
+       
+        const errorModal = new bootstrap.Modal(document.getElementById('validationErrorModal'));
+
+    
+        document.getElementById('modalErrorMessage').textContent = "Falta/n completar algunos de los campos.";
+
+
+        errorModal.show();
+    
     return; // Detiene la ejecución si hay errores
-  }
-
-  // --- FIN DE LA VALIDACIÓN ---
-
-  // Si la validación pasa, continuamos con el envío de datos
-  const data = new FormData();
-
-  document.querySelectorAll(".edit-mode").forEach(input => {
-    if (input.type === "checkbox") {
-      // Para checkboxes, el valor es 'on' si está marcado, de lo contrario no se envía.
-      // Flask/Jinja lo interpretará como True. Si no está marcado, no se incluye en FormData
-      // y el backend lo interpretará como False.
-      if (input.checked) {
-        data.append(input.name, "on");
       }
-    } else if (input.type === "file") {
-      if (input.files.length > 0) {
-        data.append(input.name, input.files[0]);
-      }
+
+    // --- FIN DE LA VALIDACIÓN ---
+
+    // Si la validación pasa, continuamos con el envío de datos
+    const data = new FormData();
+
+    document.querySelectorAll(".edit-mode").forEach(input => {
+        if (input.type === "checkbox") {
+            if (input.checked) {
+                data.append(input.name, "on");
+            }
+        } else if (input.type === "file") {
+            if (input.files.length > 0) {
+                data.append(input.name, input.files[0]);
+            }
+        } else {
+            data.append(input.name, input.value);
+        }
+    });
+
+    const resp = await fetch("/paciente/actualizar/{{ paciente.id }}", {
+        method: "PUT",
+        body: data
+    });
+
+    if (resp.ok) {
+        // Si es exitoso, recargar la página para ver los cambios y volver al modo vista.
+        location.reload();
     } else {
-      data.append(input.name, input.value);
+        alert("Error al guardar los cambios");
     }
-  });
-
-  const resp = await fetch("/paciente/actualizar/{{ paciente.id }}", {
-    method: "PUT",
-    body: data
-  });
-
-  if (resp.ok) {
-    location.reload();
-  } else {
-    alert("Error al guardar los cambios");
-  }
 });
 </script>
