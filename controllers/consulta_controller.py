@@ -75,6 +75,9 @@ def actualizar_consulta(id_consulta):
     
     # 1. Fecha (Requiere conversión de string a datetime)
     fecha = request.form.get("fecha")
+    peso = request.form.get("peso")
+    if peso:
+        consulta.peso = float(peso)
     if fecha is not None:
         try:
             consulta.fecha = datetime.strptime(fecha, "%Y-%m-%d")
