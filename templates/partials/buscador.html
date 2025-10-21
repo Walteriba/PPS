@@ -75,12 +75,15 @@
     <div id="filtrosPaciente">
       <div class="mb-2">
         <label class="form-label">Especie</label>
-        <input
-          type="text"
-          class="form-control"
-          name="especie"
-          value="{{ search.especie }}"
-        />
+        <select class="form-select" name="especie">
+         <option value="" {% if not search.especie %}selected{% endif %}>Todas las especies</option> 
+         <option value="Canino" {% if search.especie == 'Canino' %}selected{% endif %}>Canino</option>
+         <option value="Felino" {% if search.especie == 'Felino' %}selected{% endif %}>Felino</option>
+         <option value="Roedor" {% if search.especie == 'Roedor' %}selected{% endif %}>Roedor</option>
+         <option value="Reptil" {% if search.especie == 'Reptil' %}selected{% endif %}>Reptil</option>
+         <option value="Ave" {% if search.especie == 'Ave' %}selected{% endif %}>Ave</option>
+         <option value="Otros" {% if search.especie == 'Otros' %}selected{% endif %}>Otros</option>
+        </select>
       </div>
       <div class="mb-2">
         <label class="form-label">Raza</label>

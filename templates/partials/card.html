@@ -22,7 +22,14 @@
             <div class="col-sm-6">
               <p class="card-text"><strong>Especie:</strong> 
                 <span class="view-mode">{{ paciente.especie }}</span>
-                <input class="edit-mode form-control" type="text" name="especie" value="{{ paciente.especie }}" style="display:none;">
+                <select class="edit-mode form-select" name="especie" style="display:none;">
+                  <option value="Canino" {% if paciente.especie == 'Canino' %}selected{% endif %}>Canino</option>
+                  <option value="Felino" {% if paciente.especie == 'Felino' %}selected{% endif %}>Felino</option>
+                  <option value="Roedor" {% if paciente.especie == 'Roedor' %}selected{% endif %}>Roedor</option>
+                  <option value="Reptil" {% if paciente.especie == 'Reptil' %}selected{% endif %}>Reptil</option>
+                  <option value="Ave" {% if paciente.especie == 'Ave' %}selected{% endif %}>Ave</option>
+                  <option value="Otros" {% if paciente.especie == 'Otros' %}selected{% endif %}>Otros</option>
+                </select>
               </p>
               <p class="card-text"><strong>Raza:</strong> 
                 <span class="view-mode">{{ paciente.raza }}</span>
