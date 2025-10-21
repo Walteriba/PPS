@@ -7,6 +7,7 @@ from utils.cloudinary_utils import subir_y_obtener_url
 from io import BytesIO
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
+from models.consulta import Consulta
 
 # Definición del Blueprint
 paciente_bp = Blueprint("paciente_bp", __name__)
