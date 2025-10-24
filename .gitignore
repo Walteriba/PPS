@@ -4,6 +4,7 @@ ENV/
 env/
 .venv/
 .env
+PPS_venv/
 
 # Archivos de Python
 __pycache__/
