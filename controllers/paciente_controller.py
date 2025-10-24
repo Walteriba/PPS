@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, send_file
+from flask import Blueprint, request, jsonify, send_file, current_app
 from models.paciente import Paciente
 from models.tutor import Tutor
 from models import db
@@ -8,6 +8,7 @@ from io import BytesIO
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from models.consulta import Consulta
+import os
 
 # Definición del Blueprint
 paciente_bp = Blueprint("paciente_bp", __name__)
@@ -98,69 +99,91 @@ def actualizar_paciente(id):
     )
 
 # --- Endpoint para Generar Reporte ---
-@paciente_bp.route("/paciente/<int:paciente_id>/reporte", methods=["POST"])
+@paciente_bp.route("/paciente/<int:paciente_id>/reporte", methods=["GET"])
 def generar_reporte_paciente(paciente_id):
     """
-    Genera un reporte en PDF con la historia clínica de un paciente,
-    filtrado por un rango de fechas.
+    Genera un reporte en PDF con toda la historia clínica de un paciente.
     """
-    # 1. Validar que el paciente exista.
+    # 1. Validar que el paciente exista y obtener sus datos.
     paciente = Paciente.query.get_or_404(paciente_id)
-    
-    # 2. Obtener y validar las fechas del JSON.
-    datos = request.get_json()
-    if not datos or "fecha_inicio" not in datos or "fecha_fin" not in datos:
-        return jsonify({"error": "Se requiere 'fecha_inicio' y 'fecha_fin' en formato YYYY-MM-DD."}), 400
+    tutor = paciente.tutor # Acceder al tutor a través de la relación
 
-    try:
-        fecha_inicio = datetime.strptime(datos["fecha_inicio"], "%Y-%m-%d").date()
-        fecha_fin = datetime.strptime(datos["fecha_fin"], "%Y-%m-%d").date()
-    except ValueError:
-        return jsonify({"error": "Formato de fecha inválido. Utiliza YYYY-MM-DD."}), 400
- # 3. Filtrar las consultas en la base de datos.
-    consultas = Consulta.query.filter(
-        Consulta.paciente_id == paciente_id,
-        Consulta.fecha.between(fecha_inicio, fecha_fin)
-    ).order_by(Consulta.fecha.asc()).all()
+    # 2. Obtener todas las consultas del paciente.
+    consultas = Consulta.query.filter_by(paciente_id=paciente_id).order_by(Consulta.fecha.asc()).all()
 
-    if not consultas:
-        return jsonify({"mensaje": "No se encontraron consultas en el rango de fechas especificado."}), 404
-
-    # 4. Crear el PDF en memoria.
+    # 3. Crear el PDF en memoria.
     buffer = BytesIO()
     p = canvas.Canvas(buffer, pagesize=letter)
     width, height = letter
-    y = height - 70  # Posición Y inicial.
+    y = height - 50  # Posición Y inicial.
 
-    # Cabecera del PDF
-    p.setFont("Helvetica-Bold", 16)
+    # --- Cabecera del PDF ---
+    # Título
+    p.setFont("Helvetica-Bold", 18)
     p.drawString(50, y, f"Historia Clínica: {paciente.nombre}")
     y -= 30
-    p.setFont("Helvetica", 11)
-    p.drawString(50, y, f"Periodo: {fecha_inicio.strftime('%d/%m/%Y')} - {fecha_fin.strftime('%d/%m/%Y')}")
+
+    # Lógica para la imagen del paciente
+    imagen_path = paciente.imagen
+    try:
+        if imagen_path.startswith('http'): # Si es una URL de Cloudinary
+            response = requests.get(imagen_path, stream=True)
+            response.raise_for_status()
+            p.drawImage(BytesIO(response.content), width - 150, y - 60, width=100, height=100, preserveAspectRatio=True, mask='auto')
+        else: # Si es una ruta local (imagen por defecto)
+            # Construye la ruta absoluta al archivo estático
+            full_path = os.path.join(current_app.root_path, imagen_path.strip('/'))
+            if os.path.exists(full_path):
+                p.drawImage(full_path, width - 150, y - 60, width=100, height=100, preserveAspectRatio=True, mask='auto')
+    except Exception as e:
+        print(f"Error al cargar la imagen: {e}") # Opcional: loguear el error
+
+    # Datos del Paciente
+    p.setFont("Helvetica-Bold", 11)
+    p.drawString(50, y, "Datos del Paciente")
+    p.setFont("Helvetica", 10)
+    y -= 15
+    p.drawString(55, y, f"Especie: {paciente.especie} | Raza: {paciente.raza} | Sexo: {paciente.sexo}")
+    y -= 15
+    p.drawString(55, y, f"Fecha de Nacimiento: {paciente.fecha_nacimiento.strftime('%d/%m/%Y')}")
     y -= 25
+
+    # Datos del Tutor
+    p.setFont("Helvetica-Bold", 11)
+    p.drawString(50, y, "Datos del Tutor")
+    p.setFont("Helvetica", 10)
+    y -= 15
+    p.drawString(55, y, f"Nombre: {tutor.nombre} {tutor.apellido}")
+    y -= 15
+    p.drawString(55, y, f"Teléfono: {tutor.telefono}")
+    y -= 25
+
+    # Línea separadora
     p.line(50, y, width - 50, y)
     y -= 20
 
-     # Contenido de cada consulta
-    for consulta in consultas:
-        if y < 120:  # Si queda poco espacio, crea una nueva página.
-            p.showPage()
-            y = height - 70
+    # --- Contenido de cada consulta ---
+    if not consultas:
+        p.drawString(50, y, "No se encontraron consultas para este paciente.")
+    else:
+        for consulta in consultas:
+            if y < 120:  # Si queda poco espacio, crea una nueva página.
+                p.showPage()
+                y = height - 70
 
-        p.setFont("Helvetica-Bold", 12)
-        p.drawString(60, y, f"Fecha: {consulta.fecha.strftime('%d/%m/%Y')}")
-        y -= 20
-        
-        p.setFont("Helvetica", 10)
-        p.drawString(70, y, f"Anamnesis: {consulta.anamnesis or 'N/A'}")
-        y -= 15
-        p.drawString(70, y, f"Diagnóstico: {consulta.diagnostico or 'N/A'}")
-        y -= 15
-        p.drawString(70, y, f"Tratamiento: {consulta.tratamiento or 'N/A'}")
-        y -= 25 # Espacio extra para la siguiente consulta.
+            p.setFont("Helvetica-Bold", 12)
+            p.drawString(60, y, f"Fecha: {consulta.fecha.strftime('%d/%m/%Y')}")
+            y -= 20
+            
+            p.setFont("Helvetica", 10)
+            p.drawString(70, y, f"Anamnesis: {consulta.anamnesis or 'N/A'}")
+            y -= 15
+            p.drawString(70, y, f"Diagnóstico: {consulta.diagnostico or 'N/A'}")
+            y -= 15
+            p.drawString(70, y, f"Tratamiento: {consulta.tratamiento or 'N/A'}")
+            y -= 25 # Espacio extra para la siguiente consulta.
 
-    # 5. Guardar y devolver el archivo PDF.
+    # 4. Guardar y devolver el archivo PDF.
     p.save()
     buffer.seek(0)
 
