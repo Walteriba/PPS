@@ -11,7 +11,37 @@ from models import db
 from utils.cloudinary_utils import subir_y_obtener_url
 from models.archivo import Archivo
 
-consulta_bp = Blueprint("consulta_bp", __name__)  # Definición del Blueprint
+consulta_bp = Blueprint("consulta_bp", __name__) 
+
+@consulta_bp.route("/consulta/formulario_nuevo", methods=["GET"])
+def mostrar_formulario_consulta():
+    """
+    Muestra la página HTML con el formulario para crear una consulta.
+    """
+    try:
+        paciente_id = request.args.get("paciente_id", type=int)
+        tutor_id = request.args.get("tutor_id", type=int)
+
+        if not paciente_id or not tutor_id:
+            return "Faltan IDs de paciente o tutor", 400
+
+        
+        
+        paciente = Paciente.query.get(paciente_id)
+        tutor = Tutor.query.get(tutor_id)
+        
+        if not paciente or not tutor:
+            return "Paciente o Tutor no encontrado", 404
+        
+        
+    
+        return render_template(
+            "crear_consulta.html", 
+            paciente=paciente,  
+            tutor=tutor         
+        )
+    except Exception as e:
+        return f"Error al cargar el formulario: {e}", 500
 
 # Endpoint para crear consulta (insert)
 @consulta_bp.route("/consulta/nuevo", methods=["POST"])
@@ -83,6 +113,13 @@ def actualizar_consulta(id_consulta):
             consulta.fecha = datetime.strptime(fecha, "%Y-%m-%d")
         except ValueError:
             return jsonify({"error": "Formato de fecha inválido. Use AAAA-MM-DD"}), 400
+        
+    temperatura = request.form.get("temperatura")
+    if temperatura:
+        try:
+            consulta.temperatura = float(temperatura)
+        except ValueError:
+            return jsonify({"error": "Valor de temperatura inválido"}), 400    
 
     # 2. Anamnesis 
     anamnesis = request.form.get("anamnesis")
