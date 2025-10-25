@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, redirect, url_for
+from flask_login import login_required, current_user
 from sqlalchemy.orm import joinedload
 from models.tutor import Tutor
 from models.paciente import Paciente
@@ -28,10 +29,16 @@ def CreatePacienteDto(tutores, pacientes):
     return pacientes_dto
 
 
-# Home
+# Ruta raíz - redirige a login si no está autenticado
 @home_bp.route("/", methods=["GET"])
+def index():
+    if not current_user.is_authenticated:
+        return redirect(url_for('auth_bp.login'))
+    return redirect(url_for('home_bp.buscar'))
+
 # Busqueda de pacientes y tutores
 @home_bp.route("/buscar", methods=["GET"])
+@login_required
 def buscar():
     # Parámetros de búsqueda
     query = request.args.get("q", "").strip()
@@ -150,12 +157,14 @@ def detalle_paciente(id):
 # TODO (Backend): Endpoints temporales creados para probar el frontend.
 # GET -> mostrar la vista nuevo_tutor.html
 @home_bp.route("/tutor/nuevo", methods=["GET"])
+@login_required
 def nuevo_tutor():
     return render_template("nuevo_tutor.html")
 
 
 # GET -> mostrar la vista nuevo_paciente.html
 @home_bp.route("/paciente/nuevo", methods=["GET"])
+@login_required
 def nuevo_paciente():
     tutores = Tutor.query.all()
     tutor_id = request.args.get("tutor_id", type=int)
@@ -163,6 +172,7 @@ def nuevo_paciente():
 
 # GET -> mostrar la vista editar_tutor.html
 @home_bp.route("/tutor/<int:id>/editar", methods=["GET"])
+@login_required
 def editar_tutor(id):
     tutor = Tutor.query.get_or_404(id)
     paciente = Paciente.query.filter_by(tutor_id=tutor.id).first()

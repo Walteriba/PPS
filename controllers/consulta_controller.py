@@ -4,6 +4,7 @@
 
 from datetime import datetime
 from flask import Blueprint, request, jsonify, render_template
+from flask_login import login_required
 from models.paciente import Paciente
 from models.tutor import Tutor
 from models.consulta import Consulta
@@ -15,6 +16,7 @@ consulta_bp = Blueprint("consulta_bp", __name__)  # Definición del Blueprint
 
 # Endpoint para crear consulta (insert)
 @consulta_bp.route("/consulta/nuevo", methods=["POST"])
+@login_required
 def crear_consulta():
     """Crear una nueva consulta médica."""
     
@@ -66,6 +68,7 @@ def crear_consulta():
 
 # Endpoint para actualizar una consulta 
 @consulta_bp.route("/consulta/<int:id_consulta>", methods=["PUT"])
+@login_required
 def actualizar_consulta(id_consulta):
     consulta = Consulta.query.get(id_consulta)
     if not consulta:
