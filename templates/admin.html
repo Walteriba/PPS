@@ -28,21 +28,24 @@
     <div class= "mt-3">
         <!-- Encabezado de columnas -->
     <div class="row ms-1 fw-bold mb-1">
-     <div class="col-1">ID</div>
+     <div class="col-1">Matricula</div>
      <div class="col-2">Nombre</div>
      <div class="col-2">Apellido</div>
      <div class="col-2">Especialidad</div>
+     <div class="col-2">Telefono</div>
+     <div class="col-2">Email</div>
+
     </div>
   <ul class="list-group list-group-flush">
-    <!-- Todo: Se usa tutores de ejemplo, cambiar y Traer los profesionales y datos requeridos -->
-    {% for tutor in tutores %}
       <li class="list-group-item d-flex justify-content-between align-items-center">
         <div class="row w-100">
-          <div class="col-1">{{ tutor.id }}</div>
-          <div class="col-2">{{ tutor.nombre }}</div>
-          <div class="col-2">{{ tutor.apellido }}</div>
+          <div class="col-1">MN34152</div>
+          <div class="col-2">Jorge</div>
+          <div class="col-2">Paz</div>
           <div class="col-2">Veterinario</div>
-          <div class="col-5 text-end">
+          <div class="col-2">11245088</div>
+          <div class="col-2">Paz@gmail</div>
+          <div class="col-1 text-end">
         <!-- TODO: Hacer que al presionar este botón se abra un formulario para editar el profesional-->
         <a href="" class="btn btn-success btn-sm">
             <i class="bi bi-pencil"></i>
@@ -50,7 +53,6 @@
         </div>
     </div>
     </li>
-    {% endfor %}
   </ul>
   </div>
 </div>

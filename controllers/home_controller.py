@@ -172,6 +172,4 @@ def editar_tutor(id):
 # GET -> mostrar la vista admin.html con lista de profesionales
 @home_bp.route("/admin", methods=["GET"])
 def admin():
-    # TODO: Se usa de ejemplo los tutores, cambiar por profesionales cuando este listo
-    tutores = Tutor.query.all() 
-    return render_template("admin.html", tutores=tutores)
+    return render_template("admin.html")
