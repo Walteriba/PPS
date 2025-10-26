@@ -167,3 +167,11 @@ def editar_tutor(id):
     tutor = Tutor.query.get_or_404(id)
     paciente = Paciente.query.filter_by(tutor_id=tutor.id).first()
     return render_template("editar_tutor.html", tutor=tutor, paciente=paciente)
+
+
+# GET -> mostrar la vista admin.html con lista de profesionales
+@home_bp.route("/admin", methods=["GET"])
+def admin():
+    # TODO: Se usa de ejemplo los tutores, cambiar por profesionales cuando este listo
+    tutores = Tutor.query.all() 
+    return render_template("admin.html", tutores=tutores)
