@@ -13,7 +13,7 @@ profesional_bp = Blueprint("profesional_bp", __name__)
 def crear_profesional():
     """Crea un nuevo profesional en la base de datos."""
     # Validación de campos obligatorios
-    campos_obligatorios = ["nombre", "apellido", "matricula", "telefono", "email"]
+    campos_obligatorios = ["nombre", "apellido"]
     for campo in campos_obligatorios:
         if not request.form.get(campo):
             return jsonify({"error": f"El campo '{campo}' es requerido"}), 400
@@ -22,10 +22,10 @@ def crear_profesional():
     nuevo_profesional = Profesional(
         nombre=request.form["nombre"],
         apellido=request.form["apellido"],
-        matricula=request.form["matricula"],
+        matricula=request.form.get("matricula"), # Opcional
         especialidad=request.form.get("especialidad"), # Opcional
-        telefono=request.form["telefono"],
-        email=request.form["email"],
+        telefono=request.form.get("telefono"), # Opcional
+        email=request.form.get("email"), # Opcional
     )
 
     db.session.add(nuevo_profesional)
