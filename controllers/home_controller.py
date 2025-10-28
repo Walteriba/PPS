@@ -144,6 +144,7 @@ def buscar():
 
 # Detalle de paciente
 @home_bp.route("/paciente/<int:id>", methods=["GET"])
+@login_required
 def detalle_paciente(id):
     # Obtener paciente y su tutor
     paciente = Paciente.query.get(id)

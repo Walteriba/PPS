@@ -15,6 +15,7 @@ from models.archivo import Archivo
 consulta_bp = Blueprint("consulta_bp", __name__) 
 
 @consulta_bp.route("/consulta/formulario_nuevo", methods=["GET"])
+@login_required
 def mostrar_formulario_consulta():
     """
     Muestra la página HTML con el formulario para crear una consulta.
@@ -162,6 +163,7 @@ def actualizar_consulta(id_consulta):
 
 # Endpoint para ver una consulta específica
 @consulta_bp.route("/consulta/<int:consulta_id>", methods=["GET"])
+@login_required
 def ver_consulta(consulta_id):
     consulta = Consulta.query.get_or_404(consulta_id)
     paciente = Paciente.query.get(consulta.paciente_id)

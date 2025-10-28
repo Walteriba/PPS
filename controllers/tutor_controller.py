@@ -37,6 +37,7 @@ def crear_tutor():
 # Endpoint para obtener un tutor por ID (GET)
 # ----------------------------------------------------
 @tutor_bp.route("/tutor/<int:id>", methods=["GET"])
+@login_required
 def obtener_tutor(id):
     tutor = Tutor.query.get(id)
     if not tutor:
