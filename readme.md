@@ -67,6 +67,38 @@ El proyecto incluye un script para cargar datos de prueba en la base de datos.
     python -m utils.cargar_db
     ```
 
+## 🔐 Configuración de Variables de Entorno
+
+1. **Crea un archivo `.env` en la raíz del proyecto:**
+   ```bash
+   touch .env
+   ```
+
+2. **Añade las siguientes variables en el archivo `.env`:**
+   ```bash
+   # Clave secreta para sesiones y seguridad (REQUERIDA)
+   # Genera una clave segura y única para tu entorno
+   SECRET_KEY=tu-clave-secreta-aqui-muy-larga-y-aleatoria
+   ```
+
+   Para generar una clave secreta segura, puedes usar Python:
+   ```bash
+   python -c "import secrets; print(secrets.token_hex(32))"
+   ```
+
+3. **Carga las variables de entorno:**
+   ```bash
+   # En Linux/Mac:
+   source .env
+   # En Windows (PowerShell):
+   Get-Content .env | ForEach-Object { if ($_ -match '^([^=]+)=(.*)$') { [Environment]::SetEnvironmentVariable($matches[1], $matches[2]) } }
+   ```
+
+> ⚠️ **IMPORTANTE**: 
+> - Nunca subas el archivo `.env` al control de versiones
+> - Cada desarrollador debe crear su propio `.env` con sus propias claves
+> - La aplicación no funcionará si no se configura la variable `SECRET_KEY`
+
 ## ✨ Notas adicionales
 
 -   **Gestiona tus dependencias:** Si añades nuevas librerías, no olvides actualizar `requirements.txt`:

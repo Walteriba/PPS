@@ -12,7 +12,7 @@ from controllers.auth_controller import auth_bp
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///vetlog.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "esta-clave-se-usa-solo-para-desarrollo")
+app.config["SECRET_KEY"] = os.environ["SECRET_KEY"]  # Requiere que la variable de entorno esté configurada
 
 # Configurar Flask-Login
 login_manager = LoginManager()
