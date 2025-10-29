@@ -1,3 +1,4 @@
+from flask_login import login_required
 from flask import Blueprint, request, jsonify, send_file, current_app
 from models.paciente import Paciente
 from models.tutor import Tutor
@@ -13,6 +14,7 @@ paciente_bp = Blueprint("paciente_bp", __name__)
 
 # Endpoint para crear paciente (insert)
 @paciente_bp.route("/paciente/nuevo", methods=["POST"])
+@login_required
 def crear_paciente():
     # TODO: agregar validaciones faltantes
     # valida tutor_id primero
@@ -57,6 +59,7 @@ def crear_paciente():
 
 # Endpoint para actualizar un paciente
 @paciente_bp.route("/paciente/actualizar/<int:id>", methods=["PUT"])
+@login_required
 def actualizar_paciente(id):
     # Buscar el paciente por ID
     paciente = Paciente.query.get(id)

@@ -1,53 +1,118 @@
-# Puesta en marcha de un proyecto Flask
 
-## Requisitos previos
+# 🚀 Puesta en marcha de un proyecto Flask
 
-- Python 3.x instalado
-- pip instalado
+¡Bienvenido! Esta guía te ayudará a configurar y ejecutar el proyecto en tu entorno local.
 
-## Instalación
+## 📋 Requisitos previos
 
-1. Clona el repositorio:
+Asegúrate de tener instalados los siguientes programas:
+
+- **Python 3.x:** [Descargar](https://www.python.org/downloads/)
+- **Pip:** (Normalmente viene con Python)
+
+## 🛠️ Instalación
+
+Sigue estos pasos para poner en marcha el proyecto:
+
+1.  **Clona el repositorio:**
     ```bash
     git clone https://github.com/Walteriba/PPS.git
     cd PPS
     ```
 
-2. Crea y activa un entorno virtual:
+2.  **Crea y activa un entorno virtual:**
     ```bash
+    # Crea el entorno
     python -m venv venv
-    source venv/bin/activate  # En Linux/Mac
-    venv\Scripts\activate     # En Windows
+
+    # Actívalo
+    # En Linux/Mac:
+    source venv/bin/activate
+    # En Windows:
+    venv\Scripts\activate
     ```
 
-3. Instala las dependencias:
+3.  **Instala las dependencias:**
     ```bash
     pip install -r requirements.txt
     ```
 
-## Ejecución
+## ⚙️ Ejecución
 
-1. Exporta la variable de entorno FLASK_APP:
+Una vez instalado, puedes ejecutar la aplicación:
+
+1.  **Configura la aplicación Flask:**
     ```bash
-    export FLASK_APP=app.py      # En Linux/Mac
-    set FLASK_APP=app.py         # En Windows
+    # En Linux/Mac:
+    export FLASK_APP=app.py
+    # En Windows:
+    set FLASK_APP=app.py
     ```
 
-2. Ejecuta el servidor:
+2.  **Inicia el servidor de desarrollo:**
     ```bash
     flask run --debug
     ```
+    El modo `--debug` reiniciará el servidor automáticamente con cada cambio.
 
-3. Accede a la aplicación en [http://localhost:5000](http://localhost:5000)
+3.  **¡Listo!** Abre tu navegador y ve a [http://localhost:5000](http://localhost:5000).
 
-## Base de datos
+## 🗃️ Base de datos
 
-1. Ejecuta el script de carga de datos de prueba (parado en la raíz del proyecto):
+El proyecto incluye un script para cargar datos de prueba en la base de datos.
+
+1.  **Ejecuta el script:**
+    (Asegúrate de estar en la raíz del proyecto)
     ```bash
     python -m utils.cargar_db
     ```
-     
-## Notas
 
-- Agrega tus dependencias a `requirements.txt`. => pip freeze > requirements.txt
-- Para desarrollo, puedes usar `FLASK_ENV=development`.
+## 🔐 Configuración de Variables de Entorno
+
+1. **Crea un archivo `.env` en la raíz del proyecto:**
+   ```bash
+   touch .env
+   ```
+
+2. **Añade las siguientes variables en el archivo `.env`:**
+   ```bash
+   # Clave secreta para sesiones y seguridad (REQUERIDA)
+   # Genera una clave segura y única para tu entorno
+   SECRET_KEY=tu-clave-secreta-aqui-muy-larga-y-aleatoria
+   ```
+
+   Para generar una clave secreta segura, puedes usar Python:
+   ```bash
+   python -c "import secrets; print(secrets.token_hex(32))"
+   ```
+
+3. **Carga las variables de entorno:**
+   ```bash
+   # En Linux/Mac:
+   source .env
+   # En Windows (PowerShell):
+   Get-Content .env | ForEach-Object { if ($_ -match '^([^=]+)=(.*)$') { [Environment]::SetEnvironmentVariable($matches[1], $matches[2]) } }
+   ```
+
+> ⚠️ **IMPORTANTE**: 
+> - Nunca subas el archivo `.env` al control de versiones
+> - Cada desarrollador debe crear su propio `.env` con sus propias claves
+> - La aplicación no funcionará si no se configura la variable `SECRET_KEY`
+
+## ✨ Notas adicionales
+
+-   **Gestiona tus dependencias:** Si añades nuevas librerías, no olvides actualizar `requirements.txt`:
+    ```bash
+    pip freeze > requirements.txt
+    ```
+-   **Entorno de desarrollo:** Para optimizar el flujo de trabajo, puedes configurar la variable de entorno `FLASK_ENV`:
+    ```bash
+    # En Linux/Mac:
+    export FLASK_ENV=development
+    # En Windows:
+    set FLASK_ENV=development
+    ```
+
+---
+
+¡Gracias por usar nuestro proyecto! Si tienes alguna duda, no dudes en abrir un *issue*.
