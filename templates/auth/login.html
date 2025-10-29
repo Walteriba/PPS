@@ -24,7 +24,7 @@
       {% endwith %}
 
       <!-- Formulario -->
-      <form method="POST" action="{{ url_for('auth_bp.login') }}">
+      <form method="POST" action="{{ url_for('auth_bp.login_submit') }}">
         <div class="mb-3">
           <label for="email" class="form-label">Email</label>
           <input
@@ -56,7 +56,7 @@
 
       <p class="text-center mt-3 mb-0">
         ¿No tienes cuenta?
-        <a href="{{ url_for('auth_bp.register') }}" class="text-success fw-bold">Regístrate</a>
+        <a href="{{ url_for('auth_bp.register_page') }}" class="text-success fw-bold">Regístrate</a>
       </p>
     </div>
   </main>

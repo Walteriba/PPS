@@ -1,3 +1,4 @@
+import os   # Necesario para que funcione {os.environ.get("SECRET_KEY")}
 from flask import Flask
 from flask_login import LoginManager
 from models import db
@@ -11,12 +12,12 @@ from controllers.auth_controller import auth_bp
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///vetlog.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SECRET_KEY"] = "tu-clave-secreta-aqui"  # En producción usar variable de entorno
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "esta-clave-se-usa-solo-para-desarrollo")
 
 # Configurar Flask-Login
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = "auth_bp.login"  # Ruta a la que redirigir si no hay sesión
+login_manager.login_view = "auth_bp.login_page"  # Ruta a la que redirigir si no hay sesión
 
 @login_manager.user_loader
 def load_user(user_id):

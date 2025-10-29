@@ -33,7 +33,7 @@ def CreatePacienteDto(tutores, pacientes):
 @home_bp.route("/", methods=["GET"])
 def index():
     if not current_user.is_authenticated:
-        return redirect(url_for('auth_bp.login'))
+        return redirect(url_for('auth_bp.login_page'))
     return redirect(url_for('home_bp.buscar'))
 
 # Busqueda de pacientes y tutores
