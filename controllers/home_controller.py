@@ -5,6 +5,7 @@ from models.tutor import Tutor
 from models.paciente import Paciente
 from models.consulta import Consulta
 from dto.paciente_dto import PacienteDTO
+from models.profesional import Profesional
 
 # Definición del Blueprint
 home_bp = Blueprint("home_bp", __name__)
@@ -178,3 +179,21 @@ def editar_tutor(id):
     tutor = Tutor.query.get_or_404(id)
     paciente = Paciente.query.filter_by(tutor_id=tutor.id).first()
     return render_template("editar_tutor.html", tutor=tutor, paciente=paciente)
+
+# GET -> mostrar la vista admin.html con lista de profesionales
+@home_bp.route("/admin", methods=["GET"])
+def admin():
+    profesionales = Profesional.query.all() 
+    return render_template("admin.html", profesionales=profesionales)
+
+
+# Mostrar formulario de alta
+@home_bp.route("/profesional/nuevo", methods=["GET"])
+def alta_profesional():
+    return render_template("alta_profesional.html")
+
+# Mostrar formulario con datos cargados
+@home_bp.route("/profesional/editar/<int:id>", methods=["GET"])
+def editar_profesional(id):
+    profesional = Profesional.query.get_or_404(id)
+    return render_template("editar_profesional.html", profesional=profesional)

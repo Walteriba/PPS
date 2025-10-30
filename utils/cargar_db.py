@@ -6,6 +6,7 @@ from app import app, db
 from models.tutor import Tutor
 from models.paciente import Paciente
 from models.consulta import Consulta
+from models.profesional import Profesional
 
 # Datos de ejemplo
 nombres_tutores = [
@@ -52,6 +53,17 @@ especies = {
 }
 
 colores = ["Negro", "Blanco", "Marrón", "Gris", "Manchado", "Atigrado"]
+
+# Datos de ejemplo para profesionales
+nombres_profesionales = [
+    ("Martina", "Pérez"),
+    ("Lorena", "Gómez"),
+    ("Julián", "Alvarez"),
+    ("Sofía", "Gala"),
+    ("Diego", "Suarez"),
+]
+
+especialidades = ["Cardiología", "Veterinario"]
 
 # Cargar datos de ejemplo en la base de datos
 with app.app_context():
@@ -120,8 +132,29 @@ with app.app_context():
 
     db.session.add_all(consultas)
     db.session.commit()  # Commit final de consultas
+    
+    
+    # Crear y guardar profesionales
+    profesionales = []
+    
+    for i, (nombre, apellido) in enumerate(nombres_profesionales):
+        profesional = Profesional(
+          nombre=nombre,
+          apellido=apellido,
+          matricula=f"M-{randint(1000,9999)}",
+          especialidad=choice(especialidades),
+          telefono=f"11{randint(40000000,49999999)}",
+          email=f"{nombre.lower()}.{apellido.lower()}@mail.com",
+        )
+        profesionales.append(profesional)
 
+    db.session.add_all(profesionales)
+    db.session.commit()
+    
     print("Se cargaron exitosamente:")
     print(f"- {len(tutores)} tutores")
     print(f"- {len(pacientes)} pacientes")
     print(f"- {len(consultas)} consultas")
+    print(f"- {len(profesionales)} profesionales")
+
+
