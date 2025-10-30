@@ -2,63 +2,196 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Detalle Consulta</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Consulta</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Estilo para que los párrafos en modo vista respeten los saltos de línea */
+        .view-mode.preserve-whitespace {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
+
     {% include 'partials/header.html' %}
     
-    <div class="container mt-4">
+    <div class="container mt-4 flex-grow-1 mb-5">
         <div class="card">
-            <div class="card-header">
+            
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h3>Consulta del {{ consulta.fecha.strftime('%d/%m/%Y') }}</h3>
+                <button id="btnEditar" class="btn btn-primary btn-sm">Editar</button>
             </div>
+
             <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h5>Datos básicos</h5>
-                        <p><strong>Peso:</strong> {{ consulta.peso }} kg</p>
-                        <p><strong>Temperatura:</strong> {{ consulta.temperatura }}°C</p>
+                <form id="formConsulta">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Datos básicos</h5>
+                            <p><strong>Fecha:</strong> 
+                                <span class="view-mode">{{ consulta.fecha.strftime('%d/%m/%Y') }}</span>
+                                <input type="date" name="fecha" class="form-control edit-mode d-none" 
+                                       value="{{ consulta.fecha.strftime('%Y-%m-%d') }}">
+                            </p>
+                            
+                            <p><strong>Peso:</strong> 
+                                <span class="view-mode">{{ consulta.peso }} kg</span>
+                                <input type="number" step="0.1" name="peso" class="form-control edit-mode d-none" 
+                                       value="{{ consulta.peso }}">
+                            </p>
+
+                            <p><strong>Temperatura:</strong> 
+                                <span class="view-mode">{{ consulta.temperatura }}°C</span>
+                                <input type="number" step="0.1" name="temperatura" class="form-control edit-mode d-none" 
+                                       value="{{ consulta.temperatura }}">
+                            </p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <h5>Paciente</h5>
+                            <p><strong>Nombre:</strong> {{ paciente.nombre }}</p>
+                            <p><strong>Tutor:</strong> {{ tutor.nombre }} {{ tutor.apellido }}</p>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <h5>Paciente</h5>
-                        <p><strong>Nombre:</strong> {{ paciente.nombre }}</p>
-                        <p><strong>Tutor:</strong> {{ tutor.nombre }} {{ tutor.apellido }}</p>
+
+                    <hr>
+
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <h5>Anamnesis</h5>
+                            <p class="view-mode preserve-whitespace">{{ consulta.anamnesis or 'Sin datos' }}</p>
+                            <textarea name="anamnesis" class="form-control edit-mode d-none" rows="5">{{ consulta.anamnesis }}</textarea>
+                        </div>
                     </div>
-                </div>
+
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <h5>Examen Físico</h5>
+                            <p class="view-mode preserve-whitespace">{{ consulta.examen_fisico or 'Sin datos' }}</p>
+                            <textarea name="examen_fisico" class="form-control edit-mode d-none" rows="5">{{ consulta.examen_fisico }}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <h5>Diagnóstico</h5>
+                            <p class="view-mode preserve-whitespace">{{ consulta.diagnostico or 'Sin datos' }}</p>
+                            <textarea name="diagnostico" class="form-control edit-mode d-none" rows="5">{{ consulta.diagnostico }}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <h5>Tratamiento</h5>
+                            <p class="view-mode preserve-whitespace">{{ consulta.tratamiento or 'Sin datos' }}</p>
+                            <textarea name="tratamiento" class="form-control edit-mode d-none" rows="5">{{ consulta.tratamiento }}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 edit-mode d-none">
+                        <hr>
+                        <label for="archivosNuevos" class="form-label"><strong>Añadir nuevos archivos:</strong></label>
+                        <input class="form-control" type="file" id="archivosNuevos" name="archivosNuevos" multiple>
+                    </div>
+                    <div class="mt-3 d-none edit-mode">
+                        <button type="submit" class="btn btn-success">Guardar</button>
+                        <button type="button" id="btnCancelar" class="btn btn-secondary">Cancelar</button>
+                    </div>
+                </form>
+
                 <hr>
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <h5>Anamnesis</h5>
-                        <p>{{ consulta.anamnesis or 'Sin datos' }}</p>
-                    </div>
+                <h5>Archivos Adjuntos</h5>
+                <div id="archivos-existentes" class="row"> 
+                    {% if consulta.archivos %}
+                        {% for archivo in consulta.archivos %}
+                            <div class="col-lg-3 col-md-4 col-sm-6 mb-3" data-archivo-id="{{ archivo.id }}">
+                                
+                                {% set url_lower = archivo.url.lower() %}
+                                {% if url_lower.endswith('.png') or url_lower.endswith('.jpg') or url_lower.endswith('.jpeg') or url_lower.endswith('.gif') %}
+                                    <a href="{{ archivo.url }}" target="_blank" title="Ver imagen completa">
+                                        <img src="{{ archivo.url }}" class="img-fluid rounded border shadow-sm" alt="Archivo adjunto">
+                                    </a>
+                                {% else %}
+                                    <a href="{{ archivo.url }}" target="_blank" class="btn btn-outline-secondary">
+                                        📄 Ver/Descargar Archivo
+                                    </a>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p id="sin-archivos" class="text-muted">No se adjuntaron archivos para esta consulta.</p>
+                    {% endif %}
                 </div>
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <h5>Examen Físico</h5>
-                        <p>{{ consulta.examen_fisico or 'Sin datos' }}</p>
-                    </div>
-                </div>
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <h5>Diagnóstico</h5>
-                        <p>{{ consulta.diagnostico or 'Sin datos' }}</p>
-                    </div>
-                </div>
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <h5>Tratamiento</h5>
-                        <p>{{ consulta.tratamiento or 'Sin datos' }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="mt-3">
+                </div> </div> <div class="mt-3">
             <a href="/paciente/{{ paciente.id }}" class="btn btn-primary">Volver al Paciente</a>
         </div>
     </div>
 
     {% include 'partials/footer.html' %}
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const btnEditar = document.getElementById("btnEditar");
+        const btnCancelar = document.getElementById("btnCancelar");
+        const viewMode = document.querySelectorAll(".view-mode");
+        const editMode = document.querySelectorAll(".edit-mode");
+        const form = document.getElementById("formConsulta");
+
+        
+        
+        const inputNuevosArchivos = document.getElementById("archivosNuevos");
+
+        // Activar modo edición
+        btnEditar.addEventListener("click", () => {
+            viewMode.forEach(el => el.classList.add("d-none"));
+            editMode.forEach(el => el.classList.remove("d-none"));
+            btnEditar.classList.add("d-none");
+        });
+
+        // Cancelar edición
+        btnCancelar.addEventListener("click", () => {
+            viewMode.forEach(el => el.classList.remove("d-none"));
+            editMode.forEach(el => el.classList.add("d-none"));
+            btnEditar.classList.remove("d-none");
+            
+        
+            inputNuevosArchivos.value = "";
+        });
+
+    
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            
+            
+            const formData = new FormData(form);
+            
+            
+            
+            for (const file of inputNuevosArchivos.files) {
+                formData.append('archivos', file); 
+            }
+
+            try {
+                const res = await fetch("/consulta/{{ consulta.id }}", {
+                    method: "PUT",
+                    body: formData
+                });
+                
+                if (res.ok) {
+                
+                    window.location.reload(); 
+                } else {
+                    const err = await res.json();
+                    alert("Error: " + (err.error || "No se pudo actualizar"));
+                }
+            } catch (error) {
+                alert("Error de conexión: " + error.message);
+            }
+        });
+    </script>
 </body>
 </html>

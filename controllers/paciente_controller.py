@@ -1,9 +1,12 @@
-from flask import Blueprint, request, jsonify
+from flask_login import login_required
+from flask import Blueprint, request, jsonify, send_file, current_app
 from models.paciente import Paciente
 from models.tutor import Tutor
 from models import db
 from datetime import datetime
 from utils.cloudinary_utils import subir_y_obtener_url
+from models.consulta import Consulta
+from utils.generar_reportes import crear_pdf_historia_clinica
 
 # Definición del Blueprint
 paciente_bp = Blueprint("paciente_bp", __name__)
@@ -11,6 +14,7 @@ paciente_bp = Blueprint("paciente_bp", __name__)
 
 # Endpoint para crear paciente (insert)
 @paciente_bp.route("/paciente/nuevo", methods=["POST"])
+@login_required
 def crear_paciente():
     # TODO: agregar validaciones faltantes
     # valida tutor_id primero
@@ -55,6 +59,7 @@ def crear_paciente():
 
 # Endpoint para actualizar un paciente
 @paciente_bp.route("/paciente/actualizar/<int:id>", methods=["PUT"])
+@login_required
 def actualizar_paciente(id):
     # Buscar el paciente por ID
     paciente = Paciente.query.get(id)
@@ -92,3 +97,27 @@ def actualizar_paciente(id):
         jsonify({"mensaje": "Paciente actualizado con éxito", "id": paciente.id}),
         200,
     )
+    #--- Endpoint para Generar Reporte ---
+# Endpoint para Generar Reporte
+@paciente_bp.route("/paciente/<int:paciente_id>/reporte", methods=["GET"])
+def generar_reporte_paciente(paciente_id):
+    """
+    Genera un reporte en PDF con toda la historia clínica de un paciente.
+    """
+    # 1. Obtener los datos de la base de datos.
+    paciente = Paciente.query.get_or_404(paciente_id)
+    tutor = paciente.tutor
+    consultas = Consulta.query.filter_by(paciente_id=paciente_id).order_by(Consulta.fecha.asc()).all()
+
+    # 2. Llamar a la función de utilidad para que cree el PDF.
+    pdf_buffer = crear_pdf_historia_clinica(paciente, tutor, consultas)
+
+    # 3. Enviar el archivo PDF como respuesta.
+    return send_file(
+        pdf_buffer,
+        as_attachment=True,
+        download_name=f"reporte_{paciente.nombre.replace(' ', '_')}.pdf",
+        mimetype="application/pdf"
+    )
+    
+   

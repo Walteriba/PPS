@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask_login import login_required
 from models.tutor import Tutor
 from models import db
 
@@ -9,6 +10,7 @@ tutor_bp = Blueprint("tutor_bp", __name__)
 # Endpoint para crear tutor (insert)
 # ----------------------------------------------------
 @tutor_bp.route("/tutor/nuevo", methods=["POST"])
+@login_required
 def crear_tutor():
     # Validación de campos obligatorios 
     campos = ["nombre", "apellido", "telefono", "email", "direccion"]
@@ -35,6 +37,7 @@ def crear_tutor():
 # Endpoint para obtener un tutor por ID (GET)
 # ----------------------------------------------------
 @tutor_bp.route("/tutor/<int:id>", methods=["GET"])
+@login_required
 def obtener_tutor(id):
     tutor = Tutor.query.get(id)
     if not tutor:
@@ -55,6 +58,7 @@ def obtener_tutor(id):
 # Endpoint para actualizar un tutor (PUT)
 # ----------------------------------------------------
 @tutor_bp.route("/tutor/<int:id>", methods=["PUT"])
+@login_required
 def actualizar_tutor(id):
     # Buscar el tutor por ID [2]
     tutor = Tutor.query.get(id)
