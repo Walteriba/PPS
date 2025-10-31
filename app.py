@@ -7,6 +7,7 @@ from controllers.home_controller import home_bp
 from controllers.paciente_controller import paciente_bp
 from controllers.consulta_controller import consulta_bp
 from controllers.tutor_controller import tutor_bp
+from controllers.profesional_controller import profesional_bp
 from controllers.auth_controller import auth_bp
 
 app = Flask(__name__)
@@ -34,6 +35,7 @@ app.register_blueprint(home_bp)
 app.register_blueprint(paciente_bp)
 app.register_blueprint(consulta_bp)
 app.register_blueprint(tutor_bp)
+app.register_blueprint(profesional_bp)
 app.register_blueprint(auth_bp)
 
 if __name__ == "__main__":

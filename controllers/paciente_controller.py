@@ -1,5 +1,5 @@
 from flask_login import login_required
-from flask import Blueprint, request, jsonify, send_file, current_app
+from flask import Blueprint, render_template, request, jsonify, send_file, current_app
 from models.paciente import Paciente
 from models.tutor import Tutor
 from models import db
@@ -11,6 +11,13 @@ from utils.generar_reportes import crear_pdf_historia_clinica
 # Definición del Blueprint
 paciente_bp = Blueprint("paciente_bp", __name__)
 
+# Endpoint para mostrar la vista nuevo_paciente.html
+@paciente_bp.route("/paciente/nuevo", methods=["GET"])
+@login_required
+def nuevo_paciente():
+    tutores = Tutor.query.all()
+    tutor_id = request.args.get("tutor_id", type=int)
+    return render_template("nuevo_paciente.html", tutores=tutores, tutor_id=tutor_id)
 
 # Endpoint para crear paciente (insert)
 @paciente_bp.route("/paciente/nuevo", methods=["POST"])
@@ -100,6 +107,7 @@ def actualizar_paciente(id):
     #--- Endpoint para Generar Reporte ---
 # Endpoint para Generar Reporte
 @paciente_bp.route("/paciente/<int:paciente_id>/reporte", methods=["GET"])
+@login_required
 def generar_reporte_paciente(paciente_id):
     """
     Genera un reporte en PDF con toda la historia clínica de un paciente.

@@ -9,6 +9,7 @@ class Consulta(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     tutor_id = db.Column(db.Integer, db.ForeignKey("tutores.id"), nullable=False) # TODO: Borrar
     paciente_id = db.Column(db.Integer, db.ForeignKey("pacientes.id"), nullable=False)
+    profesional_id = db.Column(db.Integer, db.ForeignKey("profesionales.id"), nullable=True)
     fecha = db.Column(db.Date, default=date.today)
     peso = db.Column(db.Float, nullable=False)
     temperatura = db.Column(db.Float, nullable=False)
