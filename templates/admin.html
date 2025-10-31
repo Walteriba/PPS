@@ -18,7 +18,7 @@
     <div class="row">
      <div class="col-auto">
       <!-- TODO: Hacer que el botón agregue un nuevo profesional -->
-      <a href="{{ url_for('home_bp.alta_profesional') }}" class="btn btn-success">
+      <a href="{{ url_for('profesional_bp.alta_profesional') }}" class="btn btn-success">
         Agregar
       </a>
       <a href="/" class="btn btn-success">Volver</a>
@@ -48,7 +48,7 @@
           <div class="col-2">{{ profesional.email }}</div>
           <div class="col-1 text-end">
         <!-- TODO: Hacer que al presionar este botón se abra un formulario para editar el profesional-->
-        <a href="{{ url_for('home_bp.editar_profesional', id=profesional.id) }}" class="btn btn-success btn-sm">
+        <a href="{{ url_for('profesional_bp.editar_profesional', id=profesional.id) }}" class="btn btn-success btn-sm">
             <i class="bi bi-pencil"></i>
             </a>
         </div>

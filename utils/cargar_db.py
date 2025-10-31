@@ -70,6 +70,23 @@ with app.app_context():
     db.drop_all()
     db.create_all()
 
+    # Crear y guardar profesionales
+    profesionales = []
+    
+    for i, (nombre, apellido) in enumerate(nombres_profesionales):
+        profesional = Profesional(
+          nombre=nombre,
+          apellido=apellido,
+          matricula=f"M-{randint(1000,9999)}",
+          especialidad=choice(especialidades),
+          telefono=f"11{randint(40000000,49999999)}",
+          email=f"{nombre.lower()}.{apellido.lower()}@mail.com",
+        )
+        profesionales.append(profesional)
+
+    db.session.add_all(profesionales)
+    db.session.commit()
+
     # Crear y guardar tutores primero
     tutores = []
     for nombre, apellido in nombres_tutores:
@@ -127,29 +144,12 @@ with app.app_context():
             tratamiento=f"SE INDICA: {choice(['ANTIBIÓTICOS', 'ANTIINFLAMATORIOS', 'PROTECTOR GÁSTRICO'])} CADA {randint(8,24)}HS POR {randint(5,10)} DÍAS.",
             tutor_id=paciente.tutor_id,  # Usar el ID del tutor del paciente
             paciente_id=paciente.id,
+            profesional_id=choice(profesionales).id,
         )
         consultas.append(consulta)
 
     db.session.add_all(consultas)
     db.session.commit()  # Commit final de consultas
-    
-    
-    # Crear y guardar profesionales
-    profesionales = []
-    
-    for i, (nombre, apellido) in enumerate(nombres_profesionales):
-        profesional = Profesional(
-          nombre=nombre,
-          apellido=apellido,
-          matricula=f"M-{randint(1000,9999)}",
-          especialidad=choice(especialidades),
-          telefono=f"11{randint(40000000,49999999)}",
-          email=f"{nombre.lower()}.{apellido.lower()}@mail.com",
-        )
-        profesionales.append(profesional)
-
-    db.session.add_all(profesionales)
-    db.session.commit()
     
     print("Se cargaron exitosamente:")
     print(f"- {len(tutores)} tutores")

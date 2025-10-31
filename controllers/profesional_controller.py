@@ -1,15 +1,30 @@
 """Controlador para gestionar los profesionales."""
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, render_template, request, jsonify
+from flask_login import login_required
 from models.profesional import Profesional
 from models import db
 
 # Definición del Blueprint
 profesional_bp = Blueprint("profesional_bp", __name__)
 
+# Mostrar formulario de alta
+@profesional_bp.route("/profesional/nuevo", methods=["GET"])
+@login_required
+def alta_profesional():
+    return render_template("alta_profesional.html")
+
+# Mostrar formulario con datos cargados
+@profesional_bp.route("/profesional/editar/<int:id>", methods=["GET"])
+@login_required
+def editar_profesional(id):
+    profesional = Profesional.query.get_or_404(id)
+    return render_template("editar_profesional.html", profesional=profesional)
+
 # ----------------------------------------------------
 # Endpoint para crear un profesional (POST)
 # ----------------------------------------------------
 @profesional_bp.route("/profesional/nuevo", methods=["POST"])
+@login_required
 def crear_profesional():
     """Crea un nuevo profesional en la base de datos."""
     # Validación de campos obligatorios
@@ -37,6 +52,7 @@ def crear_profesional():
 # Endpoint para obtener un profesional por ID (GET)
 # ----------------------------------------------------
 @profesional_bp.route("/profesional/<int:id>", methods=["GET"])
+@login_required
 def obtener_profesional(id):
     """Obtiene los datos de un profesional por su ID."""
     profesional = Profesional.query.get(id)
@@ -57,6 +73,7 @@ def obtener_profesional(id):
 # Endpoint para actualizar un profesional (PUT)
 # ----------------------------------------------------
 @profesional_bp.route("/profesional/<int:id>", methods=["PUT"])
+@login_required
 def actualizar_profesional(id):
     """Actualiza los datos de un profesional existente."""
     profesional = Profesional.query.get(id)
