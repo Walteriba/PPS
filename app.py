@@ -14,6 +14,7 @@ app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///vetlog.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = os.environ["SECRET_KEY"]  # Requiere que la variable de entorno esté configurada
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 # Configurar Flask-Login
 login_manager = LoginManager()
