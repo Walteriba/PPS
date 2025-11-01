@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
 from sqlalchemy.orm import joinedload
+from sqlalchemy import or_ # fix busqueda 
 from models.tutor import Tutor
 from models.paciente import Paciente
 from models.consulta import Consulta
@@ -86,11 +87,22 @@ def buscar():
             pacientes_query = pacientes_query.filter(Consulta.tratamiento.ilike(f"%{tratamiento}%"))
 
     elif modo == "tutor":
-        pacientes_query = base_query.join(Tutor)
+        pacientes_query = base_query.join(Tutor) 
+        # FIX: BÚSQUEDA POR NOMBRE O APELLIDO 
+        
+        # Función para generar búsqueda por Nombre y/o Apellido
+        def search_name_or_apellido(search_term):
+            return or_(
+                Tutor.nombre.ilike(f"%{search_term}%"),
+                Tutor.apellido.ilike(f"%{search_term}%")
+            )
         if query:
-            pacientes_query = pacientes_query.filter(Tutor.nombre.ilike(f"%{query}%"))
+            search_words = query.split()
+            for word in search_words:
+                if word:
+                    pacientes_query = pacientes_query.filter(search_name_or_apellido(word))
         if nombre_tutor:
-            pacientes_query = pacientes_query.filter(Tutor.nombre.ilike(f"%{nombre_tutor}%"))
+            pacientes_query = pacientes_query.filter(search_name_or_apellido(nombre_tutor)) # Aplica la búsqueda de filtro avanzado a nombre y/o apellido
         if telefono:
             pacientes_query = pacientes_query.filter(Tutor.telefono.ilike(f"%{telefono}%"))
         if direccion:
