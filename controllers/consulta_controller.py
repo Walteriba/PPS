@@ -148,8 +148,8 @@ def ver_consulta(consulta_id):
     consulta = Consulta.query.get_or_404(consulta_id)
     paciente = Paciente.query.get(consulta.paciente_id)
     tutor = Tutor.query.get(consulta.tutor_id)
-    profesional = Profesional.query.get(consulta.profesional_id)
+    profesionales = Profesional.query.all()
 
     return render_template(
-        "consulta.html", consulta=consulta, paciente=paciente, tutor=tutor, profesional=profesional
+        "consulta.html", consulta=consulta, paciente=paciente, tutor=tutor, profesionales=profesionales
     )
