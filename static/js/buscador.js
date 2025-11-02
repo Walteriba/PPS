@@ -73,16 +73,14 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Detectar el enter
-  document
-    .querySelectorAll("#filtrosAvanzados input")
-    .forEach((input) => {
-      input.addEventListener("keypress", function (e) {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          ejecutarBusqueda();
-        }
-      });
+  searchForm.querySelectorAll("input").forEach((input) => {
+    input.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        ejecutarBusqueda();
+      }
     });
+  });
 
   // Boton para limpiar filtros
   const clearBtn = document.getElementById("clearFilters");
