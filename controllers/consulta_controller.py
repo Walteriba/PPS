@@ -4,6 +4,7 @@ from flask_login import login_required
 from models.paciente import Paciente
 from models.tutor import Tutor
 from models.consulta import Consulta
+from models.profesional import Profesional
 from models import db
 from utils.cloudinary_utils import subir_y_obtener_url
 from models.archivo import Archivo
@@ -22,6 +23,7 @@ def mostrar_formulario_consulta():
 
         paciente = Paciente.query.get(paciente_id)
         tutor = Tutor.query.get(tutor_id)
+        profesionales = Profesional.query.all()
         
         if not paciente or not tutor:
             return "Paciente o Tutor no encontrado", 404
@@ -29,11 +31,13 @@ def mostrar_formulario_consulta():
         return render_template(
             "crear_consulta.html", 
             paciente=paciente,  
-            tutor=tutor        
+            tutor=tutor,
+            profesionales=profesionales
         )
     except Exception as e:
         return f"Error al cargar el formulario: {e}", 500
 
+# Agregar profesional_id al crear
 @consulta_bp.route("/consulta/nuevo", methods=["POST"])
 @login_required
 def crear_consulta():
@@ -41,6 +45,7 @@ def crear_consulta():
         fecha_consulta = datetime.strptime(request.form["fecha"], "%Y-%m-%d")
         tutor_id_consulta = int(request.form["tutor_id"])
         paciente_id_consulta = int(request.form["paciente_id"])
+        profesional_id_consulta = int(request.form["profesional_id"])
 
     except ValueError as e:
         return jsonify({"error": f"Error en el formato de datos. Verifique: fecha, tutor_id o paciente_id. Detalle: {e}"}), 400
@@ -58,7 +63,8 @@ def crear_consulta():
         tratamiento=request.form.get("tratamiento"),
         
         tutor_id=tutor_id_consulta,
-        paciente_id=paciente_id_consulta
+        paciente_id=paciente_id_consulta,
+        profesional_id=profesional_id_consulta
     )
     
     db.session.add(nueva_consulta)
@@ -77,6 +83,7 @@ def crear_consulta():
         201,
     )
 
+# Agregar profesional_id al actualizar
 @consulta_bp.route("/consulta/<int:id_consulta>", methods=["PUT"])
 @login_required
 def actualizar_consulta(id_consulta):
@@ -117,6 +124,11 @@ def actualizar_consulta(id_consulta):
     if tratamiento is not None:
         consulta.tratamiento = tratamiento
         
+    profesional_id = request.form.get("profesional_id")
+    if profesional_id:
+        consulta.profesional_id = int(profesional_id)
+
+
     archivos = request.files.getlist("archivos")
     for archivo in archivos:
         if archivo.filename:
@@ -136,7 +148,8 @@ def ver_consulta(consulta_id):
     consulta = Consulta.query.get_or_404(consulta_id)
     paciente = Paciente.query.get(consulta.paciente_id)
     tutor = Tutor.query.get(consulta.tutor_id)
+    profesionales = Profesional.query.all()
 
     return render_template(
-        "consulta.html", consulta=consulta, paciente=paciente, tutor=tutor
+        "consulta.html", consulta=consulta, paciente=paciente, tutor=tutor, profesionales=profesionales
     )

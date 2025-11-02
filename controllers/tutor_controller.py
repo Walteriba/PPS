@@ -1,10 +1,25 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, render_template, request, jsonify
 from flask_login import login_required
 from models.tutor import Tutor
+from models.paciente import Paciente
 from models import db
 
 # Definición del Blueprint
 tutor_bp = Blueprint("tutor_bp", __name__)
+
+# Endpoint para mostrar la vista nuevo_tutor.html
+@tutor_bp.route("/tutor/nuevo", methods=["GET"])
+@login_required
+def nuevo_tutor():
+    return render_template("nuevo_tutor.html")
+
+# Endpoint para mostrar la vista editar_tutor.html
+@tutor_bp.route("/tutor/<int:id>/editar", methods=["GET"])
+@login_required
+def editar_tutor(id):
+    tutor = Tutor.query.get_or_404(id)
+    paciente = Paciente.query.filter_by(tutor_id=tutor.id).first()
+    return render_template("editar_tutor.html", tutor=tutor, paciente=paciente)
 
 # ----------------------------------------------------
 # Endpoint para crear tutor (insert)

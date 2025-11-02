@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Admin</title>
+  {% include 'partials/links.html' %}
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+  <!-- Navbar -->
+  {% include 'partials/header.html' %}
+
+  <div class="container">
+   <h2>Lista de profesionales</h2>
+    <div class="row">
+     <div class="col-auto">
+      <!-- TODO: Hacer que el botón agregue un nuevo profesional -->
+      <a href="{{ url_for('profesional_bp.alta_profesional') }}" class="btn btn-success">
+        Agregar
+      </a>
+      <a href="/" class="btn btn-success">Volver</a>
+      </div>
+    </div>
+
+    <div class= "mt-3">
+        <!-- Encabezado de columnas -->
+    <div class="row ms-1 fw-bold mb-1">
+     <div class="col-1">Nombre</div>
+     <div class="col-1">Apellido</div>
+     <div class="col-3">Matrícula</div>
+     <div class="col-2">Especialidad</div>
+     <div class="col-2">Telefono</div>
+     <div class="col-2">Email</div>
+    </div>
+  <ul class="list-group list-group-flush">
+    <!-- Todo: Se usa tutores de ejemplo, cambiar y Traer los profesionales y datos requeridos -->
+    {% for profesional in profesionales %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div class="row w-100">
+          <div class="col-1">{{ profesional.nombre }}</div>
+          <div class="col-1">{{ profesional.apellido }}</div>
+          <div class="col-3">{{ profesional.matricula }}</div>
+          <div class="col-2">{{ profesional.especialidad }}</div>
+          <div class="col-2">{{ profesional.telefono }}</div>
+          <div class="col-2">{{ profesional.email }}</div>
+          <div class="col-1 text-end">
+        <!-- TODO: Hacer que al presionar este botón se abra un formulario para editar el profesional-->
+        <a href="{{ url_for('profesional_bp.editar_profesional', id=profesional.id) }}" class="btn btn-success btn-sm">
+            <i class="bi bi-pencil"></i>
+            </a>
+        </div>
+    </div>
+    </li>
+    {% endfor %}
+  </ul>
+  </div>
+</div>
+</div>
+
+  </main>
+  <!-- Footer -->
+  {% include 'partials/footer.html' %}
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

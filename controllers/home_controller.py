@@ -6,6 +6,7 @@ from models.tutor import Tutor
 from models.paciente import Paciente
 from models.consulta import Consulta
 from dto.paciente_dto import PacienteDTO
+from models.profesional import Profesional
 
 # Definición del Blueprint
 home_bp = Blueprint("home_bp", __name__)
@@ -167,26 +168,9 @@ def detalle_paciente(id):
     return "Mascota no encontrada", 404
 
 
-# TODO (Backend): Endpoints temporales creados para probar el frontend.
-# GET -> mostrar la vista nuevo_tutor.html
-@home_bp.route("/tutor/nuevo", methods=["GET"])
+# GET -> mostrar la vista admin.html con lista de profesionales
+@home_bp.route("/admin", methods=["GET"])
 @login_required
-def nuevo_tutor():
-    return render_template("nuevo_tutor.html")
-
-
-# GET -> mostrar la vista nuevo_paciente.html
-@home_bp.route("/paciente/nuevo", methods=["GET"])
-@login_required
-def nuevo_paciente():
-    tutores = Tutor.query.all()
-    tutor_id = request.args.get("tutor_id", type=int)
-    return render_template("nuevo_paciente.html", tutores=tutores, tutor_id=tutor_id)
-
-# GET -> mostrar la vista editar_tutor.html
-@home_bp.route("/tutor/<int:id>/editar", methods=["GET"])
-@login_required
-def editar_tutor(id):
-    tutor = Tutor.query.get_or_404(id)
-    paciente = Paciente.query.filter_by(tutor_id=tutor.id).first()
-    return render_template("editar_tutor.html", tutor=tutor, paciente=paciente)
+def admin():
+    profesionales = Profesional.query.all() 
+    return render_template("admin.html", profesionales=profesionales)

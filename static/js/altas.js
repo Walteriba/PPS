@@ -71,4 +71,31 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+  // --- Profesional (crear o editar) ---
+  const formProfesional = document.getElementById("form-profesional");
+  if (formProfesional) {
+    const metodo = formProfesional.dataset.metodo || "POST"; // POST o PUT según la vista
+
+    formProfesional.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(formProfesional);
+
+      try {
+        const response = await fetch(formProfesional.action, {
+          method: metodo,
+          body: formData
+        });
+        const data = await response.json();
+        if (response.ok) {
+          alert(data.mensaje);
+          window.location.href = "/admin";
+        } else {
+          alert(data.error || "Hubo un error al guardar el profesional");
+        }
+      } catch (error) {
+        console.error(error);
+        alert("Error de conexión al servidor");
+      }
+    });
+  }
 });
