@@ -45,6 +45,7 @@ def crear_consulta():
         fecha_consulta = datetime.strptime(request.form["fecha"], "%Y-%m-%d")
         tutor_id_consulta = int(request.form["tutor_id"])
         paciente_id_consulta = int(request.form["paciente_id"])
+        profesional_id_consulta = int(request.form["profesional_id"])
 
     except ValueError as e:
         return jsonify({"error": f"Error en el formato de datos. Verifique: fecha, tutor_id o paciente_id. Detalle: {e}"}), 400
@@ -62,7 +63,8 @@ def crear_consulta():
         tratamiento=request.form.get("tratamiento"),
         
         tutor_id=tutor_id_consulta,
-        paciente_id=paciente_id_consulta
+        paciente_id=paciente_id_consulta,
+        profesional_id=profesional_id_consulta
     )
     
     db.session.add(nueva_consulta)
@@ -122,6 +124,11 @@ def actualizar_consulta(id_consulta):
     if tratamiento is not None:
         consulta.tratamiento = tratamiento
         
+    profesional_id = request.form.get("profesional_id")
+    if profesional_id:
+        consulta.profesional_id = int(profesional_id)
+
+
     archivos = request.files.getlist("archivos")
     for archivo in archivos:
         if archivo.filename:
