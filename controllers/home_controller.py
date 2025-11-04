@@ -38,89 +38,99 @@ def index():
         return redirect(url_for('auth_bp.login_page'))
     return redirect(url_for('home_bp.buscar'))
 
+
 # Busqueda de pacientes y tutores
 @home_bp.route("/buscar", methods=["GET"])
 @login_required
 def buscar():
     # Parámetros de búsqueda
-    query = request.args.get("q", "").strip()
+    search_action = request.args.get("search_action") == "1"
     modo = request.args.get("modo", "paciente")
+    
+    # Filtros de Paciente
+    nombre_paciente = request.args.get("nombre_paciente", "").strip()
     especie = request.args.get("especie", "").strip()
     raza = request.args.get("raza", "").strip()
     color = request.args.get("color", "").strip()
     reproductor = request.args.get("reproductor") == "1"
     castrado = request.args.get("castrado") == "1"
+    
+    # Filtros de Consulta
     anamnesis = request.args.get("anamnesis", "").strip()
     diagnostico = request.args.get("diagnostico", "").strip()
     tratamiento = request.args.get("tratamiento", "").strip()
+    
+    # Filtros de Tutor
     nombre_tutor = request.args.get("nombre_tutor", "").strip()
-    telefono = request.args.get("telefono", "").strip()
-    direccion = request.args.get("direccion", "").strip()
-    email = request.args.get("email", "").strip()
 
-    # Consulta base
-    base_query = Paciente.query
+    # Lógica de búsqueda
+    has_filters = any(
+        [
+            nombre_paciente,
+            especie,
+            raza,
+            color,
+            reproductor,
+            castrado,
+            anamnesis,
+            diagnostico,
+            tratamiento,
+            nombre_tutor,
+        ]
+    )
 
-    if modo == "paciente":
-        pacientes_query = base_query.join(Tutor)
-        if query:
-            pacientes_query = pacientes_query.filter(Paciente.nombre.ilike(f"%{query}%"))
-        if especie:
-            pacientes_query = pacientes_query.filter(Paciente.especie.ilike(f"%{especie}%"))
-        if raza:
-            pacientes_query = pacientes_query.filter(Paciente.raza.ilike(f"%{raza}%"))
-        if color:
-            pacientes_query = pacientes_query.filter(Paciente.color.ilike(f"%{color}%"))
-        if reproductor:
-            pacientes_query = pacientes_query.filter(Paciente.reproductor.is_(True))
-        if castrado:
-            pacientes_query = pacientes_query.filter(Paciente.castrado.is_(True))
+    pacientes = []
+    tutores = []
 
-    elif modo == "consulta":
-        pacientes_query = base_query.join(Consulta).join(Tutor)
-        if query:
-            pacientes_query = pacientes_query.filter(Paciente.nombre.ilike(f"%{query}%"))
-        if anamnesis:
-            pacientes_query = pacientes_query.filter(Consulta.anamnesis.ilike(f"%{anamnesis}%"))
-        if diagnostico:
-            pacientes_query = pacientes_query.filter(Consulta.diagnostico.ilike(f"%{diagnostico}%"))
-        if tratamiento:
-            pacientes_query = pacientes_query.filter(Consulta.tratamiento.ilike(f"%{tratamiento}%"))
+    if has_filters:
+        base_query = Paciente.query
 
-    elif modo == "tutor":
-        pacientes_query = base_query.join(Tutor) 
-        # FIX: BÚSQUEDA POR NOMBRE O APELLIDO 
-        
-        # Función para generar búsqueda por Nombre y/o Apellido
-        def search_name_or_apellido(search_term):
-            return or_(
-                Tutor.nombre.ilike(f"%{search_term}%"),
-                Tutor.apellido.ilike(f"%{search_term}%")
-            )
-        if query:
-            search_words = query.split()
-            for word in search_words:
-                if word:
-                    pacientes_query = pacientes_query.filter(search_name_or_apellido(word))
-        if nombre_tutor:
-            pacientes_query = pacientes_query.filter(search_name_or_apellido(nombre_tutor)) # Aplica la búsqueda de filtro avanzado a nombre y/o apellido
-        if telefono:
-            pacientes_query = pacientes_query.filter(Tutor.telefono.ilike(f"%{telefono}%"))
-        if direccion:
-            pacientes_query = pacientes_query.filter(Tutor.direccion.ilike(f"%{direccion}%"))
-        if email:
-            pacientes_query = pacientes_query.filter(Tutor.email.ilike(f"%{email}%"))
+        if modo == "paciente":
+            pacientes_query = base_query.join(Tutor)
+            
+            if nombre_paciente:
+                pacientes_query = pacientes_query.filter(Paciente.nombre.ilike(f"%{nombre_paciente}%"))                
+            if especie:
+                pacientes_query = pacientes_query.filter(Paciente.especie.ilike(f"%{especie}%"))
+            if raza:
+                pacientes_query = pacientes_query.filter(Paciente.raza.ilike(f"%{raza}%"))
+            if color:
+                pacientes_query = pacientes_query.filter(Paciente.color.ilike(f"%{color}%"))
+            if reproductor:
+                pacientes_query = pacientes_query.filter(Paciente.reproductor.is_(True))
+            if castrado:
+                pacientes_query = pacientes_query.filter(Paciente.castrado.is_(True))
 
-    pacientes = pacientes_query.options(joinedload(Paciente.tutor)).all()
-    tutores = list({p.tutor for p in pacientes if p.tutor})
+        elif modo == "consulta":
+            pacientes_query = base_query.join(Consulta).join(Tutor)
+            
+            if nombre_paciente:
+                pacientes_query = pacientes_query.filter(Paciente.nombre.ilike(f"%{nombre_paciente}%"))                
+            if anamnesis:
+                pacientes_query = pacientes_query.filter(Consulta.anamnesis.ilike(f"%{anamnesis}%"))
+            if diagnostico:
+                pacientes_query = pacientes_query.filter(Consulta.diagnostico.ilike(f"%{diagnostico}%"))
+            if tratamiento:
+                pacientes_query = pacientes_query.filter(Consulta.tratamiento.ilike(f"%{tratamiento}%"))
 
-    # DTO
+        elif modo == "tutor":
+            pacientes_query = base_query.join(Tutor) 
+            
+            if nombre_tutor:
+                search_words = nombre_tutor.split()
+                for word in search_words:
+                    pacientes_query = pacientes_query.filter(or_(Tutor.nombre.ilike(f"%{word}%"), Tutor.apellido.ilike(f"%{word}%")))
+
+        pacientes = pacientes_query.options(joinedload(Paciente.tutor)).all()
+        tutores = list({p.tutor for p in pacientes if p.tutor})
+
+    # --- DTO ---
     pacientes_dto = CreatePacienteDto(tutores, pacientes)
     
-    # Parámetros de búsqueda para mantener en el formulario
+    # --- Parámetros de búsqueda para mantener en el formulario ---
     search = {
-        "query": query,
         "modo": modo,
+        "nombre_paciente": nombre_paciente,
         "especie": especie,
         "raza": raza,
         "color": color,
@@ -130,28 +140,8 @@ def buscar():
         "diagnostico": diagnostico,
         "tratamiento": tratamiento,
         "nombre_tutor": nombre_tutor,
-        "telefono": telefono,
-        "direccion": direccion,
-        "email": email,
-        # Saber si hay filtros avanzados activos para mantener el desplegable abierto
-        "advanced": any(
-            [
-                especie,
-                raza,
-                color,
-                reproductor,
-                castrado,
-                anamnesis,
-                diagnostico,
-                tratamiento,
-                nombre_tutor,
-                telefono,
-                direccion,
-                email,
-            ]
-        ),
+        "search_performed": search_action, 
     }
-
     return render_template("index.html", pacientes=pacientes_dto, search=search)
 
 
