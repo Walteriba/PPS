@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
 from sqlalchemy.orm import joinedload
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 from models.tutor import Tutor
 from models.paciente import Paciente
 from models.consulta import Consulta
@@ -13,11 +13,9 @@ home_bp = Blueprint("home_bp", __name__)
 
 
 # Métodos Auxiliares
-def CreatePacienteDto(tutores, pacientes):
+def CreatePacienteDto(pacientes):
     pacientes_dto = []
-    # Recorremos los pacientes y buscamos su tutor correspondiente y creamos el DTO
-    for paciente in pacientes:
-        tutor = next(t for t in tutores if t.id == paciente.tutor_id)
+    for paciente in pacientes:   
         pacientes_dto.append(
             PacienteDTO(
                 id=paciente.id,
@@ -25,7 +23,7 @@ def CreatePacienteDto(tutores, pacientes):
                 nombre=paciente.nombre,
                 especie=paciente.especie,
                 raza=paciente.raza,
-                tutor=f"{tutor.nombre} {tutor.apellido}",
+                tutor=f"{paciente.tutor.nombre} {paciente.tutor.apellido}",
             )
         )
     return pacientes_dto
@@ -43,7 +41,6 @@ def index():
 @home_bp.route("/buscar", methods=["GET"])
 @login_required
 def buscar():
-    # Parámetros de búsqueda
     search_action = request.args.get("search_action") == "1"
     modo = request.args.get("modo", "paciente")
     
@@ -64,6 +61,8 @@ def buscar():
     nombre_tutor = request.args.get("nombre_tutor", "").strip()
 
     # Lógica de búsqueda
+    pacientes = []
+    
     has_filters = any(
         [
             nombre_paciente,
@@ -78,9 +77,6 @@ def buscar():
             nombre_tutor,
         ]
     )
-
-    pacientes = []
-    tutores = []
 
     if has_filters:
         base_query = Paciente.query
@@ -122,10 +118,9 @@ def buscar():
                     pacientes_query = pacientes_query.filter(or_(Tutor.nombre.ilike(f"%{word}%"), Tutor.apellido.ilike(f"%{word}%")))
 
         pacientes = pacientes_query.options(joinedload(Paciente.tutor)).all()
-        tutores = list({p.tutor for p in pacientes if p.tutor})
 
     # --- DTO ---
-    pacientes_dto = CreatePacienteDto(tutores, pacientes)
+    pacientes_dto = CreatePacienteDto(pacientes)
     
     # --- Parámetros de búsqueda para mantener en el formulario ---
     search = {
