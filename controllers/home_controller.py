@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
 from sqlalchemy.orm import joinedload
-from sqlalchemy import or_ # fix busqueda 
+from sqlalchemy import or_
 from models.tutor import Tutor
 from models.paciente import Paciente
 from models.consulta import Consulta
