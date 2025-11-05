@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="{{ session.get('theme', 'dark') }}" data-bs-theme="{{ session.get('theme', 'dark') }}">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Editar tutor</title>
+  {% include 'partials/links.html' %}
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+  {% include 'partials/header.html' %}
+
+  <!-- Editar tutor -->
+  <div class="container">
+    <h2>Editar tutor</h2>
+    <form id="editarTutorForm" data-id="{{ tutor.id }}" data-paciente-id="{{ paciente.id }}">
+      {% include 'partials/tutor/form_tutor.html'%}
+      <div class="row">
+        <div class="col-auto">
+          <button type="submit" id="saveBtn" class="btn btn-success mt-2">
+            Guardar cambios
+          </button>
+        </div>
+        <div class="col-auto">
+          <a href="{{ url_for('paciente_bp.ver_paciente', id=paciente.id) }}" class="btn btn-success mt-2">
+            Cancelar</a>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  {% include 'partials/footer.html' %}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='js/editar_tutor.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+
+</html>

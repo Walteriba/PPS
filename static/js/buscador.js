@@ -33,9 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     params.set("modo", modo);
 
-    // q del buscador
-    const q = document.getElementById("searchInput").value.trim();
-    if (q) params.set("q", q);
+    params.set("search_action", "1")
 
     // Filtros segun el modo seleccionado
     const filtrosActivos =
@@ -92,9 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
       else if (consultaBtn.checked) modoActual = "consulta";
 
       // Selecciona todos los inputs a limpiar
-      const allInputs = document.querySelectorAll(
-        "#searchForm input, #filtrosAvanzados input"
-      );
+      const allInputs = searchForm.querySelectorAll("input");
 
       allInputs.forEach((input) => {
         if (input.name === "modo") return;
@@ -118,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function () {
       
       actualizarFiltros();
 
-      // window.location.href = window.location.pathname + "?modo=" + modoActual;
+      //window.location.href = window.location.pathname;
     });
   }
 });

@@ -1,65 +1,80 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-success mb-4">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{{ url_for('home_bp.index') }}">🐾 VetLog</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <a class="navbar-brand" href="{{ url_for('auth_bp.index') }}">🐾 VetLog</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarNav">
       {% if current_user.is_authenticated %}
-        <!-- Menú principal (visible solo para usuarios autenticados) -->
-        <ul class="navbar-nav me-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('home_bp.buscar') }}">
-              <i class="bi bi-search me-1"></i> Buscar
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('paciente_bp.nuevo_paciente') }}">
-              <i class="bi bi-plus-circle me-1"></i> Nuevo Paciente
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('tutor_bp.nuevo_tutor') }}">
-              <i class="bi bi-person-plus me-1"></i> Nuevo Tutor
-            </a>
-          </li>
-        </ul>
-
-        <!-- Menú de usuario (derecha) -->
-        <ul class="navbar-nav">
-          <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('home_bp.admin') }}">
-              <i class="bi bi-person-lines-fill me-1"></i></i> Profesionales
+      <!-- Menú principal (visible solo para usuarios autenticados) -->
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('search_bp.buscar') }}">
+            <i class="bi bi-search me-1"></i> Buscar
           </a>
         </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-person-circle me-1"></i> {{ current_user.nombre }}
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-              <li>
-                <a class="dropdown-item" href="{{ url_for('auth_bp.logout') }}">
-                  <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
-                </a>
-              </li>
-            </ul>
-          </li>
-        </ul>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('paciente_bp.nuevo_paciente') }}">
+            <i class="bi bi-plus-circle me-1"></i> Nuevo Paciente
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('tutor_bp.nuevo_tutor') }}">
+            <i class="bi bi-person-plus me-1"></i> Nuevo Tutor
+          </a>
+        </li>
+      </ul>
+
+      <!-- Menú de usuario (derecha) -->
+      <ul class="navbar-nav">
+
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('profesional_bp.ver_profesionales') }}">
+            <i class="bi bi-person-lines-fill me-1"></i> Profesionales
+          </a>
+        </li>
+
+        <li class="nav-item me-2">
+          <button id="theme-toggle-btn" class="nav-link" data-current-theme="{{ session.get('theme', 'light') }}">
+            {% if session.get('theme') == 'light' %}
+            <i class="bi bi-sun text-warning"></i>
+            {% else %}
+            <i class="bi bi-moon text-light"></i>
+            {% endif %}
+          </button>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            <i class="bi bi-person-circle me-1"></i> {{ current_user.nombre }}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <li>
+              <a class="dropdown-item" href="{{ url_for('auth_bp.logout') }}">
+                <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
+              </a>
+            </li>
+          </ul>
+        </li>
+
+      </ul>
       {% else %}
-        <!-- Enlaces de autenticación (para usuarios no autenticados) -->
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('auth_bp.login_page') }}">
-              <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('auth_bp.register_page') }}">
-              <i class="bi bi-person-plus"></i> Registrarse
-            </a>
-          </li>
-        </ul>
+      <!-- Enlaces de autenticación (para usuarios no autenticados) -->
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('auth_bp.login_page') }}">
+            <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('auth_bp.register_page') }}">
+            <i class="bi bi-person-plus"></i> Registrarse
+          </a>
+        </li>
+      </ul>
       {% endif %}
     </div>
   </div>

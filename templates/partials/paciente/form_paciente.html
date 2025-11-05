@@ -1,9 +1,5 @@
-<form
-  id="form-paciente"
-  method="POST"
-  action="{{ url_for('paciente_bp.crear_paciente') }}"
-  enctype="multipart/form-data"
->
+<form id="form-paciente" method="POST" action="{{ url_for('paciente_bp.nuevo_paciente') }}"
+  enctype="multipart/form-data">
   <h2 class="mb-2">Datos del paciente</h2>
   <input type="hidden" name="tutor_id" id="tutor-id" />
   <div class="row g-2">
@@ -25,12 +21,7 @@
       </div>
       <div class="mb-2">
         <label class="form-label">Imagen del paciente</label>
-        <input
-          type="file"
-          name="imagen"
-          class="form-control"
-          accept="image/*"
-        />
+        <input type="file" name="imagen" class="form-control" accept="image/*" />
       </div>
     </div>
     <div class="col-md-6">
@@ -52,30 +43,15 @@
       </div>
       <div class="mb-2">
         <label class="form-label">Fecha de Nacimiento</label>
-        <input
-          type="date"
-          name="fecha_nacimiento"
-          class="form-control"
-          required
-        />
+        <input type="date" name="fecha_nacimiento" class="form-control" required />
       </div>
       <div class="mt-5">
         <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            name="reproductor"
-            id="reproductor"
-          />
+          <input class="form-check-input" type="checkbox" name="reproductor" id="reproductor" />
           <label class="form-check-label" for="reproductor">Reproductor</label>
         </div>
         <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            name="castrado"
-            id="castrado"
-          />
+          <input class="form-check-input" type="checkbox" name="castrado" id="castrado" />
           <label class="form-check-label" for="castrado">Castrado</label>
         </div>
       </div>
