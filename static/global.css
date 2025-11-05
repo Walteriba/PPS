@@ -87,6 +87,7 @@ body {
   font-size: var(--tamano-base);
   background-color: var(--color-fondo);
   color: var(--color-texto);
+}
 
 .form-control,
 .form-select {
