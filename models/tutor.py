@@ -1,5 +1,6 @@
 from models import db
 
+
 class Tutor(db.Model):
     __tablename__ = "tutores"
 

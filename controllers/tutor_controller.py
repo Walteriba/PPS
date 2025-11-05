@@ -1,8 +1,8 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, jsonify, render_template, request
 from flask_login import login_required
-from models.tutor import Tutor
-from models.paciente import Paciente
 from models import db
+from models.paciente import Paciente
+from models.tutor import Tutor
 
 tutor_bp = Blueprint("tutor_bp", __name__)
 

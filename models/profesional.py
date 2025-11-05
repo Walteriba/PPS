@@ -1,5 +1,5 @@
-"""Modelo de datos para la entidad Profesional."""
 from models import db
+
 
 class Profesional(db.Model):
     """Definición de la clase Profesional."""

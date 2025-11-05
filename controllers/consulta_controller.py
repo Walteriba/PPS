@@ -1,13 +1,13 @@
 from datetime import datetime
-from flask import Blueprint, request, jsonify, render_template
+from flask import Blueprint, jsonify, render_template, request
 from flask_login import login_required
-from models.paciente import Paciente
-from models.tutor import Tutor
-from models.consulta import Consulta
-from models.profesional import Profesional
 from models import db
-from utils.cloudinary_utils import subir_y_obtener_url
 from models.archivo import Archivo
+from models.consulta import Consulta
+from models.paciente import Paciente
+from models.profesional import Profesional
+from models.tutor import Tutor
+from utils.cloudinary_utils import subir_y_obtener_url
 
 consulta_bp = Blueprint("consulta_bp", __name__)
 

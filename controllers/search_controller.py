@@ -1,12 +1,11 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, redirect, render_template, request, url_for
 from flask_login import login_required
+from sqlalchemy import or_
 from sqlalchemy.orm import joinedload
-from sqlalchemy import or_, func
-from models.tutor import Tutor
-from models.paciente import Paciente
-from models.consulta import Consulta
 from dto.paciente_dto import PacienteDTO
-from models.profesional import Profesional
+from models.consulta import Consulta
+from models.paciente import Paciente
+from models.tutor import Tutor
 
 search_bp = Blueprint("search_bp", __name__)
 

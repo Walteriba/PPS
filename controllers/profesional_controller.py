@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, jsonify, render_template, request
 from flask_login import login_required
-from models.profesional import Profesional
 from models import db
+from models.profesional import Profesional
 
 profesional_bp = Blueprint("profesional_bp", __name__)
 

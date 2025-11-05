@@ -1,11 +1,11 @@
+from datetime import datetime
+from flask import Blueprint, jsonify, render_template, request, send_file
 from flask_login import login_required
-from flask import Blueprint, render_template, request, jsonify, send_file
+from models import db
+from models.consulta import Consulta
 from models.paciente import Paciente
 from models.tutor import Tutor
-from models import db
-from datetime import datetime
 from utils.cloudinary_utils import subir_y_obtener_url
-from models.consulta import Consulta
 from utils.generar_reportes import crear_pdf_historia_clinica
 
 paciente_bp = Blueprint("paciente_bp", __name__)
