@@ -20,12 +20,12 @@
   /* Fuentes */
   --fuente-principal: "Lato", sans-serif;
 
-    /* Otros valores globales */
+  /* Otros valores globales */
   --tamano-base: 16px;
   --espaciado-base: 1rem;
   --radio-borde: 8px;
 
-    /* 🧩 Mapear a Bootstrap */
+  /* 🧩 Mapear a Bootstrap */
   --bs-body-bg: var(--color-fondo);
   --bs-body-color: var(--color-texto);
   --bs-primary: var(--color-primario);
@@ -74,6 +74,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 html,
@@ -86,5 +87,8 @@ body {
   font-size: var(--tamano-base);
   background-color: var(--color-fondo);
   color: var(--color-texto);
-  transition: background-color 0.3s ease, color 0.3s ease;
+
+.form-control,
+.form-select {
+  transition: all 0.3s ease !important;
 }
