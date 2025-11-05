@@ -8,33 +8,33 @@ from utils.cloudinary_utils import subir_y_obtener_url
 from models.consulta import Consulta
 from utils.generar_reportes import crear_pdf_historia_clinica
 
-# Definición del Blueprint
 paciente_bp = Blueprint("paciente_bp", __name__)
 
 
-# Vista detalle de paciente
 @paciente_bp.route("/paciente/<int:id>", methods=["GET"])
 @login_required
-def detalle_paciente(id):
+def ver_paciente(id):
     # Obtener paciente y su tutor
     paciente = Paciente.query.get(id)
     if paciente is not None:
         tutor = Tutor.query.get(paciente.tutor_id)
-        return render_template("paciente/detalle_paciente.html", paciente=paciente, tutor=tutor)
+        return render_template(
+            "paciente/detalle_paciente.html", paciente=paciente, tutor=tutor
+        )
     # Si no se encuentra el paciente, mostrar un mensaje de error
     return "Mascota no encontrada", 404
 
 
-# Vista nuevo paciente
 @paciente_bp.route("/paciente/nuevo", methods=["GET"])
 @login_required
 def nuevo_paciente():
     tutores = Tutor.query.all()
     tutor_id = request.args.get("tutor_id", type=int)
-    return render_template("paciente/nuevo_paciente.html", tutores=tutores, tutor_id=tutor_id)
+    return render_template(
+        "paciente/nuevo_paciente.html", tutores=tutores, tutor_id=tutor_id
+    )
 
 
-# Endpoint para crear paciente (insert)
 @paciente_bp.route("/paciente/nuevo", methods=["POST"])
 @login_required
 def crear_paciente():
@@ -79,7 +79,6 @@ def crear_paciente():
     )
 
 
-# Endpoint para actualizar un paciente
 @paciente_bp.route("/paciente/actualizar/<int:id>", methods=["PUT"])
 @login_required
 def actualizar_paciente(id):
@@ -121,7 +120,6 @@ def actualizar_paciente(id):
     )
 
 
-# Endpoint para Generar Reporte
 @paciente_bp.route("/paciente/<int:paciente_id>/reporte", methods=["GET"])
 @login_required
 def generar_reporte_paciente(paciente_id):

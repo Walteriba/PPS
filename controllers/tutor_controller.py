@@ -4,18 +4,15 @@ from models.tutor import Tutor
 from models.paciente import Paciente
 from models import db
 
-# Definición del Blueprint
 tutor_bp = Blueprint("tutor_bp", __name__)
 
 
-# Endpoint para mostrar la vista nuevo_tutor.html
 @tutor_bp.route("/tutor/nuevo", methods=["GET"])
 @login_required
 def nuevo_tutor():
     return render_template("tutor/nuevo_tutor.html")
 
 
-# Endpoint para mostrar la vista editar_tutor.html
 @tutor_bp.route("/tutor/<int:id>/editar", methods=["GET"])
 @login_required
 def editar_tutor(id):
@@ -24,7 +21,6 @@ def editar_tutor(id):
     return render_template("tutor/editar_tutor.html", tutor=tutor, paciente=paciente)
 
 
-# Endpoint para crear tutor (insert)
 @tutor_bp.route("/tutor/nuevo", methods=["POST"])
 @login_required
 def crear_tutor():
@@ -50,7 +46,6 @@ def crear_tutor():
     return jsonify({"mensaje": "Tutor creado con éxito", "id": nuevo_tutor.id}), 201
 
 
-# Endpoint para obtener un tutor por ID (GET)
 @tutor_bp.route("/tutor/<int:id>", methods=["GET"])
 @login_required
 def obtener_tutor(id):
@@ -75,7 +70,6 @@ def obtener_tutor(id):
     )
 
 
-# Endpoint para actualizar un tutor (PUT)
 @tutor_bp.route("/tutor/<int:id>", methods=["PUT"])
 @login_required
 def actualizar_tutor(id):

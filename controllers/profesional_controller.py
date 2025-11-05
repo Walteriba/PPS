@@ -3,7 +3,6 @@ from flask_login import login_required
 from models.profesional import Profesional
 from models import db
 
-# Definición del Blueprint
 profesional_bp = Blueprint("profesional_bp", __name__)
 
 
@@ -16,14 +15,12 @@ def profesionales():
     )
 
 
-# Mostrar formulario de alta
 @profesional_bp.route("/profesional/nuevo", methods=["GET"])
 @login_required
 def alta_profesional():
     return render_template("profesional/alta_profesional.html")
 
 
-# Mostrar formulario con datos cargados
 @profesional_bp.route("/profesional/editar/<int:id>", methods=["GET"])
 @login_required
 def editar_profesional(id):
@@ -33,7 +30,6 @@ def editar_profesional(id):
     )
 
 
-# Endpoint para crear un profesional (POST)
 @profesional_bp.route("/profesional/nuevo", methods=["POST"])
 @login_required
 def crear_profesional():
@@ -65,7 +61,6 @@ def crear_profesional():
     )
 
 
-# Endpoint para actualizar un profesional (PUT)
 @profesional_bp.route("/profesional/<int:id>", methods=["PUT"])
 @login_required
 def actualizar_profesional(id):

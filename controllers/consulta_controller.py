@@ -31,7 +31,7 @@ def ver_consulta(consulta_id):
 
 @consulta_bp.route("/consulta/nuevo", methods=["GET"])
 @login_required
-def mostrar_formulario_consulta():
+def ver_nueva_consulta():
     try:
         paciente_id = request.args.get("paciente_id", type=int)
         tutor_id = request.args.get("tutor_id", type=int)
@@ -56,10 +56,9 @@ def mostrar_formulario_consulta():
         return f"Error al cargar el formulario: {e}", 500
 
 
-# Agregar profesional_id al crear
 @consulta_bp.route("/consulta/nuevo", methods=["POST"])
 @login_required
-def crear_consulta():
+def nueva_consulta():
     try:
         fecha_consulta = datetime.strptime(request.form["fecha"], "%Y-%m-%d")
         tutor_id_consulta = int(request.form["tutor_id"])
@@ -108,7 +107,6 @@ def crear_consulta():
     )
 
 
-# Agregar profesional_id al actualizar
 @consulta_bp.route("/consulta/<int:id_consulta>", methods=["PUT"])
 @login_required
 def actualizar_consulta(id_consulta):

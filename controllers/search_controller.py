@@ -8,7 +8,6 @@ from models.consulta import Consulta
 from dto.paciente_dto import PacienteDTO
 from models.profesional import Profesional
 
-# Definición del Blueprint
 search_bp = Blueprint("search_bp", __name__)
 
 
@@ -29,7 +28,6 @@ def CreatePacienteDto(pacientes):
     return pacientes_dto
 
 
-# Busqueda de pacientes y tutores
 @search_bp.route("/buscar", methods=["GET"])
 @login_required
 def buscar():

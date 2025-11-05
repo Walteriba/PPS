@@ -3,7 +3,6 @@ from flask_login import login_user, logout_user, login_required, current_user
 from models.usuario import Usuario
 from models import db
 
-# Definición del Blueprint
 auth_bp = Blueprint("auth_bp", __name__)
 
 
