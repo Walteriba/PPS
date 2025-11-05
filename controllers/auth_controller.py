@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, flash, redirect, render_template, request, url_for, session, jsonify
 from flask_login import current_user, login_required, login_user, logout_user
 from models import db
 from models.usuario import Usuario
@@ -74,3 +74,14 @@ def logout():
     """Cierra la sesión del usuario."""
     logout_user()
     return redirect(url_for("auth_bp.login_page"))
+
+
+@auth_bp.route("/set-theme", methods=["POST"])
+@login_required
+def set_theme():
+    data = request.json
+    theme = data.get("theme")
+    if theme in ["light", "dark"]:
+        session["theme"] = theme
+        return jsonify(success=True, theme=theme) 
+    return jsonify(success=False), 400

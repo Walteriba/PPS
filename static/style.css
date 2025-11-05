@@ -1,8 +1,4 @@
-html, body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-  height: 100%;
-}
+@import url("global.css");
 
 body {
   display: flex;
@@ -10,8 +6,9 @@ body {
 }
 
 h1 {
-  color: #2c3e50;
+  color: var(--color-texto-enfasis);
 }
+
 footer {
   margin-top: auto;
 }
@@ -35,5 +32,18 @@ footer {
 
 /* Para validacion de input pacientes */
 .is-invalid {
-  border-color: #dc3545 !important; 
+  /* Usamos la variable de peligro */
+  border-color: var(--color-peligro) !important;
+}
+
+/* Ejemplo de cómo estilizar un botón ahora */
+.btn-primario {
+  background-color: var(--color-primario);
+  color: var(--color-primario-texto);
+  padding: 0.8rem var(--espaciado-base);
+  border: none;
+  border-radius: var(--radio-borde);
+  cursor: pointer;
+  font-family: var(--fuente-principal);
+  font-weight: 700;
 }

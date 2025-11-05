@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="{{ session.get('theme', 'dark') }}" data-bs-theme="{{ session.get('theme', 'dark') }}">
 
 <head>
   <meta charset="UTF-8">
@@ -11,7 +11,7 @@
   <!-- Navbar -->
   {% include 'partials/header.html' %}
 
-  <div class="container">
+  <div class="container rounded-3">
     <h2>Lista de profesionales</h2>
     <div class="row">
       <div class="col-auto">
@@ -36,7 +36,7 @@
       <ul class="list-group list-group-flush">
         <!-- Todo: Se usa tutores de ejemplo, cambiar y Traer los profesionales y datos requeridos -->
         {% for profesional in profesionales %}
-        <li class="list-group-item d-flex justify-content-between align-items-center">
+        <li class="list-group-item d-flex justify-content-between align-items-center rounded-3">
           <div class="row w-100">
             <div class="col-1">{{ profesional.nombre }}</div>
             <div class="col-1">{{ profesional.apellido }}</div>
@@ -64,6 +64,7 @@
   {% include 'partials/footer.html' %}
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 
 </html>

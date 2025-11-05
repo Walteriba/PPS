@@ -1,0 +1,90 @@
+/* Importar la fuente Lato desde Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap");
+
+/* VARIABLES SEMÁNTICAS 
+  Usamos nombres que describen el "propósito" (ej. --color-fondo) 
+  en lugar del "color" (ej. --color-claro).
+  Esto hace que el modo oscuro sea mucho más fácil de gestionar.
+*/
+
+:root {
+  /* TEMA CLARO (Default) */
+  --color-fondo: #edfae4;
+  --color-fondo-secundario: #f8fff4; /* Para tarjetas, menús, etc. */
+  --color-texto: #2f7560;
+  --color-texto-enfasis: #2c3e50; /* Para títulos */
+  --color-primario: #9dbc98; /* Para botones, enlaces */
+  --color-primario-texto: #f9efdb; /* Texto sobre el color primario */
+  --color-peligro: #dc3545; /* Para errores, validaciones */
+
+  /* Fuentes */
+  --fuente-principal: "Lato", sans-serif;
+
+    /* Otros valores globales */
+  --tamano-base: 16px;
+  --espaciado-base: 1rem;
+  --radio-borde: 8px;
+
+    /* 🧩 Mapear a Bootstrap */
+  --bs-body-bg: var(--color-fondo);
+  --bs-body-color: var(--color-texto);
+  --bs-primary: var(--color-primario);
+  --bs-primary-text-emphasis: var(--color-primario-texto);
+  --bs-secondary-bg: var(--color-fondo-secundario);
+  --bs-link-color: var(--color-primario);
+  --bs-link-hover-color: #7ea97d;
+  --bs-danger: var(--color-peligro);
+  --bs-border-radius: var(--radio-borde);
+
+  /* Fuentes */
+  --bs-body-font-family: var(--fuente-principal);
+  --bs-body-font-size: var(--tamano-base);
+}
+
+/* TEMA OSCURO */
+/* Se activa cuando el <html> o <body> tiene el atributo data-theme="dark" */
+[data-theme="dark"] {
+  --color-fondo: #133022;
+  --color-fondo-secundario: #465869;
+  --color-texto: #f3fbe2;
+  --color-texto-enfasis: #ebd9b4;
+  --color-primario: #9dbc98;
+  --color-primario-texto: #2c3e50;
+  --color-peligro: #e06c75;
+
+  --bs-body-bg: var(--color-fondo);
+  --bs-body-color: var(--color-texto);
+  --bs-primary: var(--color-primario);
+  --bs-primary-text-emphasis: var(--color-primario-texto);
+  --bs-secondary-bg: var(--color-fondo-secundario);
+  --bs-link-color: var(--color-primario);
+  --bs-link-hover-color: #b3c7ae;
+  --bs-danger: var(--color-peligro);
+  --bs-border-radius: var(--radio-borde);
+
+  --bs-body-font-family: var(--fuente-principal);
+  --bs-body-font-size: var(--tamano-base);
+}
+
+/* NORMALIZACIÓN Y ESTILOS GLOBALES */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--fuente-principal);
+  font-size: var(--tamano-base);
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}

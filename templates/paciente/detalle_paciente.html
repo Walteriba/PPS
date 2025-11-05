@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="{{ session.get('theme', 'dark') }}" data-bs-theme="{{ session.get('theme', 'dark') }}">
 
 <head>
   <meta charset="UTF-8">
@@ -19,12 +19,12 @@
           <div class="d-flex flex-column flex-md-row shadow-lg rounded-4 overflow-hidden">
 
             <!-- tutor: izquierda: -->
-            <div class="col-md-3 bg-light p-3">
+            <div class="col-md-3 p-3">
               {% include 'tutor/tutor.html' %}
             </div>
 
             <!-- derecha: paciente -->
-            <div class="col-md-9 p-4 bg-white">
+            <div class="col-md-9 p-4">
               {% include 'partials/paciente/card.html' %}
 
               <a href="/consulta/nuevo?paciente_id={{ paciente.id }}&tutor_id={{ paciente.tutor_id }}"
@@ -72,6 +72,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 
 </html>

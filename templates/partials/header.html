@@ -29,11 +29,23 @@
 
       <!-- Menú de usuario (derecha) -->
       <ul class="navbar-nav">
+
         <li class="nav-item">
           <a class="nav-link" href="{{ url_for('profesional_bp.ver_profesionales') }}">
-            <i class="bi bi-person-lines-fill me-1"></i></i> Profesionales
+            <i class="bi bi-person-lines-fill me-1"></i> Profesionales
           </a>
         </li>
+
+        <li class="nav-item me-2">
+          <button id="theme-toggle-btn" class="nav-link" data-current-theme="{{ session.get('theme', 'light') }}">
+            {% if session.get('theme') == 'light' %}
+            <i class="bi bi-sun text-warning"></i>
+            {% else %}
+            <i class="bi bi-moon text-light"></i>
+            {% endif %}
+          </button>
+        </li>
+
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
             aria-expanded="false">
@@ -47,6 +59,7 @@
             </li>
           </ul>
         </li>
+
       </ul>
       {% else %}
       <!-- Enlaces de autenticación (para usuarios no autenticados) -->

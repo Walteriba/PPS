@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, session
 from flask_login import LoginManager
 from controllers.auth_controller import auth_bp
 from controllers.consulta_controller import consulta_bp
@@ -25,7 +25,10 @@ login_manager.login_view = (
     "auth_bp.login_page"  # Ruta a la que redirigir si no hay sesión
 )
 
-
+def ensure_theme_in_session():
+    if "theme" not in session:
+        session["theme"] = "dark"
+        
 @login_manager.user_loader
 def load_user(user_id):
     return Usuario.query.get(int(user_id))
