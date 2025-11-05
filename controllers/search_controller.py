@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for
-from flask_login import login_required, current_user
+from flask_login import login_required
 from sqlalchemy.orm import joinedload
 from sqlalchemy import or_, func
 from models.tutor import Tutor
@@ -9,7 +9,7 @@ from dto.paciente_dto import PacienteDTO
 from models.profesional import Profesional
 
 # Definición del Blueprint
-home_bp = Blueprint("home_bp", __name__)
+search_bp = Blueprint("search_bp", __name__)
 
 
 # Métodos Auxiliares
@@ -29,16 +29,8 @@ def CreatePacienteDto(pacientes):
     return pacientes_dto
 
 
-# Ruta raíz - redirige a login si no está autenticado
-@home_bp.route("/", methods=["GET"])
-def index():
-    if not current_user.is_authenticated:
-        return redirect(url_for("auth_bp.login_page"))
-    return redirect(url_for("home_bp.buscar"))
-
-
 # Busqueda de pacientes y tutores
-@home_bp.route("/buscar", methods=["GET"])
+@search_bp.route("/buscar", methods=["GET"])
 @login_required
 def buscar():
     search_action = request.args.get("search_action") == "1"

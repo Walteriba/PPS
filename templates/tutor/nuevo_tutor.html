@@ -13,7 +13,7 @@
     <div class= "container">
       <h2>Registrar nuevo tutor</h2>
         <form id="form-tutor" action="{{ url_for('tutor_bp.crear_tutor') }}" method="POST">
-          {% include 'partials/form_tutor.html'%}
+          {% include 'partials/tutor/form_tutor.html'%}
          <div class="row">
           <div class="col-auto">
            <button type="submit" class="btn btn-success mt-2">Crear Tutor</button>

@@ -20,12 +20,12 @@
 
             <!-- tutor: izquierda: -->
             <div class="col-md-3 bg-light p-3">
-              {% include 'partials/tutor.html' %}
+              {% include 'tutor/tutor.html' %}
             </div>
 
             <!-- derecha: paciente -->
             <div class="col-md-9 p-4 bg-white">
-              {% include 'partials/card.html' %}
+              {% include 'partials/paciente/card.html' %}
 
               <a href="/consulta/nuevo?paciente_id={{ paciente.id }}&tutor_id={{ paciente.tutor_id }}"
                 class="btn btn-success">

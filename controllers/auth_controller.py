@@ -1,10 +1,17 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required, current_user
 from models.usuario import Usuario
 from models import db
 
 # Definición del Blueprint
 auth_bp = Blueprint("auth_bp", __name__)
+
+
+@auth_bp.route("/", methods=["GET"])
+def index():
+    if not current_user.is_authenticated:
+        return redirect(url_for("auth_bp.login_page"))
+    return redirect(url_for("search_bp.buscar"))
 
 
 @auth_bp.route("/login", methods=["GET"])
@@ -25,7 +32,7 @@ def login_submit():
         login_user(user)
         # Redirigir a la página que intentaba acceder o al home
         next_page = request.args.get("next")
-        return redirect(next_page or url_for("home_bp.buscar"))
+        return redirect(next_page or url_for("search_bp.buscar"))
 
     # Login fallido
     flash("Email o contraseña incorrectos")
@@ -59,7 +66,7 @@ def register_submit():
 
     # Login automático después del registro
     login_user(nuevo_usuario)
-    return redirect(url_for("home_bp.buscar"))
+    return redirect(url_for("search_bp.buscar"))
 
 
 @auth_bp.route("/logout")

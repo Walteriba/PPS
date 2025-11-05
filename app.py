@@ -3,7 +3,7 @@ from flask import Flask
 from flask_login import LoginManager
 from models import db
 from models.usuario import Usuario
-from controllers.home_controller import home_bp
+from controllers.search_controller import search_bp
 from controllers.paciente_controller import paciente_bp
 from controllers.consulta_controller import consulta_bp
 from controllers.tutor_controller import tutor_bp
@@ -32,7 +32,7 @@ with app.app_context():
     db.create_all()
 
 # Registrar los Blueprint de los controladores
-app.register_blueprint(home_bp)
+app.register_blueprint(search_bp)
 app.register_blueprint(paciente_bp)
 app.register_blueprint(consulta_bp)
 app.register_blueprint(tutor_bp)

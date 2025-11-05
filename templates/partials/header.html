@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-success mb-4">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{{ url_for('home_bp.index') }}">🐾 VetLog</a>
+    <a class="navbar-brand" href="{{ url_for('auth_bp.index') }}">🐾 VetLog</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -10,7 +10,7 @@
         <!-- Menú principal (visible solo para usuarios autenticados) -->
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('home_bp.buscar') }}">
+            <a class="nav-link" href="{{ url_for('search_bp.buscar') }}">
               <i class="bi bi-search me-1"></i> Buscar
             </a>
           </li>
