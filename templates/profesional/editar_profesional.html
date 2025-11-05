@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="{{ session.get('theme', 'dark') }}" data-bs-theme="{{ session.get('theme', 'dark') }}">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Editar Profesional</title>
+  {% include 'partials/links.html' %}
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+  {% include 'partials/header.html' %}
+
+  <div class="container">
+    <h3>Editar profesional</h3>
+    <form id="form-profesional" data-id="{{ profesional.id }}" data-metodo="PUT"
+      action="{{ url_for('profesional_bp.actualizar_profesional', id=profesional.id) }}">
+      {% include 'partials/profesional/form_profesional.html' %}
+
+      <div class="row">
+        <div class="col-auto">
+          <button type="submit" class="btn btn-success">
+            Guardar Cambios
+          </button>
+        </div>
+        <div class="col-auto">
+          <a href="{{ url_for('profesional_bp.ver_profesionales') }}" class="btn btn-secondary">Cancelar</a>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  {% include'partials/footer.html' %}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='js/altas.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+
+</html>

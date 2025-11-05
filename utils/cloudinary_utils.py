@@ -1,7 +1,8 @@
+import os
 from datetime import datetime
+
 import cloudinary
 import cloudinary.uploader
-import os
 from dotenv import load_dotenv
 
 load_dotenv()

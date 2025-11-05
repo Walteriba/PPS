@@ -1,0 +1,25 @@
+{% if pacientes %}
+<div class="list-group">
+  {% for paciente in pacientes %}
+  <li class="list-group-item mb-1 d-flex justify-content-start align-items-center rounded-3">
+    <div class="d-flex align-items-center">
+      <img src="{{ paciente.imagen }}" class="rounded me-3 card-img-top card-img-fixed img-cover" alt="Foto paciente">
+      <div>
+        <h5 class="mb-1">{{ paciente.nombre }}</h5>
+        <p class="mb-0 text-muted" style="font-size: 0.9rem;">
+          <strong>Especie:</strong> {{ paciente.especie }} |
+          <strong>Raza:</strong> {{ paciente.raza }} |
+          <strong>Tutor:</strong> {{ paciente.tutor }}
+        </p>
+      </div>
+    </div>
+    <a href="/paciente/{{ paciente.id }}" class="btn btn-success ms-auto me-5">Ver Detalle</a>
+  </li>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if search.search_performed and not pacientes %}
+<hr>
+<h5>No se encontraron pacientes.</h5>
+{% endif %}

@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const formPacienteDiv = document.getElementById("form-paciente");
   const tutorIdInput = document.getElementById("tutor-id");
 
-  // --- Mostrar formulario si ya hay tutor seleccionado al cargar ---
+  // --- Mostrar formulario si hay tutor seleccionado al cargar ---
   if (selectTutor && formPacienteDiv && tutorIdInput) {
     const formPaciente = formPacienteDiv.querySelector("form");
     if (selectTutor.value) {
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // --- Bloque para formulario paciente ---
+    // --- Alta Paciente ---
     if (formPaciente) {
       formPaciente.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // --- Bloque para nuevo_tutor ---
+  // --- Alta Tutor ---
   const formTutor = document.getElementById("form-tutor");
   if (formTutor) {
     formTutor.addEventListener("submit", async (e) => {
@@ -71,7 +71,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-  // --- Profesional (crear o editar) ---
+
+  // --- Alta/Modificación Profesional ---
   const formProfesional = document.getElementById("form-profesional");
   if (formProfesional) {
     const metodo = formProfesional.dataset.metodo || "POST"; // POST o PUT según la vista
@@ -83,12 +84,12 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         const response = await fetch(formProfesional.action, {
           method: metodo,
-          body: formData
+          body: formData,
         });
         const data = await response.json();
         if (response.ok) {
           alert(data.mensaje);
-          window.location.href = "/admin";
+          window.location.href = "/profesionales";
         } else {
           alert(data.error || "Hubo un error al guardar el profesional");
         }

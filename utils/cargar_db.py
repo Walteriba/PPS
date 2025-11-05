@@ -1,12 +1,13 @@
 """Script para cargar datos de ejemplo en la base de datos."""
 
 from datetime import date, timedelta
-from random import randint, choice, uniform
+from random import choice, randint, uniform
+
 from app import app, db
-from models.tutor import Tutor
-from models.paciente import Paciente
 from models.consulta import Consulta
+from models.paciente import Paciente
 from models.profesional import Profesional
+from models.tutor import Tutor
 
 # Datos de ejemplo
 nombres_tutores = [

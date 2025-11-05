@@ -1,6 +1,6 @@
-"""Modelo de datos para la entidad Consulta."""
-from models import db
 from datetime import date
+from models import db
+
 
 class Consulta(db.Model):
     """Definición de la clase Consulta"""

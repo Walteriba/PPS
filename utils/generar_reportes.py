@@ -1,9 +1,11 @@
+import os
 from io import BytesIO
+
 import requests
 from flask import current_app
-import os
-from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+
 
 def crear_pdf_historia_clinica(paciente, tutor, consultas):
     """

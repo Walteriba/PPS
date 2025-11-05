@@ -1,33 +1,30 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, jsonify, render_template, request
 from flask_login import login_required
-from models.tutor import Tutor
-from models.paciente import Paciente
 from models import db
+from models.paciente import Paciente
+from models.tutor import Tutor
 
-# Definición del Blueprint
 tutor_bp = Blueprint("tutor_bp", __name__)
 
-# Endpoint para mostrar la vista nuevo_tutor.html
+
 @tutor_bp.route("/tutor/nuevo", methods=["GET"])
 @login_required
-def nuevo_tutor():
-    return render_template("nuevo_tutor.html")
+def ver_nuevo_tutor():
+    return render_template("tutor/nuevo_tutor.html")
 
-# Endpoint para mostrar la vista editar_tutor.html
+
 @tutor_bp.route("/tutor/<int:id>/editar", methods=["GET"])
 @login_required
-def editar_tutor(id):
+def ver_actualizar_tutor(id):
     tutor = Tutor.query.get_or_404(id)
     paciente = Paciente.query.filter_by(tutor_id=tutor.id).first()
-    return render_template("editar_tutor.html", tutor=tutor, paciente=paciente)
+    return render_template("tutor/editar_tutor.html", tutor=tutor, paciente=paciente)
 
-# ----------------------------------------------------
-# Endpoint para crear tutor (insert)
-# ----------------------------------------------------
+
 @tutor_bp.route("/tutor/nuevo", methods=["POST"])
 @login_required
-def crear_tutor():
-    # Validación de campos obligatorios 
+def nuevo_tutor():
+    # Validación de campos obligatorios
     campos = ["nombre", "apellido", "telefono", "email", "direccion"]
     for campo in campos:
         if not request.form.get(campo):
@@ -39,7 +36,7 @@ def crear_tutor():
         apellido=request.form["apellido"],
         telefono=request.form["telefono"],
         email=request.form["email"],
-        direccion=request.form["direccion"]
+        direccion=request.form["direccion"],
     )
 
     db.session.add(nuevo_tutor)
@@ -48,30 +45,7 @@ def crear_tutor():
     # Retorno de éxito, código 201 (Creado) [2]
     return jsonify({"mensaje": "Tutor creado con éxito", "id": nuevo_tutor.id}), 201
 
-# ----------------------------------------------------
-# Endpoint para obtener un tutor por ID (GET)
-# ----------------------------------------------------
-@tutor_bp.route("/tutor/<int:id>", methods=["GET"])
-@login_required
-def obtener_tutor(id):
-    tutor = Tutor.query.get(id)
-    if not tutor:
-        # Retorna 404 si no se encuentra [2, 3]
-        return jsonify({"error": "Tutor no encontrado"}), 404
 
-    # En un controlador, se suele retornar una representación del objeto (ej. JSON)
-    return jsonify({
-        "id": tutor.id,
-        "nombre": tutor.nombre,
-        "apellido": tutor.apellido,
-        "telefono": tutor.telefono,
-        "email": tutor.email,
-        "direccion": tutor.direccion
-    }), 200
-
-# ----------------------------------------------------
-# Endpoint para actualizar un tutor (PUT)
-# ----------------------------------------------------
 @tutor_bp.route("/tutor/<int:id>", methods=["PUT"])
 @login_required
 def actualizar_tutor(id):
