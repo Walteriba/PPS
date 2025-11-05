@@ -14,7 +14,7 @@
       <h3>Registrar nuevo profesional</h3>
       <form
         id="form-profesional"
-        action="{{ url_for('profesional_bp.crear_profesional') }}"
+        action="{{ url_for('profesional_bp.nuevo_profesional') }}"
         method="POST"
       >
         {% include 'partials/profesional/form_profesional.html' %}
@@ -27,7 +27,7 @@
           </div>
           <div class="col-auto">
             <a
-              href="{{ url_for('profesional_bp.profesionales') }}"
+              href="{{ url_for('profesional_bp.ver_profesionales') }}"
               class="btn btn-secondary mt-2" 
               >Cancelar</a
             >

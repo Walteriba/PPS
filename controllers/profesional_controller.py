@@ -8,7 +8,7 @@ profesional_bp = Blueprint("profesional_bp", __name__)
 
 @profesional_bp.route("/profesionales", methods=["GET"])
 @login_required
-def profesionales():
+def ver_profesionales():
     profesionales = Profesional.query.all()
     return render_template(
         "profesional/profesionales.html", profesionales=profesionales
@@ -17,13 +17,13 @@ def profesionales():
 
 @profesional_bp.route("/profesional/nuevo", methods=["GET"])
 @login_required
-def alta_profesional():
+def ver_nuevo_profesional():
     return render_template("profesional/alta_profesional.html")
 
 
 @profesional_bp.route("/profesional/editar/<int:id>", methods=["GET"])
 @login_required
-def editar_profesional(id):
+def ver_actualizar_profesional(id):
     profesional = Profesional.query.get_or_404(id)
     return render_template(
         "profesional/editar_profesional.html", profesional=profesional
@@ -32,8 +32,7 @@ def editar_profesional(id):
 
 @profesional_bp.route("/profesional/nuevo", methods=["POST"])
 @login_required
-def crear_profesional():
-    """Crea un nuevo profesional en la base de datos."""
+def nuevo_profesional():
     # Validación de campos obligatorios
     campos_obligatorios = ["nombre", "apellido"]
     for campo in campos_obligatorios:
@@ -64,7 +63,6 @@ def crear_profesional():
 @profesional_bp.route("/profesional/<int:id>", methods=["PUT"])
 @login_required
 def actualizar_profesional(id):
-    """Actualiza los datos de un profesional existente."""
     profesional = Profesional.query.get(id)
     if not profesional:
         return jsonify({"error": "Profesional no encontrado"}), 404
