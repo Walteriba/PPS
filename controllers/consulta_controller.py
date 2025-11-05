@@ -9,9 +9,27 @@ from models import db
 from utils.cloudinary_utils import subir_y_obtener_url
 from models.archivo import Archivo
 
-consulta_bp = Blueprint("consulta_bp", __name__) 
+consulta_bp = Blueprint("consulta_bp", __name__)
 
-@consulta_bp.route("/consulta/formulario_nuevo", methods=["GET"])
+
+@consulta_bp.route("/consulta/<int:consulta_id>", methods=["GET"])
+@login_required
+def ver_consulta(consulta_id):
+    consulta = Consulta.query.get_or_404(consulta_id)
+    paciente = Paciente.query.get(consulta.paciente_id)
+    tutor = Tutor.query.get(consulta.tutor_id)
+    profesionales = Profesional.query.all()
+
+    return render_template(
+        "/consulta/consulta.html",
+        consulta=consulta,
+        paciente=paciente,
+        tutor=tutor,
+        profesionales=profesionales,
+    )
+
+
+@consulta_bp.route("/consulta/nuevo", methods=["GET"])
 @login_required
 def mostrar_formulario_consulta():
     try:
@@ -24,18 +42,19 @@ def mostrar_formulario_consulta():
         paciente = Paciente.query.get(paciente_id)
         tutor = Tutor.query.get(tutor_id)
         profesionales = Profesional.query.all()
-        
+
         if not paciente or not tutor:
             return "Paciente o Tutor no encontrado", 404
-        
+
         return render_template(
-            "crear_consulta.html", 
-            paciente=paciente,  
+            "consulta/alta_editar_consulta.html",
+            paciente=paciente,
             tutor=tutor,
-            profesionales=profesionales
+            profesionales=profesionales,
         )
     except Exception as e:
         return f"Error al cargar el formulario: {e}", 500
+
 
 # Agregar profesional_id al crear
 @consulta_bp.route("/consulta/nuevo", methods=["POST"])
@@ -48,25 +67,30 @@ def crear_consulta():
         profesional_id_consulta = int(request.form["profesional_id"])
 
     except ValueError as e:
-        return jsonify({"error": f"Error en el formato de datos. Verifique: fecha, tutor_id o paciente_id. Detalle: {e}"}), 400
+        return (
+            jsonify(
+                {
+                    "error": f"Error en el formato de datos. Verifique: fecha, tutor_id o paciente_id. Detalle: {e}"
+                }
+            ),
+            400,
+        )
     except KeyError as e:
         return jsonify({"error": f"Campo obligatorio faltante: {e}"}), 400
 
     nueva_consulta = Consulta(
         fecha=fecha_consulta,
-        
-        peso=float(request.form["peso"]), 
-        temperatura=float(request.form["temperatura"]), 
+        peso=float(request.form["peso"]),
+        temperatura=float(request.form["temperatura"]),
         anamnesis=request.form.get("anamnesis"),
         examen_fisico=request.form.get("examen_fisico"),
         diagnostico=request.form.get("diagnostico"),
         tratamiento=request.form.get("tratamiento"),
-        
         tutor_id=tutor_id_consulta,
         paciente_id=paciente_id_consulta,
-        profesional_id=profesional_id_consulta
+        profesional_id=profesional_id_consulta,
     )
-    
+
     db.session.add(nueva_consulta)
 
     archivos = request.files.getlist("archivos")
@@ -83,6 +107,7 @@ def crear_consulta():
         201,
     )
 
+
 # Agregar profesional_id al actualizar
 @consulta_bp.route("/consulta/<int:id_consulta>", methods=["PUT"])
 @login_required
@@ -90,7 +115,7 @@ def actualizar_consulta(id_consulta):
     consulta = Consulta.query.get(id_consulta)
     if not consulta:
         return jsonify({"error": "Consulta no encontrada"}), 404
-    
+
     fecha = request.form.get("fecha")
     peso = request.form.get("peso")
     if peso:
@@ -100,13 +125,13 @@ def actualizar_consulta(id_consulta):
             consulta.fecha = datetime.strptime(fecha, "%Y-%m-%d")
         except ValueError:
             return jsonify({"error": "Formato de fecha inválido. Use AAAA-MM-DD"}), 400
-        
+
     temperatura = request.form.get("temperatura")
     if temperatura:
         try:
             consulta.temperatura = float(temperatura)
         except ValueError:
-            return jsonify({"error": "Valor de temperatura inválido"}), 400     
+            return jsonify({"error": "Valor de temperatura inválido"}), 400
 
     anamnesis = request.form.get("anamnesis")
     if anamnesis is not None:
@@ -123,11 +148,10 @@ def actualizar_consulta(id_consulta):
     tratamiento = request.form.get("tratamiento")
     if tratamiento is not None:
         consulta.tratamiento = tratamiento
-        
+
     profesional_id = request.form.get("profesional_id")
     if profesional_id:
         consulta.profesional_id = int(profesional_id)
-
 
     archivos = request.files.getlist("archivos")
     for archivo in archivos:
@@ -140,16 +164,4 @@ def actualizar_consulta(id_consulta):
 
     return jsonify(
         {"mensaje": "Consulta actualizada exitosamente", "consulta_id": id_consulta}
-    )
-
-@consulta_bp.route("/consulta/<int:consulta_id>", methods=["GET"])
-@login_required
-def ver_consulta(consulta_id):
-    consulta = Consulta.query.get_or_404(consulta_id)
-    paciente = Paciente.query.get(consulta.paciente_id)
-    tutor = Tutor.query.get(consulta.tutor_id)
-    profesionales = Profesional.query.all()
-
-    return render_template(
-        "consulta.html", consulta=consulta, paciente=paciente, tutor=tutor, profesionales=profesionales
     )

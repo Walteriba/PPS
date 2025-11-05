@@ -27,9 +27,9 @@
             <div class="col-md-9 p-4 bg-white">
               {% include 'partials/card.html' %}
 
-              <a href="/consulta/formulario_nuevo?paciente_id={{ paciente.id }}&tutor_id={{ paciente.tutor_id }}"
+              <a href="/consulta/nuevo?paciente_id={{ paciente.id }}&tutor_id={{ paciente.tutor_id }}"
                 class="btn btn-success">
-              ➕ Nueva Consulta
+                ➕ Nueva Consulta
               </a>
 
               <!-- historial de consultas (TODO: Revisar) -->
@@ -53,7 +53,8 @@
   </main>
   <!-- Footer -->
   {% include 'partials/footer.html' %}
-    <div class="modal fade" id="validationErrorModal" tabindex="-1" aria-labelledby="validationErrorModalLabel" aria-hidden="true">
+  <div class="modal fade" id="validationErrorModal" tabindex="-1" aria-labelledby="validationErrorModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header bg-danger text-white">
