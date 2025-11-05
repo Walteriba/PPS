@@ -27,7 +27,7 @@ def ver_paciente(id):
 
 @paciente_bp.route("/paciente/nuevo", methods=["GET"])
 @login_required
-def nuevo_paciente():
+def ver_nuevo_paciente():
     tutores = Tutor.query.all()
     tutor_id = request.args.get("tutor_id", type=int)
     return render_template(
@@ -37,7 +37,7 @@ def nuevo_paciente():
 
 @paciente_bp.route("/paciente/nuevo", methods=["POST"])
 @login_required
-def crear_paciente():
+def nuevo_paciente():
     # TODO: agregar validaciones faltantes
     # valida tutor_id primero
     tutor_id = request.form.get("tutor_id")
