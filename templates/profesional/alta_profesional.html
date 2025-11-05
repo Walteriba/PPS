@@ -1,43 +1,36 @@
 <!DOCTYPE html>
 <html lang="es">
-  
+
 <head>
-    <meta charset="UTF-8" />
-    <title>Alta Profesional</title>
-    {% include 'partials/links.html' %}
+  <meta charset="UTF-8" />
+  <title>Alta Profesional</title>
+  {% include 'partials/links.html' %}
 </head>
-    
-  <body class="d-flex flex-column min-vh-100">
-    {% include 'partials/header.html' %}
 
-    <div class="container">
-      <h3>Registrar nuevo profesional</h3>
-      <form
-        id="form-profesional"
-        action="{{ url_for('profesional_bp.nuevo_profesional') }}"
-        method="POST"
-      >
-        {% include 'partials/profesional/form_profesional.html' %}
+<body class="d-flex flex-column min-vh-100">
+  {% include 'partials/header.html' %}
 
-        <div class="row">
-          <div class="col-auto">
-            <button type="submit" class="btn btn-success mt-2">
-              Crear Profesional
-            </button>
-          </div>
-          <div class="col-auto">
-            <a
-              href="{{ url_for('profesional_bp.ver_profesionales') }}"
-              class="btn btn-secondary mt-2" 
-              >Cancelar</a
-            >
-          </div>
+  <div class="container">
+    <h3>Registrar nuevo profesional</h3>
+    <form id="form-profesional" action="{{ url_for('profesional_bp.nuevo_profesional') }}" method="POST">
+      {% include 'partials/profesional/form_profesional.html' %}
+
+      <div class="row">
+        <div class="col-auto">
+          <button type="submit" class="btn btn-success mt-2">
+            Crear Profesional
+          </button>
         </div>
-      </form>
-    </div>
+        <div class="col-auto">
+          <a href="{{ url_for('profesional_bp.ver_profesionales') }}" class="btn btn-secondary mt-2">Cancelar</a>
+        </div>
+      </div>
+    </form>
+  </div>
 
-    {% include'partials/footer.html' %}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ url_for('static', filename='js/altas.js') }}"></script>
-  </body>
+  {% include'partials/footer.html' %}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='js/altas.js') }}"></script>
+</body>
+
 </html>

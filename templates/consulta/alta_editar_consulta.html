@@ -38,157 +38,161 @@
 
                             <div class="mb-3">
                                 <label for="temperatura" class="form-label">Temperatura (°C)</label>
-                                <input type="number" step="0.1" name="temperatura" id="temperatura" class="form-control" required>
+                                <input type="number" step="0.1" name="temperatura" id="temperatura" class="form-control"
+                                    required>
                                 <div class="invalid-feedback">Por favor, ingrese la temperatura.</div>
                             </div>
                         </div>
-                        
+
                         <input type="hidden" name="paciente_id" value="{{ paciente.id }}">
                         <input type="hidden" name="tutor_id" value="{{ tutor.id }}">
-                        
+
                         <div class="col-md-6">
                             <div class="mb-3">
-                                 <label for="profesional" class="form-label">Profesional que atiende</label>
-                                     <select name="profesional_id" id="profesional" class="form-select" required>
-                                         <option value="">Seleccione un profesional</option>
-                                         {% for prof in profesionales %}
-                                         <option value="{{ prof.id }}">{{ prof.nombre }} {{ prof.apellido }}</option>
-                                         {% endfor %}
-                                     </select>
-                            <div class="invalid-feedback">Por favor, seleccione un profesional.</div>
+                                <label for="profesional" class="form-label">Profesional que atiende</label>
+                                <select name="profesional_id" id="profesional" class="form-select" required>
+                                    <option value="">Seleccione un profesional</option>
+                                    {% for prof in profesionales %}
+                                    <option value="{{ prof.id }}">{{ prof.nombre }} {{ prof.apellido }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="invalid-feedback">Por favor, seleccione un profesional.</div>
+                            </div>
                         </div>
-                    </div>
 
-                    <hr>
+                        <hr>
 
-                    <div class="mb-3">
-                        <label for="anamnesis" class="form-label">Anamnesis</label>
-                        <textarea name="anamnesis" id="anamnesis" class="form-control" required></textarea>
-                        <div class="invalid-feedback">Por favor, complete la anamnesis.</div>
-                    </div>
+                        <div class="mb-3">
+                            <label for="anamnesis" class="form-label">Anamnesis</label>
+                            <textarea name="anamnesis" id="anamnesis" class="form-control" required></textarea>
+                            <div class="invalid-feedback">Por favor, complete la anamnesis.</div>
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="examen_fisico" class="form-label">Examen Físico</label>
-                        <textarea name="examen_fisico" id="examen_fisico" class="form-control" required></textarea>
-                        <div class="invalid-feedback">Por favor, complete el examen físico.</div>
-                    </div>
+                        <div class="mb-3">
+                            <label for="examen_fisico" class="form-label">Examen Físico</label>
+                            <textarea name="examen_fisico" id="examen_fisico" class="form-control" required></textarea>
+                            <div class="invalid-feedback">Por favor, complete el examen físico.</div>
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="diagnostico" class="form-label">Diagnóstico</label>
-                        <textarea name="diagnostico" id="diagnostico" class="form-control" required></textarea>
-                        <div class="invalid-feedback">Por favor, ingrese el diagnóstico.</div>
-                    </div>
+                        <div class="mb-3">
+                            <label for="diagnostico" class="form-label">Diagnóstico</label>
+                            <textarea name="diagnostico" id="diagnostico" class="form-control" required></textarea>
+                            <div class="invalid-feedback">Por favor, ingrese el diagnóstico.</div>
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="tratamiento" class="form-label">Tratamiento</label>
-                        <textarea name="tratamiento" id="tratamiento" class="form-control" required></textarea>
-                        <div class="invalid-feedback">Por favor, indique el tratamiento.</div>
-                    </div>
+                        <div class="mb-3">
+                            <label for="tratamiento" class="form-label">Tratamiento</label>
+                            <textarea name="tratamiento" id="tratamiento" class="form-control" required></textarea>
+                            <div class="invalid-feedback">Por favor, indique el tratamiento.</div>
+                        </div>
 
-                    <div class="mb-3">
+                        <div class="mb-3">
                             <label for="archivos" class="form-label">Archivos adjuntos</label>
                             <input class="form-control" type="file" id="archivos" name="archivos" multiple>
-                    </div>
+                        </div>
 
-                    <div class="mt-3">
-                        <button type="submit" class="btn btn-success">Guardar</button>
-                        <a href="/paciente/{{ paciente.id }}" class="btn btn-secondary">Cancelar</a>
-                    </div>
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-success">Guardar</button>
+                            <a href="/paciente/{{ paciente.id }}" class="btn btn-secondary">Cancelar</a>
+                        </div>
                 </form>
             </div>
         </div>
     </div>
 
     <!-- MODAL DE ERROR -->
-<div class="modal fade" id="validationErrorModal" tabindex="-1" aria-labelledby="validationErrorModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content border-0">
-        <div class="modal-header bg-danger text-white">
-            <h5 class="modal-title" id="validationErrorModalLabel">¡Faltan datos!</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <p id="modalErrorMessage">Falta/n completar algunos de los campos.</p>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Aceptar</button>
+    <div class="modal fade" id="validationErrorModal" tabindex="-1" aria-labelledby="validationErrorModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content border-0">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="validationErrorModalLabel">¡Faltan datos!</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalErrorMessage">Falta/n completar algunos de los campos.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Aceptar</button>
+                </div>
+            </div>
         </div>
     </div>
-    </div>
-</div>
 
     {% include 'partials/footer.html' %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const form = document.getElementById("formNuevaConsulta");
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("formNuevaConsulta");
 
-        if (form) {
-            form.addEventListener("submit", async (e) => {
-                e.preventDefault();
+            if (form) {
+                form.addEventListener("submit", async (e) => {
+                    e.preventDefault();
 
-                // Campos requeridos
-                const campos = [
-                    "fecha",
-                    "peso",
-                    "temperatura",
-                    "anamnesis",
-                    "examen_fisico",
-                    "diagnostico",
-                    "tratamiento",
-                    "profesional"
-                ].map(id => document.getElementById(id));
+                    // Campos requeridos
+                    const campos = [
+                        "fecha",
+                        "peso",
+                        "temperatura",
+                        "anamnesis",
+                        "examen_fisico",
+                        "diagnostico",
+                        "tratamiento",
+                        "profesional"
+                    ].map(id => document.getElementById(id));
 
-                let esValido = true;
-                form.classList.remove('was-validated');
-                campos.forEach(input => input.classList.remove('is-invalid'));
+                    let esValido = true;
+                    form.classList.remove('was-validated');
+                    campos.forEach(input => input.classList.remove('is-invalid'));
 
-                campos.forEach(input => {
-                    if (input.value.trim() === '') {
-                        input.classList.add('is-invalid');
-                        esValido = false;
-                    }
-                });
-
-                form.classList.add('was-validated');
-
-                if (!esValido) {
-                    const errorModal = new bootstrap.Modal(document.getElementById('validationErrorModal'));
-                    document.getElementById('modalErrorMessage').textContent = 
-                        "Faltan completar campos obligatorios .";
-                    errorModal.show();
-                    return;
-                }
-
-                const formData = new FormData(form);
-
-                try {
-                    const res = await fetch("/consulta/nuevo", {
-                        method: "POST",
-                        body: formData
+                    campos.forEach(input => {
+                        if (input.value.trim() === '') {
+                            input.classList.add('is-invalid');
+                            esValido = false;
+                        }
                     });
 
-                    if (res.ok) {
-                        const data = await res.json();
-                        window.location.href = `/consulta/${data.id}`;
-                    } else {
-                        const err = await res.json();
+                    form.classList.add('was-validated');
+
+                    if (!esValido) {
                         const errorModal = new bootstrap.Modal(document.getElementById('validationErrorModal'));
-                        document.getElementById('modalErrorMessage').textContent = err.error || "No se pudo crear la consulta";
+                        document.getElementById('modalErrorMessage').textContent =
+                            "Faltan completar campos obligatorios .";
+                        errorModal.show();
+                        return;
+                    }
+
+                    const formData = new FormData(form);
+
+                    try {
+                        const res = await fetch("/consulta/nuevo", {
+                            method: "POST",
+                            body: formData
+                        });
+
+                        if (res.ok) {
+                            const data = await res.json();
+                            window.location.href = `/consulta/${data.id}`;
+                        } else {
+                            const err = await res.json();
+                            const errorModal = new bootstrap.Modal(document.getElementById('validationErrorModal'));
+                            document.getElementById('modalErrorMessage').textContent = err.error || "No se pudo crear la consulta";
+                            errorModal.show();
+                        }
+                    } catch (error) {
+                        const errorModal = new bootstrap.Modal(document.getElementById('validationErrorModal'));
+                        document.getElementById('modalErrorMessage').textContent = "Error de conexión. Intente nuevamente.";
                         errorModal.show();
                     }
-                } catch (error) {
-                    const errorModal = new bootstrap.Modal(document.getElementById('validationErrorModal'));
-                    document.getElementById('modalErrorMessage').textContent = "Error de conexión. Intente nuevamente.";
-                    errorModal.show();
-                }
-            });
-        } else {
-            // El formulario no se encontró en el DOM
-        }
-    });
-</script>
+                });
+            } else {
+                // El formulario no se encontró en el DOM
+            }
+        });
+    </script>
 
 </body>
+
 </html>
