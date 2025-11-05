@@ -9,7 +9,7 @@
 
 :root {
   /* TEMA CLARO (Default) */
-  --color-fondo: #f3fbed;
+  --color-fondo: #edfae4;
   --color-fondo-secundario: #f8fff4; /* Para tarjetas, menús, etc. */
   --color-texto: #2f7560;
   --color-texto-enfasis: #2c3e50; /* Para títulos */
@@ -87,7 +87,6 @@ body {
   font-size: var(--tamano-base);
   background-color: var(--color-fondo);
   color: var(--color-texto);
-}
 
 .form-control,
 .form-select {
