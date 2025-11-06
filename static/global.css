@@ -44,7 +44,7 @@
 /* TEMA OSCURO */
 /* Se activa cuando el <html> o <body> tiene el atributo data-theme="dark" */
 [data-theme="dark"] {
-  --color-fondo: #133022;
+  --color-fondo: rgb(14, 27, 24);
   --color-fondo-secundario: #465869;
   --color-texto: #f3fbe2;
   --color-texto-enfasis: #ebd9b4;
