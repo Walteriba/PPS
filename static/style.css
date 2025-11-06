@@ -13,6 +13,11 @@ footer {
   margin-top: auto;
 }
 
+.list-group-consultas .list-group-item:hover {
+  background-color: var(--bs-success) !important;
+  color: #fff !important;
+}
+
 .img-cover {
   width: 100%;
   object-fit: cover;

@@ -36,20 +36,21 @@
               <div class="mt-4">
                 <h4>Historial de Consultas</h4>
                 {% if paciente.consultas %}
-                <div class="list-group">
+                <div class="list-group list-group-consultas">
                   {% for consulta in paciente.consultas %}
                   <a href="/consulta/{{ consulta.id }}" class="list-group-item list-group-item-action">
                     Consulta del {{ consulta.fecha.strftime('%d/%m/%Y') }}
                   </a>
                   {% endfor %}
                 </div>
-                {% else %}
-                <p>No hay consultas registradas</p>
-                {% endif %}
               </div>
-
+              {% else %}
+              <p>No hay consultas registradas</p>
+              {% endif %}
             </div>
+
           </div>
+        </div>
   </main>
   <!-- Footer -->
   {% include 'partials/footer.html' %}
