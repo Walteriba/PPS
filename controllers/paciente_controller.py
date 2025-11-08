@@ -1,28 +1,43 @@
+from datetime import datetime
+from flask import Blueprint, jsonify, render_template, request, send_file
 from flask_login import login_required
-from flask import Blueprint, render_template, request, jsonify, send_file, current_app
+from models import db
+from models.consulta import Consulta
 from models.paciente import Paciente
 from models.tutor import Tutor
-from models import db
-from datetime import datetime
 from utils.cloudinary_utils import subir_y_obtener_url
-from models.consulta import Consulta
 from utils.generar_reportes import crear_pdf_historia_clinica
 
-# Definición del Blueprint
 paciente_bp = Blueprint("paciente_bp", __name__)
 
-# Endpoint para mostrar la vista nuevo_paciente.html
+
+@paciente_bp.route("/paciente/<int:id>", methods=["GET"])
+@login_required
+def ver_paciente(id):
+    # Obtener paciente y su tutor
+    paciente = Paciente.query.get(id)
+    if paciente is not None:
+        tutor = Tutor.query.get(paciente.tutor_id)
+        return render_template(
+            "paciente/detalle_paciente.html", paciente=paciente, tutor=tutor
+        )
+    # Si no se encuentra el paciente, mostrar un mensaje de error
+    return "Mascota no encontrada", 404
+
+
 @paciente_bp.route("/paciente/nuevo", methods=["GET"])
 @login_required
-def nuevo_paciente():
+def ver_nuevo_paciente():
     tutores = Tutor.query.all()
     tutor_id = request.args.get("tutor_id", type=int)
-    return render_template("nuevo_paciente.html", tutores=tutores, tutor_id=tutor_id)
+    return render_template(
+        "paciente/nuevo_paciente.html", tutores=tutores, tutor_id=tutor_id
+    )
 
-# Endpoint para crear paciente (insert)
+
 @paciente_bp.route("/paciente/nuevo", methods=["POST"])
 @login_required
-def crear_paciente():
+def nuevo_paciente():
     # TODO: agregar validaciones faltantes
     # valida tutor_id primero
     tutor_id = request.form.get("tutor_id")
@@ -64,7 +79,6 @@ def crear_paciente():
     )
 
 
-# Endpoint para actualizar un paciente
 @paciente_bp.route("/paciente/actualizar/<int:id>", methods=["PUT"])
 @login_required
 def actualizar_paciente(id):
@@ -104,8 +118,8 @@ def actualizar_paciente(id):
         jsonify({"mensaje": "Paciente actualizado con éxito", "id": paciente.id}),
         200,
     )
-    #--- Endpoint para Generar Reporte ---
-# Endpoint para Generar Reporte
+
+
 @paciente_bp.route("/paciente/<int:paciente_id>/reporte", methods=["GET"])
 @login_required
 def generar_reporte_paciente(paciente_id):
@@ -115,7 +129,11 @@ def generar_reporte_paciente(paciente_id):
     # 1. Obtener los datos de la base de datos.
     paciente = Paciente.query.get_or_404(paciente_id)
     tutor = paciente.tutor
-    consultas = Consulta.query.filter_by(paciente_id=paciente_id).order_by(Consulta.fecha.asc()).all()
+    consultas = (
+        Consulta.query.filter_by(paciente_id=paciente_id)
+        .order_by(Consulta.fecha.asc())
+        .all()
+    )
 
     # 2. Llamar a la función de utilidad para que cree el PDF.
     pdf_buffer = crear_pdf_historia_clinica(paciente, tutor, consultas)
@@ -125,7 +143,5 @@ def generar_reporte_paciente(paciente_id):
         pdf_buffer,
         as_attachment=True,
         download_name=f"reporte_{paciente.nombre.replace(' ', '_')}.pdf",
-        mimetype="application/pdf"
+        mimetype="application/pdf",
     )
-    
-   

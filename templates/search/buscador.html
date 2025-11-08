@@ -1,0 +1,97 @@
+<div class="mb-4">
+  <!-- Modos de busqueda -->
+  <div class="d-flex align-items-center justify-content-center mb-3">
+    <label class="fw-bold me-3">Buscar por:</label>
+    <div class="btn-group" role="group" aria-label="Modo búsqueda">
+      <input type="radio" class="btn-check" name="modo" id="modoPaciente" value="paciente" autocomplete="off" {% if
+        search.modo=="paciente" or not search.modo %}checked{% endif %} />
+      <label class="btn btn-outline-success" for="modoPaciente">Paciente</label>
+
+      <input type="radio" class="btn-check" name="modo" id="modoConsulta" value="consulta" autocomplete="off" {% if
+        search.modo=="consulta" %}checked{% endif %} />
+      <label class="btn btn-outline-success" for="modoConsulta">Consulta</label>
+
+      <input type="radio" class="btn-check" name="modo" id="modoTutor" value="tutor" autocomplete="off" {% if
+        search.modo=="tutor" %}checked{% endif %} />
+      <label class="btn btn-outline-success" for="modoTutor">Tutor</label>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <form id="searchForm" action="/buscar" method="GET">
+    <div class="card card-body">
+
+      <!-- Filtros Paciente -->
+      <div id="filtrosPaciente">
+        <div class="mb-2">
+          <label class="form-label">Nombre Paciente</label>
+          <input type="text" class="form-control" name="nombre_paciente" value="{{ search.nombre_paciente }}">
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Especie</label>
+          <select class="form-select" name="especie">
+            <option value="" {% if not search.especie %}selected{% endif %}>Todas las especies</option>
+            <option value="Canino" {% if search.especie=='Canino' %}selected{% endif %}>Canino</option>
+            <option value="Felino" {% if search.especie=='Felino' %}selected{% endif %}>Felino</option>
+            <option value="Roedor" {% if search.especie=='Roedor' %}selected{% endif %}>Roedor</option>
+            <option value="Reptil" {% if search.especie=='Reptil' %}selected{% endif %}>Reptil</option>
+            <option value="Ave" {% if search.especie=='Ave' %}selected{% endif %}>Ave</option>
+            <option value="Otros" {% if search.especie=='Otros' %}selected{% endif %}>Otros</option>
+          </select>
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Raza</label>
+          <input type="text" class="form-control" name="raza" value="{{ search.raza }}">
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Color</label>
+          <input type="text" class="form-control" name="color" value="{{ search.color }}">
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="reproductor" value="1" {% if search.reproductor
+            %}checked{% endif %}>
+          <label class="form-check-label">Reproductor</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="castrado" value="1" {% if search.castrado %}checked{%
+            endif %}>
+          <label class="form-check-label">Castrado</label>
+        </div>
+      </div>
+
+      <!-- Filtros Consulta -->
+      <div id="filtrosConsulta">
+        <div class="mb-2">
+          <label class="form-label">Nombre Paciente</label>
+          <input type="text" class="form-control" name="nombre_paciente" value="{{ search.nombre_paciente }}">
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Anamnesis</label>
+          <input type="text" class="form-control" name="anamnesis" value="{{ search.anamnesis }}">
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Diagnóstico</label>
+          <input type="text" class="form-control" name="diagnostico" value="{{ search.diagnostico }}">
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Tratamiento</label>
+          <input type="text" class="form-control" name="tratamiento" value="{{ search.tratamiento }}">
+        </div>
+      </div>
+
+      <!-- Filtros Tutor -->
+      <div id="filtrosTutor">
+        <div class="mb-2">
+          <label class="form-label">Nombre Tutor</label>
+          <input type="text" class="form-control" name="nombre_tutor" value="{{ search.nombre_tutor }}">
+        </div>
+      </div>
+
+      <!-- Botones -->
+      <div class="text-end mt-3">
+        <button class="btn btn-outline-success me-2" type="submit">Buscar</button>
+        <button id="clearFilters" class="btn btn-outline-success" type="button">Borrar filtros</button>
+      </div>
+    </div>
+  </form>
+</div>

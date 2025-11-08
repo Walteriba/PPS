@@ -1,0 +1,30 @@
+<div class="mb-1">
+  <label for="nombre" class="form-label">Nombre</label>
+  <input type="text" class="form-control" id="nombre" name="nombre"
+    value="{{ profesional.nombre if profesional else '' }}" required />
+</div>
+<div class="mb-1">
+  <label for="apellido" class="form-label">Apellido</label>
+  <input type="text" class="form-control" id="apellido" name="apellido"
+    value="{{ profesional.apellido if profesional else '' }}" required />
+</div>
+<div class="mb-1">
+  <label for="matricula" class="form-label">Matrícula</label>
+  <input type="text" class="form-control" id="matricula" name="matricula"
+    value="{{ profesional.matricula if profesional else '' }}" />
+</div>
+<div class="mb-1">
+  <label for="especialidad" class="form-label">Especialidad</label>
+  <input type="text" class="form-control" id="especialidad" name="especialidad"
+    value="{{ profesional.especialidad if profesional else '' }}" />
+</div>
+<div class="mb-1">
+  <label for="telefono" class="form-label">Teléfono</label>
+  <input type="number" class="form-control" id="telefono" name="telefono"
+    value="{{ profesional.telefono if profesional else '' }}" />
+</div>
+<div class="mb-1">
+  <label for="email" class="form-label">Email</label>
+  <input type="email" class="form-control" id="email" name="email"
+    value="{{ profesional.email if profesional else '' }}" novalidate />
+</div>

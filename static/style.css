@@ -1,19 +1,38 @@
-html, body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-  height: 100%;
-}
+@import url("global.css");
 
 body {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-h1 {
-  color: #2c3e50;
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("imgs/bg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  opacity: 0.05;
+  z-index: -1;
 }
+
+h1 {
+  color: var(--color-texto-enfasis);
+}
+
 footer {
   margin-top: auto;
+}
+
+.list-group-consultas .list-group-item:hover {
+  background-color: var(--bs-success) !important;
+  color: #fff !important;
 }
 
 .img-cover {
@@ -24,8 +43,10 @@ footer {
 
 /* Para el home */
 .card-img-fixed {
-  height: 350px;
+  height: 150px;
+  width: 150px;
 }
+
 /* Para el detalle paciente */
 .img-detalle-fixed {
   height: 350px;
@@ -33,5 +54,18 @@ footer {
 
 /* Para validacion de input pacientes */
 .is-invalid {
-  border-color: #dc3545 !important; 
+  /* Usamos la variable de peligro */
+  border-color: var(--color-peligro) !important;
+}
+
+/* Ejemplo de cómo estilizar un botón ahora */
+.btn-primario {
+  background-color: var(--color-primario);
+  color: var(--color-primario-texto);
+  padding: 0.8rem var(--espaciado-base);
+  border: none;
+  border-radius: var(--radio-borde);
+  cursor: pointer;
+  font-family: var(--fuente-principal);
+  font-weight: 700;
 }
