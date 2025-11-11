@@ -21,3 +21,4 @@ class Consulta(db.Model):
     # Relaciones uno a muchos
     paciente = db.relationship("Paciente", backref="consultas", lazy=True)
     tutor = db.relationship("Tutor", backref="consultas", lazy=True)
+    profesional = db.relationship("Profesional", backref="consultas", lazy=True)
