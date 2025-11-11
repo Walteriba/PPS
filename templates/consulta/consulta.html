@@ -130,31 +130,39 @@
                     </div>
                 </form>
 
-                <hr>
-                <h5>Archivos Adjuntos</h5>
-                <div id="archivos-existentes" class="row">
-                    {% if consulta.archivos %}
-                    {% for archivo in consulta.archivos %}
-                    <div class="col-lg-3 col-md-4 col-sm-6 mb-3" data-archivo-id="{{ archivo.id }}">
+<hr>
 
-                        {% set url_lower = archivo.url.lower() %}
-                        {% if url_lower.endswith('.png') or url_lower.endswith('.jpg') or url_lower.endswith('.jpeg') or
-                        url_lower.endswith('.gif') %}
-                        <a href="{{ archivo.url }}" target="_blank" title="Ver imagen completa">
-                            <img src="{{ archivo.url }}" class="img-fluid rounded border shadow-sm"
-                                alt="Archivo adjunto">
-                        </a>
-                        {% else %}
-                        <a href="{{ archivo.url }}" target="_blank" class="btn btn-outline-secondary">
-                            📄 Ver/Descargar Archivo
-                        </a>
-                        {% endif %}
-                    </div>
-                    {% endfor %}
-                    {% else %}
-                    <p id="sin-archivos" class="text-muted">No se adjuntaron archivos para esta consulta.</p>
-                    {% endif %}
-                </div>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0">Archivos Adjuntos</h5>
+    
+    <a href="{{ url_for('paciente_bp.generar_reporte_paciente', paciente_id=paciente.id) }}" class="btn btn-success btn-sm">
+        Descargar Historia Clinica
+    </a>
+</div>
+
+<div id="archivos-existentes" class="row">
+    {% if consulta.archivos %}
+        {% for archivo in consulta.archivos %}
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-3" data-archivo-id="{{ archivo.id }}">
+
+            {% set url_lower = archivo.url.lower() %}
+            {% if url_lower.endswith('.png') or url_lower.endswith('.jpg') or url_lower.endswith('.jpeg') or
+            url_lower.endswith('.gif') %}
+            <a href="{{ archivo.url }}" target="_blank" title="Ver imagen completa">
+                <img src="{{ archivo.url }}" class="img-fluid rounded border shadow-sm"
+                    alt="Archivo adjunto">
+            </a>
+            {% else %}
+            <a href="{{ archivo.url }}" target="_blank" class="btn btn-outline-secondary d-block">
+                📄 Ver/Descargar Archivo
+            </a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <p id="sin-archivos" class="text-muted">No se adjuntaron archivos para esta consulta.</p>
+    {% endif %}
+</div>
             </div>
         </div>
         <div class="mt-3">
