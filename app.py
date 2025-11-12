@@ -2,7 +2,6 @@ import os
 from dotenv import load_dotenv
 from flask import Flask, request, session
 from flask_login import LoginManager
-from werkzeug.exceptions import NotFound
 from controllers.auth_controller import auth_bp
 from controllers.consulta_controller import consulta_bp
 from controllers.paciente_controller import paciente_bp
