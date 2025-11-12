@@ -86,5 +86,5 @@ app.register_blueprint(auth_bp)
 
 # --- Ejecución ---
 if __name__ == "__main__":
-    app.logger.info("Iniciando servidor Flask...")
+    app.logger.info("Iniciando VetLog...")
     app.run(debug=app.debug)
