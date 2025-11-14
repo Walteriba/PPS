@@ -27,10 +27,18 @@
             <div class="col-md-9 p-4">
               {% include 'partials/paciente/card.html' %}
 
-              <a href="/consulta/nuevo?paciente_id={{ paciente.id }}&tutor_id={{ paciente.tutor_id }}"
-                class="btn btn-success">
-                Nueva Consulta
-              </a>
+          <div class="my-3">
+    <a href="/consulta/nuevo?paciente_id={{ paciente.id }}&tutor_id={{ paciente.tutor_id }}"
+        class="btn btn-success">
+        Nueva Consulta
+    </a>
+
+    <a href="{{ url_for('paciente_bp.generar_reporte_paciente', paciente_id=paciente.id) }}" class="btn btn-success ms-2">
+        Descargar Historia Clinica
+    </a>
+</div>
+
+<div class="mt-4">
 
               <!-- historial de consultas (TODO: Revisar) -->
               <div class="mt-4">
