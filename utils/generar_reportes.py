@@ -36,7 +36,7 @@ def crear_pdf_historia_clinica(paciente, tutor, consultas):
     except Exception as e:
         print(f"Error al cargar la imagen: {e}")
 
-    # Datos del Paciente y Tutor
+    # Datos del Paciente Tutor
     p.setFont("Helvetica-Bold", 11)
     p.drawString(50, y, "Datos del Paciente")
     p.setFont("Helvetica", 10)
@@ -68,6 +68,12 @@ def crear_pdf_historia_clinica(paciente, tutor, consultas):
             p.drawString(60, y, f"Fecha: {consulta.fecha.strftime('%d/%m/%Y')}")
             y -= 20
             p.setFont("Helvetica", 10)
+            
+            if consulta.profesional:
+                p.drawString(70, y, f"Profesional: {consulta.profesional.nombre} {consulta.profesional.apellido}")
+            else:
+                p.drawString(70, y, "Profesional: No asignado")
+            y -= 15
             p.drawString(70, y, f"Anamnesis: {consulta.anamnesis or 'N/A'}")
             y -= 15
             p.drawString(70, y, f"Diagnóstico: {consulta.diagnostico or 'N/A'}")

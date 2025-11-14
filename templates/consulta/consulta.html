@@ -130,37 +130,36 @@
                     </div>
                 </form>
 
-<hr>
-
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h5 class="mb-0">Archivos Adjuntos</h5>
-    
-   
-</div>
-
-<div id="archivos-existentes" class="row">
-    {% if consulta.archivos %}
-        {% for archivo in consulta.archivos %}
-        <div class="col-lg-3 col-md-4 col-sm-6 mb-3" data-archivo-id="{{ archivo.id }}">
-
-            {% set url_lower = archivo.url.lower() %}
-            {% if url_lower.endswith('.png') or url_lower.endswith('.jpg') or url_lower.endswith('.jpeg') or
-            url_lower.endswith('.gif') %}
-            <a href="{{ archivo.url }}" target="_blank" title="Ver imagen completa">
-                <img src="{{ archivo.url }}" class="img-fluid rounded border shadow-sm"
-                    alt="Archivo adjunto">
-            </a>
-            {% else %}
-            <a href="{{ archivo.url }}" target="_blank" class="btn btn-outline-secondary d-block">
-                📄 Ver/Descargar Archivo
-            </a>
-            {% endif %}
-        </div>
-        {% endfor %}
-    {% else %}
-        <p id="sin-archivos" class="text-muted">No se adjuntaron archivos para esta consulta.</p>
-    {% endif %}
-</div>
+                <hr>
+                <h5>Archivos Adjuntos</h5>
+                <div id="archivos-existentes" class="row g-3 justify-content-center text-center">
+                    {% if consulta.archivos %}
+                    {% for archivo in consulta.archivos %}
+                    <div class="col-lg-3 col-md-4 col-sm-6 d-flex justify-content-center"
+                        data-archivo-id="{{ archivo.id }}">
+                        {% set url_lower = archivo.url.lower() %}
+                        {% if url_lower.endswith('.png') or url_lower.endswith('.jpg') or url_lower.endswith('.jpeg') or
+                        url_lower.endswith('.gif') %}
+                        <a href="{{ archivo.url }}" target="_blank" title="Ver imagen completa"
+                            class="d-flex flex-column align-items-center border rounded shadow-sm p-2 w-100 h-100">
+                            <img src="{{ archivo.url }}" class="img-fluid rounded"
+                                style="max-height: 150px; object-fit: cover;" alt="Archivo adjunto">
+                        </a>
+                        {% else %}
+                        <a href="{{ archivo.url }}" target="_blank"
+                            class="btn btn-outline-success d-flex flex-column align-items-center justify-content-center w-100 h-100 py-3">
+                            <img src="{{ url_for('static', filename='imgs/document.svg') }}" class="mb-2"
+                                style="width: 75px; height: 75px;" alt="Archivo adjunto">
+                            <div>📄 Ver/Descargar Archivo</div>
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <p id="sin-archivos" class="text-muted text-center">No se adjuntaron archivos para esta consulta.
+                    </p>
+                    {% endif %}
+                </div>
             </div>
         </div>
         <div class="mt-3">
