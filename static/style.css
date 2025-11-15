@@ -69,3 +69,34 @@ footer {
   font-family: var(--fuente-principal);
   font-weight: 700;
 }
+
+/* —— MODO MÓVIL: filas profesional en “tarjetas” */
+@media (max-width: 768px) {
+
+  .table-mobile-stacked thead {
+    display: none;
+  }
+
+  .table-mobile-stacked tr {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid #444;
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    background-color: var(--bs-body-bg);
+  }
+
+  .table-mobile-stacked td {
+    display: block;
+    padding: 0.4rem 0;
+    border: none;
+    text-align: left !important;
+  }
+
+  .table-mobile-stacked td::before {
+    content: attr(data-label) ": ";
+    font-weight: bold;
+    color: var(--bs-primary);
+    margin-right: .25rem;
+  }
+}
