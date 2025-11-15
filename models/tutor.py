@@ -8,7 +8,7 @@ class Tutor(db.Model):
     nombre = db.Column(db.String(100), nullable=False)
     apellido = db.Column(db.String(100), nullable=False)
     telefono = db.Column(db.String(50), nullable=False)
-    email = db.Column(db.String(120), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
     direccion = db.Column(db.String(200), nullable=False)
 
     # Relación uno-a-muchos
