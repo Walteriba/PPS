@@ -22,39 +22,39 @@
       </div>
     </div>
     <div class="table-responsive">
-    <table class="table table-striped table-hover align-middle text-center table-mobile-stacked ">
-      <thead class="table-light">
-        <tr>
-          <th scope="col">Nombre</th>
-          <th scope="col">Apellido</th>
-          <th scope="col">Matrícula</th>
-          <th scope="col">Especialidad</th>
-          <th scope="col">Teléfono</th>
-          <th scope="col">Email</th>
-          <th scope="col">Editar</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for profesional in profesionales %}
-        <tr>
-          <td data-label="Nombre">{{ profesional.nombre }}</td>
-          <td data-label="Apellido">{{ profesional.apellido }}</td>
-          <td data-label="Matrícula">{{ profesional.matricula }}</td>
-          <td data-label="Especialidad">{{ profesional.especialidad }}</td>
-          <td data-label="Teléfono">{{ profesional.telefono }}</td>
-          <td data-label="Email">{{ profesional.email }}</td>
-          <td data-label="Editar">
-            <a href="{{ url_for('profesional_bp.ver_actualizar_profesional', id=profesional.id) }}"
-               class="btn btn-outline-success btn-sm" title="Editar">
-              <i class="bi bi-pencil"></i>
-            </a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+      <table class="table table-striped table-hover align-middle text-center table-mobile-stacked ">
+        <thead class="table-light">
+          <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">Apellido</th>
+            <th scope="col">Matrícula</th>
+            <th scope="col">Especialidad</th>
+            <th scope="col">Teléfono</th>
+            <th scope="col">Email</th>
+            <th scope="col">Editar</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for profesional in profesionales %}
+          <tr>
+            <td data-label="Nombre">{{ profesional.nombre }}</td>
+            <td data-label="Apellido">{{ profesional.apellido }}</td>
+            <td data-label="Matrícula">{{ profesional.matricula }}</td>
+            <td data-label="Especialidad">{{ profesional.especialidad }}</td>
+            <td data-label="Teléfono">{{ profesional.telefono }}</td>
+            <td data-label="Email">{{ profesional.email }}</td>
+            <td data-label="Editar">
+              <a href="{{ url_for('profesional_bp.ver_actualizar_profesional', id=profesional.id) }}"
+                class="btn btn-outline-success btn-sm" title="Editar">
+                <i class="bi bi-pencil"></i>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
-</div>
   <!-- Footer -->
   {% include 'partials/footer.html' %}
 
