@@ -27,30 +27,43 @@
             <div class="col-md-9 p-4">
               {% include 'partials/paciente/card.html' %}
 
-              <a href="/consulta/nuevo?paciente_id={{ paciente.id }}&tutor_id={{ paciente.tutor_id }}"
-                class="btn btn-success">
-                Nueva Consulta
-              </a>
-
-              <!-- historial de consultas (TODO: Revisar) -->
-              <div class="mt-4">
-                <h4>Historial de Consultas</h4>
-                {% if paciente.consultas %}
-                <div class="list-group list-group-consultas">
-                  {% for consulta in paciente.consultas %}
-                  <a href="/consulta/{{ consulta.id }}" class="list-group-item list-group-item-action">
-                    Consulta del {{ consulta.fecha.strftime('%d/%m/%Y') }}
+              <div class="row my-3 g-2">
+                <div class="col-12 col-md-auto">
+                  <a href="/consulta/nuevo?paciente_id={{ paciente.id }}&tutor_id={{ paciente.tutor_id }}"
+                    class="btn btn-success w-100">
+                    Nueva Consulta
                   </a>
-                  {% endfor %}
+                </div>
+
+                <div class="col-12 col-md-auto">
+                  <a href="{{ url_for('paciente_bp.generar_reporte_paciente', paciente_id=paciente.id) }}"
+                    class="btn btn-success w-100">
+                    Descargar Historia Clínica
+                  </a>
                 </div>
               </div>
-              {% else %}
-              <p>No hay consultas registradas</p>
-              {% endif %}
-            </div>
 
+              <div class="mt-4">
+
+                <!-- historial de consultas (TODO: Revisar) -->
+                <div class="mt-4">
+                  <h4>Historial de Consultas</h4>
+                  {% if paciente.consultas %}
+                  <div class="list-group list-group-consultas">
+                    {% for consulta in paciente.consultas %}
+                    <a href="/consulta/{{ consulta.id }}" class="list-group-item list-group-item-action">
+                      Consulta del {{ consulta.fecha.strftime('%d/%m/%Y') }}
+                    </a>
+                    {% endfor %}
+                  </div>
+                </div>
+                {% else %}
+                <p>No hay consultas registradas</p>
+                {% endif %}
+              </div>
+
+            </div>
           </div>
-        </div>
   </main>
   <!-- Footer -->
   {% include 'partials/footer.html' %}
