@@ -93,3 +93,7 @@ body {
 .form-select {
   transition: all 0.3s ease !important;
 }
+
+.table {
+  margin-bottom: 0 !important;
+}
