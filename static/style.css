@@ -58,6 +58,11 @@ footer {
   border-color: var(--color-peligro) !important;
 }
 
+.table th,
+.table td {
+  color: var(--color-texto) !important;
+}
+
 /* Ejemplo de cómo estilizar un botón ahora */
 .btn-primario {
   background-color: var(--color-primario);
