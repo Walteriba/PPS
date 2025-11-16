@@ -47,9 +47,6 @@ def load_user(user_id):
 # Inicializamos SQLAlchemy con la app
 db.init_app(app)
 
-with app.app_context():
-    db.create_all()
-
 # Registrar los Blueprint de los controladores
 app.register_blueprint(search_bp)
 app.register_blueprint(paciente_bp)
