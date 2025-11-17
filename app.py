@@ -1,5 +1,6 @@
 import os
 from flask import Flask, session
+from dotenv import load_dotenv
 from flask_login import LoginManager
 from controllers.auth_controller import auth_bp
 from controllers.consulta_controller import consulta_bp
@@ -9,13 +10,22 @@ from controllers.search_controller import search_bp
 from controllers.tutor_controller import tutor_bp
 from models import db
 from models.usuario import Usuario
-
+ 
+load_dotenv()
+ 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///vetlog.db"
+ 
+DATABASE_URL = os.environ.get("DATABASE_URL")
+if not DATABASE_URL:
+    raise ValueError("No se encontró la variable de entorno DATABASE_URL. Asegúrate de definirla en el archivo .env")
+ 
+SECRET_KEY = os.environ.get("SECRET_KEY")
+if not SECRET_KEY:
+    raise ValueError("No se encontró la variable de entorno SECRET_KEY. Asegúrate de definirla en el archivo .env")
+ 
+app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SECRET_KEY"] = os.environ[
-    "SECRET_KEY"
-]  # Requiere que la variable de entorno esté configurada
+app.config["SECRET_KEY"] = SECRET_KEY
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 # Configurar Flask-Login
@@ -36,9 +46,6 @@ def load_user(user_id):
 
 # Inicializamos SQLAlchemy con la app
 db.init_app(app)
-
-with app.app_context():
-    db.create_all()
 
 # Registrar los Blueprint de los controladores
 app.register_blueprint(search_bp)

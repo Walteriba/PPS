@@ -1,5 +1,6 @@
 blinker==1.9.0
 click==8.2.1
+psycopg2-binary==2.9.9
 colorama==0.4.6
 debugpy==1.8.17
 Flask==3.1.2

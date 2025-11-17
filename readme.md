@@ -36,6 +36,10 @@ Sigue estos pasos para poner en marcha el proyecto:
     ```bash
     pip install -r requirements.txt
     ```
+    > **Nota para PostgreSQL**: Si planeas usar PostgreSQL como base de datos, asegúrate de que el driver esté en `requirements.txt` y se instale.
+    > ```bash
+    > pip install psycopg2-binary
+    > ```
 
 ## ⚙️ Ejecución
 
@@ -79,6 +83,10 @@ El proyecto incluye un script para cargar datos de prueba en la base de datos.
    # Clave secreta para sesiones y seguridad (REQUERIDA)
    # Genera una clave segura y única para tu entorno
    SECRET_KEY=tu-clave-secreta-aqui-muy-larga-y-aleatoria
+
+   # URL de conexión a la base de datos (Ejemplo para PostgreSQL)
+   # postgresql://<usuario>:<contraseña>@<host>:<puerto>/<nombre_db>
+   DATABASE_URL=postgresql://vetlog_user:tu_contraseña_segura@localhost:5432/vetlog_db
    ```
 
    Para generar una clave secreta segura, puedes usar Python:
