@@ -12,7 +12,7 @@
   --color-fondo: #f3fbed;
   --color-fondo-secundario: #f8fff4; /* Para tarjetas, menús, etc. */
   --color-texto: #2f7560;
-  --color-texto-enfasis: #2c3e50; /* Para títulos */
+  --color-texto-enfasis: #2c5039; /* Para títulos */
   --color-primario: #9dbc98; /* Para botones, enlaces */
   --color-primario-texto: #f9efdb; /* Texto sobre el color primario */
   --color-peligro: #dc3545; /* Para errores, validaciones */
@@ -47,7 +47,7 @@
   --color-fondo: rgb(14, 27, 24);
   --color-fondo-secundario: #465869;
   --color-texto: #f3fbe2;
-  --color-texto-enfasis: #ebd9b4;
+  --color-texto-enfasis: #d3eaa0;
   --color-primario: #9dbc98;
   --color-primario-texto: #2c3e50;
   --color-peligro: #e06c75;
@@ -92,4 +92,8 @@ body {
 .form-control,
 .form-select {
   transition: all 0.3s ease !important;
+}
+
+.table {
+  margin-bottom: 0 !important;
 }

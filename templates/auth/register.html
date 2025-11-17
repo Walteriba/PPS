@@ -11,9 +11,9 @@
   <!-- Navbar -->
   {% include 'partials/header.html' %}
 
-  <main class="flex-grow-1 d-flex justify-content-center align-items-center">
+  <main class="flex-grow-1 d-flex justify-content-center align-items-center m-2">
     <div class="card shadow p-4" style="max-width: 450px; width: 100%;">
-      <h3 class="text-center mb-4">Registro de usuario</h3>
+      <h3 class="text-center mb-4">Registrar mi Negocio Veterinario</h3>
 
       {% with messages = get_flashed_messages() %}
       {% if messages %}
@@ -26,8 +26,10 @@
       <!-- Formulario -->
       <form method="POST" action="{{ url_for('auth_bp.register_submit') }}">
         <div class="mb-3">
-          <label for="nombre" class="form-label">Nombre</label>
-          <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Tu nombre" required>
+          <label for="nombre" class="form-label">Nombre del local</label>
+          <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Ej: Clínica Patitas"
+            required>
+
         </div>
 
         <div class="mb-3">
