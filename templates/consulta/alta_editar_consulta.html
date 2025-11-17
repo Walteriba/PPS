@@ -20,22 +20,21 @@
 
             <div class="card-body">
                 <form id="formNuevaConsulta" novalidate>
-                    <div class="row">
-                        <h5>Datos básicos</h5>
-                        <div class="col-md-6">
 
+                    <h5>Datos básicos</h5>
+
+                    <div class="row">
+                        <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="fecha" class="form-label">Fecha</label>
                                 <input type="date" name="fecha" id="fecha" class="form-control" required>
                                 <div class="invalid-feedback">Por favor, ingrese una fecha.</div>
                             </div>
-
                             <div class="mb-3">
                                 <label for="peso" class="form-label">Peso (kg)</label>
                                 <input type="number" step="0.1" name="peso" id="peso" class="form-control" required>
                                 <div class="invalid-feedback">Por favor, ingrese el peso.</div>
                             </div>
-
                             <div class="mb-3">
                                 <label for="temperatura" class="form-label">Temperatura (°C)</label>
                                 <input type="number" step="0.1" name="temperatura" id="temperatura" class="form-control"
@@ -43,9 +42,6 @@
                                 <div class="invalid-feedback">Por favor, ingrese la temperatura.</div>
                             </div>
                         </div>
-
-                        <input type="hidden" name="paciente_id" value="{{ paciente.id }}">
-                        <input type="hidden" name="tutor_id" value="{{ tutor.id }}">
 
                         <div class="col-md-6">
                             <div class="mb-3">
@@ -59,42 +55,44 @@
                                 <div class="invalid-feedback">Por favor, seleccione un profesional.</div>
                             </div>
                         </div>
+                    </div> <input type="hidden" name="paciente_id" value="{{ paciente.id }}">
+                    <input type="hidden" name="tutor_id" value="{{ tutor.id }}">
 
-                        <hr>
+                    <hr>
 
-                        <div class="mb-3">
-                            <label for="anamnesis" class="form-label">Anamnesis</label>
-                            <textarea name="anamnesis" id="anamnesis" class="form-control" required></textarea>
-                            <div class="invalid-feedback">Por favor, complete la anamnesis.</div>
-                        </div>
+                    <div class="mb-3">
+                        <label for="anamnesis" class="form-label">Anamnesis</label>
+                        <textarea name="anamnesis" id="anamnesis" class="form-control" required></textarea>
+                        <div class="invalid-feedback">Por favor, complete la anamnesis.</div>
+                    </div>
 
-                        <div class="mb-3">
-                            <label for="examen_fisico" class="form-label">Examen Físico</label>
-                            <textarea name="examen_fisico" id="examen_fisico" class="form-control" required></textarea>
-                            <div class="invalid-feedback">Por favor, complete el examen físico.</div>
-                        </div>
+                    <div class="mb-3">
+                        <label for="examen_fisico" class="form-label">Examen Físico</label>
+                        <textarea name="examen_fisico" id="examen_fisico" class="form-control" required></textarea>
+                        <div class="invalid-feedback">Por favor, complete el examen físico.</div>
+                    </div>
 
-                        <div class="mb-3">
-                            <label for="diagnostico" class="form-label">Diagnóstico</label>
-                            <textarea name="diagnostico" id="diagnostico" class="form-control" required></textarea>
-                            <div class="invalid-feedback">Por favor, ingrese el diagnóstico.</div>
-                        </div>
+                    <div class="mb-3">
+                        <label for="diagnostico" class="form-label">Diagnóstico</label>
+                        <textarea name="diagnostico" id="diagnostico" class="form-control" required></textarea>
+                        <div class="invalid-feedback">Por favor, ingrese el diagnóstico.</div>
+                    </div>
 
-                        <div class="mb-3">
-                            <label for="tratamiento" class="form-label">Tratamiento</label>
-                            <textarea name="tratamiento" id="tratamiento" class="form-control" required></textarea>
-                            <div class="invalid-feedback">Por favor, indique el tratamiento.</div>
-                        </div>
+                    <div class="mb-3">
+                        <label for="tratamiento" class="form-label">Tratamiento</label>
+                        <textarea name="tratamiento" id="tratamiento" class="form-control" required></textarea>
+                        <div class="invalid-feedback">Por favor, indique el tratamiento.</div>
+                    </div>
 
-                        <div class="mb-3">
-                            <label for="archivos" class="form-label">Archivos adjuntos</label>
-                            <input class="form-control" type="file" id="archivos" name="archivos" multiple>
-                        </div>
+                    <div class="mb-3">
+                        <label for="archivos" class="form-label">Archivos adjuntos</label>
+                        <input class="form-control" type="file" id="archivos" name="archivos" multiple>
+                    </div>
 
-                        <div class="mt-3">
-                            <button type="submit" class="btn btn-success">Guardar</button>
-                            <a href="/paciente/{{ paciente.id }}" class="btn btn-secondary">Cancelar</a>
-                        </div>
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-success">Guardar</button>
+                        <a href="/paciente/{{ paciente.id }}" class="btn btn-secondary">Cancelar</a>
+                    </div>
                 </form>
             </div>
         </div>
