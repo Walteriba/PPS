@@ -12,8 +12,6 @@ Asegúrate de tener instalados los siguientes programas:
 
 ## 🛠️ Instalación
 
-Sigue estos pasos para poner en marcha el proyecto:
-
 1.  **Clona el repositorio:**
     ```bash
     git clone https://github.com/Walteriba/PPS.git
