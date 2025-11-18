@@ -1,5 +1,5 @@
 
-# 🚀 Puesta en marcha de un proyecto Flask
+# 👾 Puesta en marcha de Vetlog
 
 ¡Bienvenido! Esta guía te ayudará a configurar y ejecutar el proyecto en tu entorno local.
 
@@ -37,56 +37,45 @@ Sigue estos pasos para poner en marcha el proyecto:
     pip install -r requirements.txt
     ```
 
-## ⚙️ Ejecución
+## ⚙️ Configuración del entorno y modos de ejecución
 
-Una vez instalado, puedes ejecutar la aplicación:
+En este proyecto existen dos formas de ejecutar la app:
 
-1.  **Configura la aplicación Flask:**
-    ```bash
-    # En Linux/Mac:
-    export FLASK_APP=app.py
-    # En Windows:
-    set FLASK_APP=app.py
-    ```
+- Modo desarrollo (debug) → con flask run
 
-2.  **Inicia el servidor de desarrollo:**
-    ```bash
-    flask run --debug
-    ```
-    El modo `--debug` reiniciará el servidor automáticamente con cada cambio.
+- Modo producción (release) → con Gunicorn (solo Linux)
 
-3.  **¡Listo!** Abre tu navegador y ve a [http://localhost:5000](http://localhost:5000).
+> El proyecto usa Gunicorn como servidor WSGI para producción porque el servidor de producción esta en Linux.
+> Existe otro servidor llamado Waitress, usado principalmente para Windows, pero no lo utilizamos, y no está en las dependencias del proyecto.
 
-## 🗃️ Base de datos
-
-El proyecto incluye un script para cargar datos de prueba en la base de datos.
-
-1.  **Ejecuta el script:**
-    (Asegúrate de estar en la raíz del proyecto)
-    ```bash
-    python -m utils.cargar_db
-    ```
-
-## 🔐 Configuración de Variables de Entorno
+El proyecto utiliza variables del archivo `.env` para definir el modo de funcionamiento.
 
 1. **Crea un archivo `.env` en la raíz del proyecto:**
-   ```bash
-   touch .env
-   ```
 
+   ```bash
+    touch .env
+   ```
+   
 2. **Añade las siguientes variables en el archivo `.env`:**
-   ```bash
-   # Clave secreta para sesiones y seguridad (REQUERIDA)
-   # Genera una clave segura y única para tu entorno
-   SECRET_KEY=tu-clave-secreta-aqui-muy-larga-y-aleatoria
-   ```
 
-   Para generar una clave secreta segura, puedes usar Python:
+   ```bash
+    FLASK_APP=app
+    FLASK_ENV=production   # production / development
+    DEBUG=False            # True para modo debug
+    SECRET_KEY=            # Clave secreta para sesiones y seguridad (REQUERIDA)
+    CLOUDINARY_CLOUD_NAME= # (REQUERIDA)
+    CLOUDINARY_API_KEY=    # (REQUERIDA)
+    CLOUDINARY_API_SECRET= # (REQUERIDA)
+   ```
+> Es necesario tener credenciales de [CLOUDINARY](https://cloudinary.com/) para este proyecto.
+
+3. Para generar una clave secreta segura, puedes usar Python:
+
    ```bash
    python -c "import secrets; print(secrets.token_hex(32))"
    ```
 
-3. **Carga las variables de entorno:**
+4. **Carga las variables de entorno:**
    ```bash
    # En Linux/Mac:
    source .env
@@ -95,9 +84,101 @@ El proyecto incluye un script para cargar datos de prueba en la base de datos.
    ```
 
 > ⚠️ **IMPORTANTE**: 
-> - Nunca subas el archivo `.env` al control de versiones
-> - Cada desarrollador debe crear su propio `.env` con sus propias claves
-> - La aplicación no funcionará si no se configura la variable `SECRET_KEY`
+> - Nunca subas el archivo `.env` al control de versiones.
+> - Cada desarrollador debe crear su propio `.env` con sus propias claves.
+> - La aplicación no funcionará si no se configuran las variables.
+
+### 🧪 MODO DESARROLLO (DEBUG)
+
+1.  **Configura del `.env`:**
+    ```bash
+    FLASK_ENV=development
+    DEBUG=True
+    ```
+
+2.  **Inicia el servidor de desarrollo:**
+    ```bash
+    flask run --debug
+    ```
+    El modo `--debug` reiniciará el servidor automáticamente con cada cambio.
+
+3.  **¡Listo!** La app estará en: [http://localhost:5000](http://localhost:5000).
+
+### 🚀 MODO PRODUCCIÓN (RELEASE)
+
+Para producción, se usa Gunicorn, únicamente en Linux.
+
+1.  **Configura del `.env`:**
+    ```bash
+    FLASK_ENV=production
+    DEBUG=False
+    ```
+
+2.  **Ejecución en producción (solo Linux)**
+    ```bash
+    gunicorn -w 4 -b 0.0.0.0:5000 app:app
+    ```
+- `-w 4` → número de workers
+- `app:app` → módulo + instancia Flask
+
+
+## 🗃️ Base de datos
+
+Este proyecto utiliza SQLite como motor de base de datos.
+
+SQLite es liviano, no requiere instalación y almacena la información en un archivo local, ideal para aplicaciones pequeñas/medianas y despliegues simples.
+
+1. Cuando arrancás la app (con `flask run` o con `gunicorn`), Flask SQLAlchemy ejecuta:
+
+    ```bash
+    db.create_all()
+    ```
+
+Esto garantiza que la base exista y todos los modelos estén creados.
+No se necesita ejecutar migraciones para el estado inicial.
+
+2. El archivo se encuentra en la raíz del proyecto:
+
+    ```bash
+    instance/vetlog.db
+    ```
+
+3. El proyecto incluye un script para cargar datos de prueba en la base de datos. Este script crea información básica útil para desarrollo.
+
+    ```bash
+    python -m utils.cargar_db
+    ```
+
+> Asegurate de tener el entorno virtual activado y de estar en la raíz del proyecto al ejecutarlo
+
+## 📄 Logs del sistema
+
+La aplicación genera logs tanto en consola como en archivos, dependiendo del modo de ejecución.
+
+#### 🧪 En modo desarrollo (DEBUG=True)
+
+- Los logs solo se muestran en consola.
+- Se incluyen mensajes de nivel DEBUG.
+- Útil para ver requests, respuestas y errores en tiempo real.
+
+#### 🚀 En producción (DEBUG=False)
+
+Los logs se guardan en la carpeta logs/ (se crea automáticamente en la raíz del proyecto).
+
+- El archivo principal es:
+
+    ```bash
+    logs/vetlog.log
+    ```
+
+¿Qué queda registrado?
+
+- Requests y responses (`before_request` / `after_request`)
+- Errores no controlados
+- Eventos importantes de inicio
+- Acciones de autenticación
+
+> No tenés que configurar nada extra, los logs cambian de comportamiento automáticamente según el valor de `DEBUG`en tu `.env`.
 
 ## ✨ Notas adicionales
 
@@ -105,14 +186,6 @@ El proyecto incluye un script para cargar datos de prueba en la base de datos.
     ```bash
     pip freeze > requirements.txt
     ```
--   **Entorno de desarrollo:** Para optimizar el flujo de trabajo, puedes configurar la variable de entorno `FLASK_ENV`:
-    ```bash
-    # En Linux/Mac:
-    export FLASK_ENV=development
-    # En Windows:
-    set FLASK_ENV=development
-    ```
-
 ---
 
 ¡Gracias por usar nuestro proyecto! Si tienes alguna duda, no dudes en abrir un *issue*.
