@@ -30,7 +30,7 @@
         <div class="mb-2">
           <label class="form-label">Especie</label>
           <select class="form-select" name="especie">
-            <option value="" {% if not search.especie %}selected{% endif %}>Todas las especies</option>
+            <option value="all" {% if not search.especie %}selected{% endif %}>Todas las especies</option>
             <option value="Canino" {% if search.especie=='Canino' %}selected{% endif %}>Canino</option>
             <option value="Felino" {% if search.especie=='Felino' %}selected{% endif %}>Felino</option>
             <option value="Roedor" {% if search.especie=='Roedor' %}selected{% endif %}>Roedor</option>

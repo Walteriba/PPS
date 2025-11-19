@@ -36,6 +36,7 @@ def buscar():
     # Filtros de Paciente
     nombre_paciente = request.args.get("nombre_paciente", "").strip()
     especie = request.args.get("especie", "").strip()
+    traer_todos_especies = especie == "all"
     raza = request.args.get("raza", "").strip()
     color = request.args.get("color", "").strip()
     reproductor = request.args.get("reproductor") == "1"
@@ -55,7 +56,7 @@ def buscar():
     has_filters = any(
         [
             nombre_paciente,
-            especie,
+            especie not in ["", "all"],
             raza,
             color,
             reproductor,
@@ -64,6 +65,7 @@ def buscar():
             diagnostico,
             tratamiento,
             nombre_tutor,
+            traer_todos_especies,
         ]
     )
 
@@ -77,7 +79,7 @@ def buscar():
                 pacientes_query = pacientes_query.filter(
                     Paciente.nombre.ilike(f"%{nombre_paciente}%")
                 )
-            if especie:
+            if especie and especie != "all":
                 pacientes_query = pacientes_query.filter(
                     Paciente.especie.ilike(f"%{especie}%")
                 )
