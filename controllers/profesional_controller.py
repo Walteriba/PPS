@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, render_template, request
-from flask_login import login_required
+from flask_login import current_user, login_required
 from models import db
 from models.profesional import Profesional
 
@@ -9,7 +9,7 @@ profesional_bp = Blueprint("profesional_bp", __name__)
 @profesional_bp.route("/profesionales", methods=["GET"])
 @login_required
 def ver_profesionales():
-    profesionales = Profesional.query.all()
+    profesionales = Profesional.query.filter_by(user_id=current_user.id).all()
     return render_template(
         "profesional/profesionales.html", profesionales=profesionales
     )
@@ -24,7 +24,9 @@ def ver_nuevo_profesional():
 @profesional_bp.route("/profesional/editar/<int:id>", methods=["GET"])
 @login_required
 def ver_actualizar_profesional(id):
-    profesional = Profesional.query.get_or_404(id)
+    profesional = Profesional.query.filter_by(
+        id=id, user_id=current_user.id
+    ).first_or_404()
     return render_template(
         "profesional/editar_profesional.html", profesional=profesional
     )
@@ -47,6 +49,7 @@ def nuevo_profesional():
         especialidad=request.form.get("especialidad"),
         telefono=request.form.get("telefono"),
         email=request.form.get("email"),
+        user_id=current_user.id,
     )
 
     db.session.add(nuevo_profesional)
@@ -63,7 +66,9 @@ def nuevo_profesional():
 @profesional_bp.route("/profesional/<int:id>", methods=["PUT"])
 @login_required
 def actualizar_profesional(id):
-    profesional = Profesional.query.get(id)
+    profesional = Profesional.query.filter_by(
+        id=id, user_id=current_user.id
+    ).first()
     if not profesional:
         return jsonify({"error": "Profesional no encontrado"}), 404
 

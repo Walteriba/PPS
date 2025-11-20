@@ -12,3 +12,7 @@ class Profesional(db.Model):
     especialidad = db.Column(db.String(100), nullable=True)
     telefono = db.Column(db.String(20), nullable=True)
     email = db.Column(db.String(120), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+
+    usuario = db.relationship('Usuario', backref=db.backref('profesionales', lazy=True))
+

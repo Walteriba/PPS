@@ -8,6 +8,8 @@ from models.consulta import Consulta
 from models.paciente import Paciente
 from models.profesional import Profesional
 from models.tutor import Tutor
+from models.usuario import Usuario
+
 
 # Datos de ejemplo
 nombres_tutores = [
@@ -71,6 +73,15 @@ with app.app_context():
     db.drop_all()
     db.create_all()
 
+    # Crear un usuario por defecto
+    usuario = Usuario(
+        nombre="Usuario de Prueba",
+        email="test@example.com",
+    )
+    usuario.set_password("password")
+    db.session.add(usuario)
+    db.session.commit()
+
     # Crear y guardar profesionales
     profesionales = []
     
@@ -82,6 +93,7 @@ with app.app_context():
           especialidad=choice(especialidades),
           telefono=f"11{randint(40000000,49999999)}",
           email=f"{nombre.lower()}.{apellido.lower()}@mail.com",
+          user_id=usuario.id,
         )
         profesionales.append(profesional)
 
@@ -97,6 +109,7 @@ with app.app_context():
             telefono=f"15{randint(40000000, 49999999)}",
             email=f"{nombre.lower()}.{apellido.lower()}@mail.com",
             direccion=f"Calle {randint(100, 999)} N°{randint(1000, 9999)}",
+            user_id=usuario.id,
         )
         tutores.append(tutor)
     db.session.add_all(tutores)
@@ -118,6 +131,7 @@ with app.app_context():
             reproductor=choice([True, False]),
             castrado=choice([True, False]),
             tutor_id=choice(tutores).id,  # Usar el ID del tutor ya guardado
+            user_id=usuario.id,
         )
         pacientes.append(paciente)
     db.session.add_all(pacientes)
@@ -146,6 +160,7 @@ with app.app_context():
             tutor_id=paciente.tutor_id,  # Usar el ID del tutor del paciente
             paciente_id=paciente.id,
             profesional_id=choice(profesionales).id,
+            user_id=usuario.id,
         )
         consultas.append(consulta)
 

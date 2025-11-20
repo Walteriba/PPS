@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, render_template, request
-from flask_login import login_required
+from flask_login import current_user, login_required
 from models import db
 from models.paciente import Paciente
 from models.tutor import Tutor
@@ -17,9 +17,14 @@ def ver_nuevo_tutor():
 @tutor_bp.route("/tutor/<int:id>/editar", methods=["GET"])
 @login_required
 def ver_actualizar_tutor(id):
+<<<<<<< HEAD
     paciente_id = request.args.get("paciente_id", type=int)
     tutor = Tutor.query.get_or_404(id)
     paciente = Paciente.query.get_or_404(paciente_id)
+=======
+    tutor = Tutor.query.filter_by(id=id, user_id=current_user.id).first_or_404()
+    paciente = Paciente.query.filter_by(tutor_id=tutor.id).first()
+>>>>>>> e7c92cd (modificaciones para probar transformar la app en multiusuarios)
     return render_template("tutor/editar_tutor.html", tutor=tutor, paciente=paciente)
 
 
@@ -45,6 +50,7 @@ def nuevo_tutor():
         telefono=request.form["telefono"],
         email=email_tutor,
         direccion=request.form["direccion"],
+        user_id=current_user.id,
     )
 
     db.session.add(nuevo_tutor)
@@ -65,8 +71,8 @@ def nuevo_tutor():
 @tutor_bp.route("/tutor/<int:id>", methods=["PUT"])
 @login_required
 def actualizar_tutor(id):
-    # Buscar el tutor por ID [2]
-    tutor = Tutor.query.get(id)
+    # Buscar el tutor por ID, asegurando que pertenezca al usuario actual
+    tutor = Tutor.query.filter_by(id=id, user_id=current_user.id).first()
     if not tutor:
         return jsonify({"error": "Tutor no encontrado"}), 404
 
