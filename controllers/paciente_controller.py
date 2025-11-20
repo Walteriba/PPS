@@ -52,10 +52,18 @@ def nuevo_paciente():
 
     # Procesar imagen si viene, sino usar default
     imagen = request.files.get("imagen")
+    url = "/static/imgs/default-avatar.jpg"  # URL por defecto
     if imagen:
-        url = subir_y_obtener_url(imagen)
-    else:
-        url = "/static/imgs/default-avatar.jpg"
+        try:
+            url = subir_y_obtener_url(imagen)
+        except Exception as e:
+            # Si la subida falla, devuelve un error JSON que el frontend puede mostrar
+            return (
+                jsonify(
+                    {"error": f"Error al subir la imagen: {str(e)}"}
+                ),
+                400,
+            )
     # Crear nuevo paciente con asignacion
     nuevo_paciente = Paciente(
         nombre=request.form["nombre"],

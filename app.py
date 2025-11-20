@@ -40,6 +40,9 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "auth_bp.login_page"
 
+# --- Configuración de Flask-Uploads ---
+# Limita la subida a 10MB para coincidir con Cloudinary
+app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
 
 # --- Middleware ---
 def ensure_theme_in_session():
