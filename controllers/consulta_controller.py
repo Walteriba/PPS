@@ -92,19 +92,23 @@ def nueva_consulta():
 
     db.session.add(nueva_consulta)
 
-    archivos = request.files.getlist("archivos")
-    for archivo in archivos:
-        if archivo and archivo.filename != "":
-            url = subir_y_obtener_url(archivo)
-            nuevo_archivo = Archivo(url=url)
-            nueva_consulta.archivos.append(nuevo_archivo)
+    try:
+        if 'archivo' in request.files and request.files['archivo'].filename != '':
+            archivo = request.files['archivo']
+            archivo_url = cloudinary_utils.subir_y_obtener_url(archivo)
+            nuevo_archivo = Archivo(
+                url=archivo_url,
+                nombre=archivo.filename,
+                consulta_id=nueva_consulta.id
+            )
+            db.session.add(nuevo_archivo)
+    except RuntimeError as e:
+        flash(f"Error al subir el archivo: {str(e)}", "error")
+        return redirect(url_for('consulta_bp.alta_consulta'))
 
     db.session.commit()
-
-    return (
-        jsonify({"mensaje": "Consulta creada con éxito", "id": nueva_consulta.id}),
-        201,
-    )
+    flash('Consulta creada exitosamente', 'success')
+    return redirect(url_for('consulta_bp.detalle_consulta', id=nueva_consulta.id))
 
 
 @consulta_bp.route("/consulta/<int:id_consulta>", methods=["PUT"])
