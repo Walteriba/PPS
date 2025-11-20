@@ -17,8 +17,9 @@ def ver_nuevo_tutor():
 @tutor_bp.route("/tutor/<int:id>/editar", methods=["GET"])
 @login_required
 def ver_actualizar_tutor(id):
+    paciente_id = request.args.get("paciente_id", type=int)
     tutor = Tutor.query.get_or_404(id)
-    paciente = Paciente.query.filter_by(tutor_id=tutor.id).first()
+    paciente = Paciente.query.get_or_404(paciente_id)
     return render_template("tutor/editar_tutor.html", tutor=tutor, paciente=paciente)
 
 
