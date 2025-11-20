@@ -3,6 +3,7 @@ from flask_login import login_required
 from models import db
 from models.paciente import Paciente
 from models.tutor import Tutor
+from sqlalchemy.exc import IntegrityError 
 
 tutor_bp = Blueprint("tutor_bp", __name__)
 
@@ -30,19 +31,33 @@ def nuevo_tutor():
         if not request.form.get(campo):
             return jsonify({"error": f"{campo} es requerido"}), 400
 
+    email_tutor = request.form["email"]
+    
+    # 1. VERIFICACIÓN DE RESTRICCIÓN ÚNICA (EMAIL)
+    if Tutor.query.filter_by(email=email_tutor).first():
+        return jsonify({"error": "Ya existe un tutor registrado con este email."}), 400
+
     # Crear nuevo tutor
     nuevo_tutor = Tutor(
         nombre=request.form["nombre"],
         apellido=request.form["apellido"],
         telefono=request.form["telefono"],
-        email=request.form["email"],
+        email=email_tutor,
         direccion=request.form["direccion"],
     )
 
     db.session.add(nuevo_tutor)
-    db.session.commit()
 
-    # Retorno de éxito, código 201 (Creado) [2]
+    # Manejo de errores de la Base de Datos (IntegrityError)
+    # Envuelve el commit en un try/except para capturar fallos de concurrencia
+    try:
+        db.session.commit()
+    except IntegrityError:
+        # Si falla el commit por unicidad, deshace la operación y devuelve un 400.
+        db.session.rollback()
+        return jsonify({"error": "Ya existe un tutor registrado con este email."}), 400
+
+    # Retorno de éxito, código 201 (Creado)
     return jsonify({"mensaje": "Tutor creado con éxito", "id": nuevo_tutor.id}), 201
 
 
@@ -61,7 +76,13 @@ def actualizar_tutor(id):
     tutor.email = request.form.get("email", tutor.email)
     tutor.direccion = request.form.get("direccion", tutor.direccion)
 
-    db.session.commit()
+    # Nota: También deberías añadir aquí el manejo de IntegrityError para el commit
+    # si el email se actualiza a uno ya existente.
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({"error": "Ya existe un tutor registrado con este email."}), 400
 
     # Retorno de éxito, código 200 (OK) [3]
     return jsonify({"mensaje": "Tutor actualizado con éxito", "id": tutor.id}), 200
