@@ -1,5 +1,5 @@
-from flask import Blueprint, redirect, render_template, request, url_for
-from flask_login import login_required
+from flask import Blueprint, render_template, request#, url_for, redirect
+from flask_login import current_user, login_required
 from sqlalchemy import or_
 from sqlalchemy.orm import joinedload
 from dto.paciente_dto import PacienteDTO
@@ -70,7 +70,7 @@ def buscar():
     )
 
     if has_filters:
-        base_query = Paciente.query
+        base_query = Paciente.query.filter(Paciente.user_id == current_user.id)
 
         if modo == "paciente":
             pacientes_query = base_query.join(Tutor)

@@ -10,6 +10,9 @@ class Tutor(db.Model):
     telefono = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     direccion = db.Column(db.String(200), nullable=False)
-
     # Relación uno-a-muchos
     pacientes = db.relationship("Paciente", backref="tutor", lazy=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    usuario = db.relationship('Usuario', backref=db.backref('tutores', lazy=True))
+
+    

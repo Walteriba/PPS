@@ -1,6 +1,6 @@
 from datetime import datetime
 from flask import Blueprint, jsonify, render_template, request
-from flask_login import login_required
+from flask_login import current_user, login_required
 from models import db
 from models.archivo import Archivo
 from models.consulta import Consulta
@@ -15,10 +15,12 @@ consulta_bp = Blueprint("consulta_bp", __name__)
 @consulta_bp.route("/consulta/<int:consulta_id>", methods=["GET"])
 @login_required
 def ver_consulta(consulta_id):
-    consulta = Consulta.query.get_or_404(consulta_id)
+    consulta = Consulta.query.filter_by(
+        id=consulta_id, user_id=current_user.id
+    ).first_or_404()
     paciente = Paciente.query.get(consulta.paciente_id)
     tutor = Tutor.query.get(consulta.tutor_id)
-    profesionales = Profesional.query.all()
+    profesionales = Profesional.query.filter_by(user_id=current_user.id).all()
 
     return render_template(
         "/consulta/consulta.html",
@@ -39,9 +41,11 @@ def ver_nueva_consulta():
         if not paciente_id or not tutor_id:
             return "Faltan IDs de paciente o tutor", 400
 
-        paciente = Paciente.query.get(paciente_id)
-        tutor = Tutor.query.get(tutor_id)
-        profesionales = Profesional.query.all()
+        paciente = Paciente.query.filter_by(
+            id=paciente_id, user_id=current_user.id
+        ).first()
+        tutor = Tutor.query.filter_by(id=tutor_id, user_id=current_user.id).first()
+        profesionales = Profesional.query.filter_by(user_id=current_user.id).all()
 
         if not paciente or not tutor:
             return "Paciente o Tutor no encontrado", 404
@@ -60,57 +64,62 @@ def ver_nueva_consulta():
 @login_required
 def nueva_consulta():
     try:
-        fecha_consulta = datetime.strptime(request.form["fecha"], "%Y-%m-%d")
-        tutor_id_consulta = int(request.form["tutor_id"])
-        paciente_id_consulta = int(request.form["paciente_id"])
-        profesional_id_consulta = int(request.form["profesional_id"])
+        # Validar que las entidades pertenecen al usuario actual
+        paciente = Paciente.query.filter_by(
+            id=int(request.form["paciente_id"]), user_id=current_user.id
+        ).first()
+        tutor = Tutor.query.filter_by(
+            id=int(request.form["tutor_id"]), user_id=current_user.id
+        ).first()
+        profesional = Profesional.query.filter_by(
+            id=int(request.form["profesional_id"]), user_id=current_user.id
+        ).first()
 
-    except ValueError as e:
-        return (
-            jsonify(
-                {
-                    "error": f"Error en el formato de datos. Verifique: fecha, tutor_id o paciente_id. Detalle: {e}"
-                }
-            ),
-            400,
+        if not all([paciente, tutor, profesional]):
+            return jsonify({"error": "Entidad no encontrada o no autorizada"}), 404
+
+        nueva_consulta = Consulta(
+            fecha=datetime.strptime(request.form["fecha"], "%Y-%m-%d"),
+            peso=float(request.form["peso"]),
+            temperatura=float(request.form["temperatura"]),
+            anamnesis=request.form.get("anamnesis"),
+            examen_fisico=request.form.get("examen_fisico"),
+            diagnostico=request.form.get("diagnostico"),
+            tratamiento=request.form.get("tratamiento"),
+            tutor_id=tutor.id,
+            paciente_id=paciente.id,
+            profesional_id=profesional.id,
+            user_id=current_user.id,
         )
-    except KeyError as e:
-        return jsonify({"error": f"Campo obligatorio faltante: {e}"}), 400
 
-    nueva_consulta = Consulta(
-        fecha=fecha_consulta,
-        peso=float(request.form["peso"]),
-        temperatura=float(request.form["temperatura"]),
-        anamnesis=request.form.get("anamnesis"),
-        examen_fisico=request.form.get("examen_fisico"),
-        diagnostico=request.form.get("diagnostico"),
-        tratamiento=request.form.get("tratamiento"),
-        tutor_id=tutor_id_consulta,
-        paciente_id=paciente_id_consulta,
-        profesional_id=profesional_id_consulta,
-    )
+        db.session.add(nueva_consulta)
 
-    db.session.add(nueva_consulta)
+        archivos = request.files.getlist("archivos")
+        for archivo in archivos:
+            if archivo and archivo.filename != "":
+                url = subir_y_obtener_url(archivo)
+                nuevo_archivo = Archivo(
+                    url=url, user_id=current_user.id, consulta=nueva_consulta
+                )
+                db.session.add(nuevo_archivo)
 
-    archivos = request.files.getlist("archivos")
-    for archivo in archivos:
-        if archivo and archivo.filename != "":
-            url = subir_y_obtener_url(archivo)
-            nuevo_archivo = Archivo(url=url)
-            nueva_consulta.archivos.append(nuevo_archivo)
+        db.session.commit()
 
-    db.session.commit()
+        return (
+            jsonify({"mensaje": "Consulta creada con éxito", "id": nueva_consulta.id}),
+            201,
+        )
+    except (ValueError, KeyError) as e:
+        return jsonify({"error": f"Error en los datos enviados: {e}"}), 400
 
-    return (
-        jsonify({"mensaje": "Consulta creada con éxito", "id": nueva_consulta.id}),
-        201,
-    )
 
 
 @consulta_bp.route("/consulta/<int:id_consulta>", methods=["PUT"])
 @login_required
 def actualizar_consulta(id_consulta):
-    consulta = Consulta.query.get(id_consulta)
+    consulta = Consulta.query.filter_by(
+        id=id_consulta, user_id=current_user.id
+    ).first()
     if not consulta:
         return jsonify({"error": "Consulta no encontrada"}), 404
 
@@ -149,14 +158,21 @@ def actualizar_consulta(id_consulta):
 
     profesional_id = request.form.get("profesional_id")
     if profesional_id:
-        consulta.profesional_id = int(profesional_id)
+        profesional = Profesional.query.filter_by(
+            id=int(profesional_id), user_id=current_user.id
+        ).first()
+        if not profesional:
+            return jsonify({"error": "Profesional no autorizado"}), 403
+        consulta.profesional_id = profesional.id
 
     archivos = request.files.getlist("archivos")
     for archivo in archivos:
         if archivo.filename:
             url = subir_y_obtener_url(archivo)
-            nuevo_archivo = Archivo(url=url)
-            consulta.archivos.append(nuevo_archivo)
+            nuevo_archivo = Archivo(
+                url=url, user_id=current_user.id, consulta_id=consulta.id
+            )
+            db.session.add(nuevo_archivo)
 
     db.session.commit()
 

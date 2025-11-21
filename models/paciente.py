@@ -17,3 +17,6 @@ class Paciente(db.Model):
     reproductor = db.Column(db.Boolean, default=False)
     castrado = db.Column(db.Boolean, default=False)
     tutor_id = db.Column(db.Integer, db.ForeignKey("tutores.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+
+    usuario = db.relationship('Usuario', backref=db.backref('pacientes', lazy=True))

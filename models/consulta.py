@@ -22,3 +22,5 @@ class Consulta(db.Model):
     paciente = db.relationship("Paciente", backref="consultas", lazy=True)
     tutor = db.relationship("Tutor", backref="consultas", lazy=True)
     profesional = db.relationship("Profesional", backref="consultas", lazy=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    usuario = db.relationship('Usuario', backref=db.backref('consultas', lazy=True))

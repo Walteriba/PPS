@@ -1,6 +1,6 @@
 from datetime import datetime
 from flask import Blueprint, jsonify, render_template, request, send_file
-from flask_login import login_required
+from flask_login import current_user, login_required
 from models import db
 from models.consulta import Consulta
 from models.paciente import Paciente
@@ -14,21 +14,19 @@ paciente_bp = Blueprint("paciente_bp", __name__)
 @paciente_bp.route("/paciente/<int:id>", methods=["GET"])
 @login_required
 def ver_paciente(id):
-    # Obtener paciente y su tutor
-    paciente = Paciente.query.get(id)
-    if paciente is not None:
-        tutor = Tutor.query.get(paciente.tutor_id)
-        return render_template(
-            "paciente/detalle_paciente.html", paciente=paciente, tutor=tutor
-        )
-    # Si no se encuentra el paciente, mostrar un mensaje de error
-    return "Mascota no encontrada", 404
+    # Obtener paciente y su tutor, asegurando que pertenezca al usuario actual
+    paciente = Paciente.query.filter_by(id=id, user_id=current_user.id).first_or_404()
+    tutor = Tutor.query.get(paciente.tutor_id)
+    return render_template(
+        "paciente/detalle_paciente.html", paciente=paciente, tutor=tutor
+    )
+
 
 
 @paciente_bp.route("/paciente/nuevo", methods=["GET"])
 @login_required
 def ver_nuevo_paciente():
-    tutores = Tutor.query.all()
+    tutores = Tutor.query.filter_by(user_id=current_user.id).all()
     tutor_id = request.args.get("tutor_id", type=int)
     return render_template(
         "paciente/nuevo_paciente.html", tutores=tutores, tutor_id=tutor_id
@@ -44,7 +42,10 @@ def nuevo_paciente():
     if not tutor_id:
         return jsonify({"error": "tutor_id es requerido"}), 400
     try:
-        tutor = Tutor.query.get(int(tutor_id))
+        # Asegurarse que el tutor pertenece al usuario actual
+        tutor = Tutor.query.filter_by(
+            id=int(tutor_id), user_id=current_user.id
+        ).first()
     except ValueError:
         return jsonify({"error": "tutor_id debe ser un numero"}), 400
     if not tutor:
@@ -70,6 +71,7 @@ def nuevo_paciente():
         reproductor=("reproductor" in request.form),
         castrado=("castrado" in request.form),
         tutor=tutor,
+        user_id=current_user.id,
     )
     db.session.add(nuevo_paciente)
     db.session.commit()
@@ -82,8 +84,8 @@ def nuevo_paciente():
 @paciente_bp.route("/paciente/actualizar/<int:id>", methods=["PUT"])
 @login_required
 def actualizar_paciente(id):
-    # Buscar el paciente por ID
-    paciente = Paciente.query.get(id)
+    # Buscar el paciente por ID, asegurando que pertenezca al usuario actual
+    paciente = Paciente.query.filter_by(id=id, user_id=current_user.id).first()
     if not paciente:
         return jsonify({"error": "Paciente no encontrado"}), 404
     # Actualizar campos si vienen en el request.form
@@ -108,7 +110,9 @@ def actualizar_paciente(id):
     # Actualizar tutor si se envía tutor_id
     tutor_id = request.form.get("tutor_id")
     if tutor_id:
-        tutor = Tutor.query.get(int(tutor_id))
+        tutor = Tutor.query.filter_by(
+            id=int(tutor_id), user_id=current_user.id
+        ).first()
         if not tutor:
             return jsonify({"error": "Tutor no encontrado"}), 400
         paciente.tutor = tutor
@@ -126,8 +130,10 @@ def generar_reporte_paciente(paciente_id):
     """
     Genera un reporte en PDF con toda la historia clínica de un paciente.
     """
-    # 1. Obtener los datos de la base de datos.
-    paciente = Paciente.query.get_or_404(paciente_id)
+    # 1. Obtener los datos de la base de datos, asegurando que el paciente pertenezca al usuario.
+    paciente = Paciente.query.filter_by(
+        id=paciente_id, user_id=current_user.id
+    ).first_or_404()
     tutor = paciente.tutor
     consultas = (
         Consulta.query.filter_by(paciente_id=paciente_id)
